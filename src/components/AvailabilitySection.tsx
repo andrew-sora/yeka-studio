@@ -64,7 +64,7 @@ const DAY_SHORT = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
 
 function buildWALink(date: number, month: number, year: number, slot: string): string {
   const dateStr = `${date} ${MONTH_ID[month]} ${year}`;
-  const msg = `Halo Yeka Studio! Saya mau request booking sesi foto pada:\n📅 Tanggal: ${dateStr}\n🕐 Jam: ${slot} WIB\n\nBoleh dikonfirmasi ketersediaannya? 🙏`;
+  const msg = `Halo Yeka Studio! Saya mau request booking sesi foto pada:\nTanggal: ${dateStr}\nJam: ${slot} WIB\n\nBoleh dikonfirmasi ketersediaannya? Terima kasih.`;
   return `https://wa.me/6285952879644?text=${encodeURIComponent(msg)}`;
 }
 

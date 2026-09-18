@@ -101,14 +101,13 @@ export default function ContactSection() {
                 alignItems: 'center',
               }}>
                 <div>
-                  <div style={{ fontSize: '0.72rem', color: '#C9A94B', fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
-                    📍 Area Layanan Utama
+                  <div style={{ fontSize: '0.72rem', color: '#C9A94B', fontFamily: 'Inter, sans-serif', fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                    Area Layanan Utama
                   </div>
-                  <div style={{ color: 'white', fontFamily: 'Inter, sans-serif', fontSize: '0.85rem', fontWeight: 600 }}>
+                  <div style={{ color: 'white', fontFamily: 'Inter, sans-serif', fontSize: '0.85rem', fontWeight: 500 }}>
                     Jogja &amp; Solo (Studio &amp; Outdoor)
                   </div>
                 </div>
-                <span style={{ fontSize: '1.2rem' }}>✨</span>
               </div>
             </div>
           </div>
