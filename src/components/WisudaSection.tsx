@@ -93,48 +93,60 @@ export default function WisudaSection() {
           </p>
         </div>
 
-        {/* Photo Grid - 3-Column Instagram Style Gallery (3x2 Grid) */}
+        {/* Photo Grid - Staggered Editorial Gallery */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '10px',
-          maxWidth: '780px',
-          margin: '0 auto 2.5rem',
+          gap: 'clamp(10px, 2vw, 16px)',
+          maxWidth: '820px',
+          margin: '0 auto 3rem',
+          alignItems: 'start',
         }}>
-          {WISUDA_PHOTOS.map((photo, i) => (
-            <div
-              key={i}
-              className="img-zoom reveal-item"
-              style={{
-                aspectRatio: '1/1',
-                borderRadius: '6px',
-                overflow: 'hidden',
-                position: 'relative',
-                opacity: 0,
-                transform: 'translateY(24px)',
-                transition: 'all 0.7s ease',
-                boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-              }}
-            >
-              <Image
-                src={photo.src}
-                alt={photo.alt}
-                fill
-                style={{ objectFit: 'cover' }}
-                sizes="(max-width: 768px) 50vw, 33vw"
-              />
-              {/* Hover overlay */}
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                background: 'linear-gradient(to top, rgba(90,19,32,0.7) 0%, transparent 50%)',
-                opacity: 0,
-                transition: 'opacity 0.4s ease',
-              }}
-                className="hover-overlay"
-              />
-            </div>
-          ))}
+          {WISUDA_PHOTOS.map((photo, i) => {
+            // Staggered offsets for odd columns (middle column & alternating items)
+            const isMiddleCol = i % 3 === 1;
+            const isRightCol = i % 3 === 2;
+            const offsetY = isMiddleCol ? '1.5rem' : isRightCol ? '0.5rem' : '0px';
+            const aspect = isMiddleCol ? '4/5' : '3/4';
+
+            return (
+              <div
+                key={i}
+                className="img-zoom reveal-item"
+                style={{
+                  aspectRatio: aspect,
+                  borderRadius: '10px',
+                  overflow: 'hidden',
+                  position: 'relative',
+                  marginTop: offsetY,
+                  opacity: 0,
+                  transform: 'translateY(24px)',
+                  transition: 'all 0.7s ease',
+                  boxShadow: '0 8px 24px rgba(123,28,42,0.08)',
+                  border: '1px solid rgba(123,28,42,0.08)',
+                }}
+              >
+                <Image
+                  src={photo.src}
+                  alt={photo.alt}
+                  fill
+                  style={{ objectFit: 'cover' }}
+                  sizes="(max-width: 768px) 50vw, 33vw"
+                />
+                {/* Subtle Gradient & Hover Overlay */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'linear-gradient(to top, rgba(18,3,5,0.6) 0%, transparent 60%)',
+                    opacity: 0.4,
+                    transition: 'opacity 0.4s ease',
+                  }}
+                  className="hover-overlay"
+                />
+              </div>
+            );
+          })}
         </div>
 
         {/* Theme & Price List Cards */}
