@@ -181,7 +181,7 @@ export default function WisudaSection() {
             className="btn-primary"
             style={{ fontSize: '0.875rem', padding: '1rem 2.5rem' }}
           >
-            Cek Jadwal &amp; Booking
+            Booking Sesi Wisuda
           </a>
           <p style={{
             marginTop: '0.75rem',

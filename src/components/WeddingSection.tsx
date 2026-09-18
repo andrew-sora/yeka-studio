@@ -230,7 +230,7 @@ export default function WeddingSection() {
               border: '2px solid rgba(201,169,75,0.2)',
             }}
           >
-            Cek Jadwal &amp; Booking
+            Konsultasi Paket Wedding
           </a>
           <p style={{
             marginTop: '0.75rem',
