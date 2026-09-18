@@ -210,10 +210,8 @@ export default function WeddingSection() {
           }}
         >
           <a
-            href="https://wa.me/6285952879644?text=Halo%20Yeka%20Studio!%20Saya%20ingin%20konsultasi%20paket%20foto%20wedding%2Fprewedding%20%F0%9F%92%8D"
-            id="cta-wedding-wa"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#jadwal"
+            id="cta-wedding-jadwal"
             style={{
               background: 'linear-gradient(135deg, var(--maroon) 0%, #A52A3A 100%)',
               color: 'white',
@@ -232,8 +230,8 @@ export default function WeddingSection() {
               border: '2px solid rgba(201,169,75,0.2)',
             }}
           >
-            <span>💬</span>
-            Konsultasi Paket Wedding
+            <span>📅</span>
+            Cek Jadwal & Booking
           </a>
           <p style={{
             marginTop: '0.75rem',
@@ -241,7 +239,7 @@ export default function WeddingSection() {
             color: 'rgba(255,255,255,0.4)',
             fontFamily: 'Inter, sans-serif',
           }}>
-            Gratis konsultasi — ceritakan momen spesial Anda
+            Pilih tanggal & jam — langsung terhubung ke WhatsApp kami
           </p>
         </div>
       </div>

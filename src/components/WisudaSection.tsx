@@ -176,15 +176,13 @@ export default function WisudaSection() {
           }}
         >
           <a
-            href="https://wa.me/6285952879644?text=Halo%20Yeka%20Studio!%20Aku%20mau%20tanya%20info%20paket%20foto%20wisuda%20nih%20%F0%9F%8E%93"
-            id="cta-wisuda-wa"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#jadwal"
+            id="cta-wisuda-jadwal"
             className="btn-primary"
             style={{ fontSize: '0.875rem', padding: '1rem 2.5rem' }}
           >
-            <span>💬</span>
-            Booking Sesi Wisuda
+            <span>📅</span>
+            Cek Jadwal & Booking
           </a>
           <p style={{
             marginTop: '0.75rem',
@@ -192,7 +190,7 @@ export default function WisudaSection() {
             color: 'var(--muted)',
             fontFamily: 'Inter, sans-serif',
           }}>
-            Chat langsung via WhatsApp — responsif & fast reply!
+            Pilih tanggal & jam — langsung terhubung ke WhatsApp kami
           </p>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import HeroSection from '@/components/HeroSection';
 import TrustBar from '@/components/TrustBar';
+import AvailabilitySection from '@/components/AvailabilitySection';
 import WisudaSection from '@/components/WisudaSection';
 import WeddingSection from '@/components/WeddingSection';
 import AboutSection from '@/components/AboutSection';
@@ -11,6 +12,7 @@ export default function Home() {
     <main>
       <HeroSection />
       <TrustBar />
+      <AvailabilitySection />
       <WisudaSection />
       <WeddingSection />
       <AboutSection />
@@ -19,3 +21,4 @@ export default function Home() {
     </main>
   );
 }
+
