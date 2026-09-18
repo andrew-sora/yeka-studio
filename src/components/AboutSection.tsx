@@ -108,7 +108,12 @@ export default function AboutSection() {
                 whiteSpace: 'nowrap',
                 zIndex: 2,
               }}>
-                <span style={{ fontSize: '1rem' }}>📷</span>
+                <span style={{
+                  width: '6px',
+                  height: '6px',
+                  borderRadius: '50%',
+                  background: 'var(--maroon)',
+                }} />
                 <span style={{
                   fontFamily: 'Inter, sans-serif',
                   fontSize: '0.78rem',
@@ -207,9 +212,9 @@ export default function AboutSection() {
               }}
             >
               {[
-                { icon: '🤍', title: 'Natural & Authentic', desc: 'Foto yang terasa hangat & nyata' },
-                { icon: '✨', title: 'Detail-Oriented', desc: 'Framing & penataan pose cermat' },
-                { icon: '💬', title: 'Fast & Friendly', desc: 'Konsultasi gratis via WA' },
+                { title: 'Natural & Authentic', desc: 'Foto yang terasa hangat & nyata' },
+                { title: 'Detail-Oriented', desc: 'Framing & penataan pose cermat' },
+                { title: 'Fast & Friendly', desc: 'Konsultasi gratis via WA' },
               ].map((val, i) => (
                 <div key={i} style={{
                   padding: '1.25rem 1rem',
@@ -218,7 +223,6 @@ export default function AboutSection() {
                   boxShadow: '0 2px 16px rgba(0,0,0,0.05)',
                   border: '1px solid rgba(123,28,42,0.06)',
                 }}>
-                  <div style={{ fontSize: '1.4rem', marginBottom: '0.4rem' }}>{val.icon}</div>
                   <div style={{
                     fontSize: '0.82rem',
                     fontWeight: 600,

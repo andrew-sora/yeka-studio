@@ -150,7 +150,7 @@ export default function TrustBar() {
                   fontFamily: 'Inter, sans-serif',
                   whiteSpace: 'nowrap',
                 }}>
-                  🎓 {k}
+                  {k}
                 </span>
                 <span style={{ color: '#C9A94B', fontSize: '0.6rem' }}>✦</span>
               </div>

@@ -8,15 +8,15 @@ const HERO_SHOWCASE = [
     category: 'Wedding & Prewedding',
     title: 'Intimate & Editorial Style',
     photo: '/images/wedding-1.jpg',
-    badge: '💍 Wedding & Prewedding',
-    location: 'Studio & Outdoor Jogja - Solo',
+    badge: 'Wedding & Prewedding',
+    location: 'Jogja & Solo',
   },
   {
     id: 'wisuda',
     category: 'Paket Wisuda',
     title: 'Candid & Natural Celebration',
     photo: '/images/wisuda-1.jpg',
-    badge: '🎓 Wisuda Campus Shoot',
+    badge: 'Wisuda Campus',
     location: 'Area UGM, UNY, UMY, UNS & Studio',
   },
   {
@@ -24,7 +24,7 @@ const HERO_SHOWCASE = [
     category: 'Prewedding Kebaya',
     title: 'Elegansi Adat & Classic Look',
     photo: '/images/wedding-2.jpg',
-    badge: '✨ Prewedding Aesthetic',
+    badge: 'Prewedding Aesthetic',
     location: 'Jogja & Solo',
   },
   {
@@ -32,7 +32,7 @@ const HERO_SHOWCASE = [
     category: 'Wisuda Outdoor',
     title: 'Joyful & Authentic Moments',
     photo: '/images/wisuda-3.jpg',
-    badge: '🌿 Outdoor Botanical',
+    badge: 'Wisuda Outdoor',
     location: 'Spot Garden & City Walk',
   }
 ];
@@ -139,7 +139,7 @@ export default function HeroSection() {
 
           {/* Brand Header */}
           <div className="animate-on-enter opacity-0-init" style={{ marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <svg width="32" height="32" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle cx="24" cy="24" r="4" fill="none" stroke="#C9A94B" strokeWidth="1.5"/>
               {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, i) => (
                 <ellipse
@@ -167,9 +167,7 @@ export default function HeroSection() {
 
           {/* Female Photographer Badge */}
           <div className="animate-on-enter opacity-0-init" style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.5rem',
+            display: 'inline-block',
             border: '1px solid rgba(201, 169, 75, 0.4)',
             background: 'rgba(201, 169, 75, 0.08)',
             color: '#C9A94B',
@@ -179,10 +177,10 @@ export default function HeroSection() {
             textTransform: 'uppercase',
             marginBottom: '1.5rem',
             fontFamily: 'Inter, sans-serif',
-            fontWeight: 600,
+            fontWeight: 500,
             borderRadius: '2px',
           }}>
-            <span>✦</span> 100% Female Photographer Team <span>✦</span>
+            Female Photographer Team
           </div>
 
           {/* Main Headline */}
@@ -227,7 +225,7 @@ export default function HeroSection() {
             maxWidth: 'fit-content',
             backdropFilter: 'blur(8px)',
           }}>
-            <div style={{ display: 'flex', color: '#F59E0B', fontSize: '0.9rem', gap: '2px' }}>
+            <div style={{ display: 'flex', color: '#F59E0B', fontSize: '0.85rem', gap: '3px' }}>
               ★★★★★
             </div>
             <div style={{
@@ -236,7 +234,7 @@ export default function HeroSection() {
               color: 'rgba(255,255,255,0.85)',
               lineHeight: 1.3,
             }}>
-              <strong>4.9 / 5.0 Rating</strong> <span style={{ color: 'rgba(255,255,255,0.5)' }}>• 500+ Klien Puas</span>
+              <strong>4.9 / 5.0 Rating</strong> <span style={{ color: 'rgba(255,255,255,0.5)' }}>• 500+ Momen Terabadikan</span>
             </div>
           </div>
 
@@ -259,7 +257,7 @@ export default function HeroSection() {
                 boxShadow: '0 8px 24px rgba(123,28,42,0.4)',
               }}
             >
-              🎓 Paket Wisuda
+              Lihat Paket Wisuda
             </a>
             <a
               href="#wedding"
@@ -270,7 +268,7 @@ export default function HeroSection() {
                 fontSize: '0.85rem',
               }}
             >
-              💍 Wedding & Prewedding
+              Wedding &amp; Prewedding
             </a>
             <a
               href="#jadwal"
@@ -279,7 +277,7 @@ export default function HeroSection() {
                 color: '#C9A94B',
                 fontFamily: 'Inter, sans-serif',
                 fontSize: '0.82rem',
-                fontWeight: 600,
+                fontWeight: 500,
                 textDecoration: 'none',
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -288,7 +286,7 @@ export default function HeroSection() {
                 borderBottom: '1px solid rgba(201,169,75,0.4)',
               }}
             >
-              📅 Cek Kalender Slot →
+              Cek Kalender Slot &rarr;
             </a>
           </div>
 
@@ -316,7 +314,7 @@ export default function HeroSection() {
                     borderRadius: '20px',
                     fontSize: '0.73rem',
                     fontFamily: 'Inter, sans-serif',
-                    fontWeight: 600,
+                    fontWeight: 500,
                     cursor: 'pointer',
                     whiteSpace: 'nowrap',
                     transition: 'all 0.25s ease',
@@ -384,16 +382,15 @@ export default function HeroSection() {
                 gap: '0.5rem',
               }}>
                 <span style={{
-                  width: '8px',
-                  height: '8px',
+                  width: '6px',
+                  height: '6px',
                   borderRadius: '50%',
-                  background: '#25D366',
-                  boxShadow: '0 0 10px #25D366',
+                  background: '#C9A94B',
                 }} />
                 <span style={{
                   fontFamily: 'Inter, sans-serif',
                   fontSize: '0.72rem',
-                  fontWeight: 600,
+                  fontWeight: 500,
                   color: 'white',
                   letterSpacing: '0.05em',
                 }}>
@@ -443,7 +440,7 @@ export default function HeroSection() {
                     fontFamily: 'Inter, sans-serif',
                     marginTop: '0.2rem',
                   }}>
-                    📍 {activeItem.location}
+                    {activeItem.location}
                   </div>
                 </div>
 
@@ -468,7 +465,7 @@ export default function HeroSection() {
                   onMouseLeave={e => (e.currentTarget as HTMLElement).style.transform = 'scale(1)'}
                   title="Lihat Galeri Foto"
                 >
-                  ➔
+                  &rarr;
                 </a>
               </div>
 
@@ -522,4 +519,5 @@ export default function HeroSection() {
     </section>
   );
 }
+
 

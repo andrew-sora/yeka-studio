@@ -68,7 +68,7 @@ export default function WisudaSection() {
             marginBottom: '1rem',
             borderRadius: '2px',
           }}>
-            🎓 Paket Wisuda
+            Paket Wisuda
           </div>
           <h2 className="font-display" style={{
             fontSize: 'clamp(2rem, 5vw, 3rem)',
@@ -88,8 +88,8 @@ export default function WisudaSection() {
             lineHeight: 1.75,
             fontFamily: 'Inter, sans-serif',
           }}>
-            Yuk, bikin foto wisudamu beda dari yang lain! Sesi outdoor candid &amp; playful,
-            area kampus Jogja &amp; Solo. Hasilnya? Natural, cinematic, dan super instagramable 🌿
+            Sesi foto outdoor candid dan berkesan di area kampus Jogja &amp; Solo.
+            Hasil foto natural, sinematik, dan penuh kenangan bersama orang tersayang.
           </p>
         </div>
 
@@ -150,7 +150,7 @@ export default function WisudaSection() {
             transition: 'all 0.7s ease',
           }}
         >
-          {['📸 Outdoor Campus Shoot', '🌿 Gaya Candid & Playful', '🏫 Semua Kampus Jogja-Solo', '💫 Hasil Film-look'].map((tag, i) => (
+          {['Outdoor Campus Shoot', 'Gaya Candid & Natural', 'Area Kampus Jogja & Solo', 'Hasil Film-Look Editorial'].map((tag, i) => (
             <span key={i} style={{
               border: '1px solid rgba(123,28,42,0.25)',
               color: 'var(--maroon)',
@@ -181,8 +181,7 @@ export default function WisudaSection() {
             className="btn-primary"
             style={{ fontSize: '0.875rem', padding: '1rem 2.5rem' }}
           >
-            <span>📅</span>
-            Cek Jadwal & Booking
+            Cek Jadwal &amp; Booking
           </a>
           <p style={{
             marginTop: '0.75rem',
@@ -190,10 +189,11 @@ export default function WisudaSection() {
             color: 'var(--muted)',
             fontFamily: 'Inter, sans-serif',
           }}>
-            Pilih tanggal & jam — langsung terhubung ke WhatsApp kami
+            Pilih tanggal &amp; jam — langsung terhubung ke WhatsApp kami
           </p>
         </div>
       </div>
     </section>
   );
 }
+

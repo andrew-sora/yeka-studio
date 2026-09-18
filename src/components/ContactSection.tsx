@@ -133,11 +133,11 @@ export default function ContactSection() {
                 letterSpacing: '0.2em',
                 textTransform: 'uppercase',
                 fontFamily: 'Inter, sans-serif',
-                fontWeight: 600,
+                fontWeight: 500,
                 marginBottom: '1rem',
                 borderRadius: '2px',
               }}>
-                💬 Konsultasi & Booking
+                Konsultasi &amp; Booking
               </div>
               <h2 className="font-display" style={{
                 fontSize: 'clamp(2rem, 4.5vw, 3.2rem)',
@@ -184,9 +184,9 @@ export default function ContactSection() {
                 border: '1px solid rgba(255,255,255,0.1)',
               }}
             >
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#25D366' }} />
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#25D366' }} />
               <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.85)', fontFamily: 'Inter, sans-serif' }}>
-                ⚡ Respons Cepat via WA (&lt; 5 Menit)
+                Respons Cepat via WA (&lt; 5 Menit)
               </span>
             </div>
 
@@ -265,7 +265,7 @@ export default function ContactSection() {
                   gap: '0.35rem',
                 }}
               >
-                📸 @yekastudio.graduation
+                @yekastudio.graduation
               </a>
               <a
                 href="https://www.instagram.com/yeka.studio"
@@ -282,7 +282,7 @@ export default function ContactSection() {
                   gap: '0.35rem',
                 }}
               >
-                📸 @yeka.studio
+                @yeka.studio
               </a>
             </div>
 

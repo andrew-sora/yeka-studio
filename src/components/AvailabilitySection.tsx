@@ -265,7 +265,7 @@ export default function AvailabilitySection() {
             marginBottom: '1rem',
             borderRadius: '2px',
           }}>
-            📅 Cek Ketersediaan
+            Cek Ketersediaan
           </div>
           <h2 className="font-display" style={{
             fontSize: 'clamp(2rem, 5vw, 3rem)',
@@ -274,7 +274,7 @@ export default function AvailabilitySection() {
             lineHeight: 1.2,
             marginBottom: '0.75rem',
           }}>
-            Pilih Tanggal & Jadwalkan
+            Pilih Tanggal &amp; Jadwalkan
           </h2>
           <div className="section-divider" />
           <p style={{
@@ -285,7 +285,7 @@ export default function AvailabilitySection() {
             lineHeight: 1.75,
             fontFamily: 'Inter, sans-serif',
           }}>
-            Cek langsung slot yang masih kosong. Klik tanggal → pilih jam → langsung terhubung ke WhatsApp kami.
+            Cek langsung slot yang masih kosong. Klik tanggal &rarr; pilih jam &rarr; langsung terhubung ke WhatsApp kami.
           </p>
         </div>
 
@@ -300,11 +300,13 @@ export default function AvailabilitySection() {
             opacity: 0,
             transform: 'translateY(24px)',
             transition: 'all 0.7s ease',
+            border: '1px solid rgba(123,28,42,0.1)',
           }}
         >
-          {/* Month Header */}
+          {/* Header Month Nav */}
           <div style={{
-            background: 'linear-gradient(135deg, var(--maroon-dark) 0%, var(--maroon) 100%)',
+            background: 'var(--maroon)',
+            color: 'white',
             padding: '1.25rem 1.5rem',
             display: 'flex',
             alignItems: 'center',
@@ -313,16 +315,15 @@ export default function AvailabilitySection() {
             <button
               onClick={goToPrev}
               disabled={!canGoPrev}
-              id="cal-prev-month"
               style={{
                 background: 'rgba(255,255,255,0.15)',
                 border: 'none',
-                color: canGoPrev ? 'white' : 'rgba(255,255,255,0.25)',
-                width: '36px',
-                height: '36px',
+                color: canGoPrev ? 'white' : 'rgba(255,255,255,0.3)',
+                width: '32px',
+                height: '32px',
                 borderRadius: '50%',
+                fontSize: '1.1rem',
                 cursor: canGoPrev ? 'pointer' : 'not-allowed',
-                fontSize: '1rem',
                 transition: 'background 0.2s',
                 display: 'flex',
                 alignItems: 'center',
@@ -336,29 +337,37 @@ export default function AvailabilitySection() {
             </button>
 
             <div style={{ textAlign: 'center' }}>
-              <div className="font-display" style={{
-                color: 'white',
-                fontSize: '1.4rem',
+              <span className="font-display" style={{
+                fontSize: '1.25rem',
                 fontWeight: 600,
-                letterSpacing: '0.02em',
+                letterSpacing: '0.05em',
               }}>
                 {MONTH_ID[viewMonth]} {viewYear}
+              </span>
+              <div style={{
+                fontSize: '0.68rem',
+                color: '#C9A94B',
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                fontFamily: 'Inter, sans-serif',
+                marginTop: '1px',
+              }}>
+                Jadwal Studio &amp; Outdoor
               </div>
             </div>
 
             <button
               onClick={goToNext}
               disabled={!canGoNext}
-              id="cal-next-month"
               style={{
                 background: 'rgba(255,255,255,0.15)',
                 border: 'none',
-                color: canGoNext ? 'white' : 'rgba(255,255,255,0.25)',
-                width: '36px',
-                height: '36px',
+                color: canGoNext ? 'white' : 'rgba(255,255,255,0.3)',
+                width: '32px',
+                height: '32px',
                 borderRadius: '50%',
+                fontSize: '1.1rem',
                 cursor: canGoNext ? 'pointer' : 'not-allowed',
-                fontSize: '1rem',
                 transition: 'background 0.2s',
                 display: 'flex',
                 alignItems: 'center',
@@ -487,7 +496,7 @@ export default function AvailabilitySection() {
                 textTransform: 'uppercase',
                 marginBottom: '1rem',
               }}>
-                📅 {selectedDate} {MONTH_ID[viewMonth]} {viewYear} — Pilih Jam:
+                {selectedDate} {MONTH_ID[viewMonth]} {viewYear} — Pilih Jam:
               </div>
 
               <div style={{
@@ -529,7 +538,7 @@ export default function AvailabilitySection() {
                         }
                       }}
                     >
-                      🕐 {slot} WIB
+                      {slot} WIB
                     </button>
                   );
                 })}
@@ -612,7 +621,7 @@ export default function AvailabilitySection() {
             fontFamily: 'Inter, sans-serif',
             lineHeight: 1.7,
           }}>
-            💡 Kalender ini menampilkan perkiraan ketersediaan. Konfirmasi final via WhatsApp.
+            Kalender ini menampilkan perkiraan ketersediaan. Konfirmasi final via WhatsApp.
           </p>
         </div>
 

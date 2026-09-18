@@ -81,7 +81,7 @@ export default function WeddingSection() {
             fontWeight: 600,
             marginBottom: '1rem',
           }}>
-            💍 Wedding & Prewedding
+            Wedding &amp; Prewedding
           </div>
           <h2 className="font-display" style={{
             fontSize: 'clamp(2rem, 5vw, 3rem)',
@@ -184,7 +184,7 @@ export default function WeddingSection() {
             transition: 'all 0.7s ease',
           }}
         >
-          {['🏛️ Studio Indoor Eksklusif', '🌺 Adat Jawa & Modern', '💍 Wedding, Engagement, Prewedding', '✨ Editorial Luxury Look'].map((tag, i) => (
+          {['Studio Indoor Eksklusif', 'Konsep Adat Jawa & Modern', 'Wedding, Engagement, Prewedding', 'Editorial Luxury Look'].map((tag, i) => (
             <span key={i} style={{
               border: '1px solid rgba(201,169,75,0.3)',
               color: 'rgba(255,255,255,0.8)',
@@ -230,8 +230,7 @@ export default function WeddingSection() {
               border: '2px solid rgba(201,169,75,0.2)',
             }}
           >
-            <span>📅</span>
-            Cek Jadwal & Booking
+            Cek Jadwal &amp; Booking
           </a>
           <p style={{
             marginTop: '0.75rem',
