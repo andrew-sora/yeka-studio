@@ -93,12 +93,13 @@ export default function WisudaSection() {
           </p>
         </div>
 
-        {/* Photo Grid - Compact Gallery */}
+        {/* Photo Grid - 3-Column Instagram Style Gallery (3x2 Grid) */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
-          gap: '8px',
-          marginBottom: '2rem',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '10px',
+          maxWidth: '780px',
+          margin: '0 auto 2.5rem',
         }}>
           {WISUDA_PHOTOS.map((photo, i) => (
             <div
