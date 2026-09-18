@@ -170,6 +170,96 @@ export default function WeddingSection() {
           ))}
         </div>
 
+        {/* Theme & Price List Cards */}
+        <div className="reveal-wedding" style={{ marginBottom: '3rem' }}>
+          <div style={{
+            textAlign: 'center',
+            fontSize: '0.75rem',
+            letterSpacing: '0.15em',
+            textTransform: 'uppercase',
+            color: '#C9A94B',
+            fontFamily: 'Inter, sans-serif',
+            fontWeight: 600,
+            marginBottom: '1.5rem',
+          }}>
+            Pilihan Paket Wedding &amp; Prewedding Transparan
+          </div>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+            gap: '1rem',
+          }}>
+            {[
+              { title: 'Prewedding Studio Adat Jawa', price: 'Rp 1.850.000', desc: 'Studio tirai merah, busana &amp; makeup adat Jawa lengkap' },
+              { title: 'Prewedding Outdoor Scenic', price: 'Rp 2.250.000', desc: 'Lokasi outdoor Jogja/Solo + dokumentasi video reel' },
+              { title: 'Intimate Wedding Coverage', price: 'Rp 4.500.000', desc: 'Full-day coverage akad &amp; resepsi + album cetak eksklusif' },
+            ].map((pkg, i) => (
+              <div key={i} style={{
+                background: 'rgba(255,255,255,0.05)',
+                backdropFilter: 'blur(8px)',
+                padding: '1.5rem',
+                borderRadius: '8px',
+                border: '1px solid rgba(201,169,75,0.2)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}>
+                <div>
+                  <h3 style={{
+                    fontFamily: 'Cormorant Garamond, serif',
+                    fontSize: '1.3rem',
+                    fontWeight: 600,
+                    color: 'white',
+                    marginBottom: '0.3rem',
+                  }}>
+                    {pkg.title}
+                  </h3>
+                  <div style={{
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: '1.15rem',
+                    fontWeight: 700,
+                    color: '#C9A94B',
+                    marginBottom: '0.6rem',
+                  }}>
+                    {pkg.price}
+                  </div>
+                  <p style={{
+                    fontSize: '0.78rem',
+                    color: 'rgba(255,255,255,0.7)',
+                    fontFamily: 'Inter, sans-serif',
+                    lineHeight: 1.5,
+                    marginBottom: '1.25rem',
+                  }} dangerouslySetInnerHTML={{ __html: pkg.desc }} />
+                </div>
+                <a
+                  href={`#jadwal?paket=${encodeURIComponent(pkg.title)}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const el = document.getElementById('jadwal');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    window.dispatchEvent(new CustomEvent('selectPackage', { detail: pkg.title }));
+                  }}
+                  style={{
+                    display: 'block',
+                    textAlign: 'center',
+                    background: '#C9A94B',
+                    color: '#1a0508',
+                    padding: '0.6rem 1rem',
+                    borderRadius: '4px',
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: '0.78rem',
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    transition: 'opacity 0.2s',
+                  }}
+                >
+                  Pilih Paket ini
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Feature tags */}
         <div
           className="reveal-wedding"

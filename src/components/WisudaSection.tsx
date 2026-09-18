@@ -136,6 +136,97 @@ export default function WisudaSection() {
           ))}
         </div>
 
+        {/* Theme & Price List Cards */}
+        <div className="reveal-item" style={{ marginBottom: '3rem' }}>
+          <div style={{
+            textAlign: 'center',
+            fontSize: '0.75rem',
+            letterSpacing: '0.15em',
+            textTransform: 'uppercase',
+            color: 'var(--maroon)',
+            fontFamily: 'Inter, sans-serif',
+            fontWeight: 600,
+            marginBottom: '1.5rem',
+          }}>
+            Pilihan Paket Wisuda &amp; Pricelist Transparan
+          </div>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
+            gap: '1rem',
+          }}>
+            {[
+              { id: 'wisuda-outdoor', title: 'Wisuda Outdoor', price: 'Rp 450.000', desc: 'Sesi candid outdoor area kampus Jogja/Solo' },
+              { id: 'wisuda-indoor', title: 'Wisuda Indoor', price: 'Rp 550.000', desc: 'Sesi indoor spot, hall kampus &amp; cafe' },
+              { id: 'wisuda-studio', title: 'Wisuda Studio', price: 'Rp 650.000', desc: 'Studio setup lighting eksklusif Yeka' },
+              { id: 'wisuda-all', title: 'Wisuda All-In', price: 'Rp 950.000', desc: 'Kombinasi Studio + Outdoor Campus Shoot' },
+            ].map((pkg, i) => (
+              <div key={i} style={{
+                background: 'white',
+                padding: '1.5rem',
+                borderRadius: '8px',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.05)',
+                border: '1px solid rgba(123,28,42,0.1)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}>
+                <div>
+                  <h3 style={{
+                    fontFamily: 'Cormorant Garamond, serif',
+                    fontSize: '1.3rem',
+                    fontWeight: 600,
+                    color: 'var(--charcoal)',
+                    marginBottom: '0.3rem',
+                  }}>
+                    {pkg.title}
+                  </h3>
+                  <div style={{
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: '1.15rem',
+                    fontWeight: 700,
+                    color: 'var(--maroon)',
+                    marginBottom: '0.6rem',
+                  }}>
+                    {pkg.price}
+                  </div>
+                  <p style={{
+                    fontSize: '0.78rem',
+                    color: 'var(--muted)',
+                    fontFamily: 'Inter, sans-serif',
+                    lineHeight: 1.5,
+                    marginBottom: '1.25rem',
+                  }} dangerouslySetInnerHTML={{ __html: pkg.desc }} />
+                </div>
+                <a
+                  href={`#jadwal?paket=${encodeURIComponent(pkg.title)}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const el = document.getElementById('jadwal');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    window.dispatchEvent(new CustomEvent('selectPackage', { detail: pkg.title }));
+                  }}
+                  style={{
+                    display: 'block',
+                    textAlign: 'center',
+                    background: 'var(--maroon)',
+                    color: 'white',
+                    padding: '0.6rem 1rem',
+                    borderRadius: '4px',
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: '0.78rem',
+                    fontWeight: 500,
+                    textDecoration: 'none',
+                    transition: 'opacity 0.2s',
+                  }}
+                >
+                  Pilih Paket ini
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Feature Pills */}
         <div
           className="reveal-item"
