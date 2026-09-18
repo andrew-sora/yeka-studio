@@ -166,18 +166,18 @@ export default function AvailabilitySection() {
       id="jadwal"
       ref={sectionRef}
       style={{
-        background: 'var(--cream-dark)',
-        padding: 'clamp(4rem, 8vw, 7rem) 1.5rem',
+        background: 'var(--cream)',
+        padding: 'clamp(2.5rem, 5vw, 4rem) 1.25rem',
       }}
     >
-      <div style={{ maxWidth: '860px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '480px', margin: '0 auto' }}>
 
         {/* ── Section Header ── */}
         <div
           className="reveal-avail"
           style={{
             textAlign: 'center',
-            marginBottom: '3rem',
+            marginBottom: '1.5rem',
             opacity: 0,
             transform: 'translateY(24px)',
             transition: 'all 0.7s ease',
@@ -193,40 +193,40 @@ export default function AvailabilitySection() {
             textTransform: 'uppercase',
             fontFamily: 'Inter, sans-serif',
             fontWeight: 600,
-            marginBottom: '1rem',
+            marginBottom: '0.5rem',
             borderRadius: '2px',
           }}>
             Cek Ketersediaan
           </div>
           <h2 className="font-display" style={{
-            fontSize: 'clamp(2rem, 5vw, 3rem)',
+            fontSize: 'clamp(1.75rem, 4vw, 2.3rem)',
             fontWeight: 600,
             color: 'var(--charcoal)',
             lineHeight: 1.2,
-            marginBottom: '0.75rem',
+            marginBottom: '0.5rem',
           }}>
             Pilih Tanggal &amp; Jadwalkan
           </h2>
           <div className="section-divider" />
           <p style={{
-            fontSize: '1rem',
+            fontSize: '0.88rem',
             color: 'var(--muted)',
-            maxWidth: '520px',
+            maxWidth: '460px',
             margin: '0 auto',
-            lineHeight: 1.75,
+            lineHeight: 1.6,
             fontFamily: 'Inter, sans-serif',
           }}>
             Cek langsung slot kosong bulan ini. Klik tanggal &rarr; pilih jam &rarr; isi nama &rarr; terhubung ke WhatsApp kami.
           </p>
         </div>
 
-        {/* ── Calendar Card ── */}
+        {/* ── Calendar Card (Compact View) ── */}
         <div
           className="reveal-avail"
           style={{
             background: 'white',
-            borderRadius: '12px',
-            boxShadow: '0 4px 32px rgba(0,0,0,0.08)',
+            borderRadius: '10px',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
             overflow: 'hidden',
             opacity: 0,
             transform: 'translateY(24px)',
@@ -238,44 +238,44 @@ export default function AvailabilitySection() {
           <div style={{
             background: 'var(--maroon)',
             color: 'white',
-            padding: '1.25rem 1.5rem',
+            padding: '0.85rem 1rem',
             textAlign: 'center',
           }}>
             <div className="font-display" style={{
-              fontSize: '1.35rem',
+              fontSize: '1.2rem',
               fontWeight: 600,
               letterSpacing: '0.05em',
             }}>
               {MONTH_ID[viewMonth]} {viewYear}
             </div>
             <div style={{
-              fontSize: '0.7rem',
+              fontSize: '0.65rem',
               color: '#C9A94B',
-              letterSpacing: '0.12em',
+              letterSpacing: '0.1em',
               textTransform: 'uppercase',
               fontFamily: 'Inter, sans-serif',
-              marginTop: '2px',
+              marginTop: '1px',
             }}>
               Jadwal Sesi Wisuda, Wedding &amp; Prewedding
             </div>
           </div>
 
-          <div style={{ padding: '1.25rem 1rem 1rem' }}>
+          <div style={{ padding: '0.85rem 0.75rem 0.75rem' }}>
             {/* Day labels */}
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(7, 1fr)',
-              gap: '4px',
-              marginBottom: '6px',
+              gap: '3px',
+              marginBottom: '4px',
             }}>
               {DAY_SHORT.map(d => (
                 <div key={d} style={{
                   textAlign: 'center',
-                  fontSize: '0.68rem',
+                  fontSize: '0.65rem',
                   fontWeight: 600,
-                  letterSpacing: '0.08em',
+                  letterSpacing: '0.05em',
                   color: d === 'Min' || d === 'Sab' ? 'var(--muted)' : 'var(--charcoal)',
-                  padding: '0.25rem 0',
+                  padding: '0.2rem 0',
                   fontFamily: 'Inter, sans-serif',
                   textTransform: 'uppercase',
                 }}>

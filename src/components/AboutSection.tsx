@@ -31,15 +31,15 @@ export default function AboutSection() {
       ref={sectionRef}
       style={{
         background: 'var(--cream-dark)',
-        padding: 'clamp(4rem, 8vw, 7rem) 1.5rem',
+        padding: 'clamp(2.5rem, 5vw, 4rem) 1.25rem',
       }}
     >
-      <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: 'clamp(2rem, 5vw, 4rem)',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: 'clamp(1.5rem, 4vw, 3rem)',
           alignItems: 'center',
         }}>
 
@@ -53,16 +53,16 @@ export default function AboutSection() {
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(2, 1fr)',
-              gap: '12px',
+              gap: '8px',
               position: 'relative',
             }}>
               {/* Main Photo 1 */}
               <div style={{
                 position: 'relative',
-                aspectRatio: '3/4',
-                borderRadius: '8px',
+                aspectRatio: '1/1',
+                borderRadius: '6px',
                 overflow: 'hidden',
-                boxShadow: '0 8px 30px rgba(0,0,0,0.12)',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
               }}>
                 <Image
                   src="/images/wisuda-5.jpg"
@@ -76,11 +76,11 @@ export default function AboutSection() {
               {/* Main Photo 2 */}
               <div style={{
                 position: 'relative',
-                aspectRatio: '3/4',
-                borderRadius: '8px',
+                aspectRatio: '1/1',
+                borderRadius: '6px',
                 overflow: 'hidden',
-                marginTop: '2rem',
-                boxShadow: '0 8px 30px rgba(0,0,0,0.12)',
+                marginTop: '1rem',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
               }}>
                 <Image
                   src="/images/wedding-4.jpg"

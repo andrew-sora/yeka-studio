@@ -40,16 +40,16 @@ export default function WisudaSection() {
       ref={sectionRef}
       style={{
         background: 'var(--cream)',
-        padding: 'clamp(4rem, 8vw, 7rem) 1.5rem',
+        padding: 'clamp(2.5rem, 5vw, 4rem) 1.25rem',
       }}
     >
-      <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
         {/* Section Header */}
         <div
           className="reveal-item"
           style={{
             textAlign: 'center',
-            marginBottom: '3.5rem',
+            marginBottom: '2rem',
             opacity: 0,
             transform: 'translateY(24px)',
             transition: 'all 0.7s ease',
@@ -65,27 +65,27 @@ export default function WisudaSection() {
             textTransform: 'uppercase',
             fontFamily: 'Inter, sans-serif',
             fontWeight: 600,
-            marginBottom: '1rem',
+            marginBottom: '0.75rem',
             borderRadius: '2px',
           }}>
             Paket Wisuda
           </div>
           <h2 className="font-display" style={{
-            fontSize: 'clamp(2rem, 5vw, 3rem)',
+            fontSize: 'clamp(1.75rem, 4vw, 2.5rem)',
             fontWeight: 600,
             color: 'var(--charcoal)',
             lineHeight: 1.2,
-            marginBottom: '0.75rem',
+            marginBottom: '0.5rem',
           }}>
             Abadikan Momen Kelulusanmu
           </h2>
           <div className="section-divider" />
           <p style={{
-            fontSize: '1rem',
+            fontSize: '0.92rem',
             color: 'var(--muted)',
-            maxWidth: '520px',
+            maxWidth: '500px',
             margin: '0 auto',
-            lineHeight: 1.75,
+            lineHeight: 1.65,
             fontFamily: 'Inter, sans-serif',
           }}>
             Sesi foto outdoor candid dan berkesan di area kampus Jogja &amp; Solo.
@@ -93,26 +93,26 @@ export default function WisudaSection() {
           </p>
         </div>
 
-        {/* Photo Grid */}
+        {/* Photo Grid - Compact Gallery */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-          gap: '12px',
-          marginBottom: '3rem',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+          gap: '8px',
+          marginBottom: '2rem',
         }}>
           {WISUDA_PHOTOS.map((photo, i) => (
             <div
               key={i}
               className="img-zoom reveal-item"
               style={{
-                aspectRatio: '3/4',
-                borderRadius: '4px',
+                aspectRatio: '1/1',
+                borderRadius: '6px',
                 overflow: 'hidden',
                 position: 'relative',
                 opacity: 0,
                 transform: 'translateY(24px)',
                 transition: 'all 0.7s ease',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
               }}
             >
               <Image

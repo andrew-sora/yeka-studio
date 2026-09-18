@@ -57,13 +57,13 @@ export default function WeddingSection() {
         pointerEvents: 'none',
       }} />
 
-      <div style={{ maxWidth: '1100px', margin: '0 auto', position: 'relative' }}>
+      <div style={{ maxWidth: '1000px', margin: '0 auto', position: 'relative' }}>
         {/* Section Header */}
         <div
           className="reveal-wedding"
           style={{
             textAlign: 'center',
-            marginBottom: '3.5rem',
+            marginBottom: '2rem',
             opacity: 0,
             transform: 'translateY(24px)',
             transition: 'all 0.7s ease',
@@ -79,16 +79,16 @@ export default function WeddingSection() {
             textTransform: 'uppercase',
             fontFamily: 'Inter, sans-serif',
             fontWeight: 600,
-            marginBottom: '1rem',
+            marginBottom: '0.75rem',
           }}>
             Wedding &amp; Prewedding
           </div>
           <h2 className="font-display" style={{
-            fontSize: 'clamp(2rem, 5vw, 3rem)',
+            fontSize: 'clamp(1.75rem, 4vw, 2.5rem)',
             fontWeight: 600,
             color: 'white',
             lineHeight: 1.2,
-            marginBottom: '0.75rem',
+            marginBottom: '0.5rem',
           }}>
             Keindahan Momen<br />
             <span style={{ color: '#C9A94B', fontStyle: 'italic' }}>Yang Tak Terlupakan</span>
@@ -97,14 +97,14 @@ export default function WeddingSection() {
             width: '60px',
             height: '2px',
             background: 'linear-gradient(90deg, var(--maroon), #C9A94B)',
-            margin: '0 auto 1.5rem',
+            margin: '0 auto 1rem',
           }} />
           <p style={{
-            fontSize: '1rem',
+            fontSize: '0.92rem',
             color: 'rgba(255,255,255,0.65)',
-            maxWidth: '520px',
+            maxWidth: '500px',
             margin: '0 auto',
-            lineHeight: 1.75,
+            lineHeight: 1.65,
             fontFamily: 'Inter, sans-serif',
           }}>
             Dari pernikahan adat Jawa yang sakral hingga prewedding modern yang intim.
@@ -112,51 +112,26 @@ export default function WeddingSection() {
           </p>
         </div>
 
-        {/* Featured Photo + Grid Layout */}
+        {/* Compact Photo Grid */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: '12px',
-          marginBottom: '3rem',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+          gap: '8px',
+          marginBottom: '2rem',
         }}>
-          {/* Large featured photo */}
-          <div
-            className="img-zoom reveal-wedding"
-            style={{
-              gridRow: 'span 2',
-              aspectRatio: '3/4',
-              borderRadius: '4px',
-              overflow: 'hidden',
-              position: 'relative',
-              opacity: 0,
-              transform: 'translateY(24px)',
-              transition: 'all 0.7s ease',
-              boxShadow: '0 8px 40px rgba(0,0,0,0.4)',
-            }}
-          >
-            <Image
-              src={WEDDING_PHOTOS[0].src}
-              alt={WEDDING_PHOTOS[0].alt}
-              fill
-              style={{ objectFit: 'cover' }}
-              sizes="(max-width: 768px) 50vw, 33vw"
-            />
-          </div>
-
-          {/* Right side photos */}
-          {WEDDING_PHOTOS.slice(1).map((photo, i) => (
+          {WEDDING_PHOTOS.map((photo, i) => (
             <div
               key={i}
               className="img-zoom reveal-wedding"
               style={{
-                aspectRatio: '3/4',
-                borderRadius: '4px',
+                aspectRatio: '1/1',
+                borderRadius: '6px',
                 overflow: 'hidden',
                 position: 'relative',
                 opacity: 0,
                 transform: 'translateY(24px)',
                 transition: 'all 0.7s ease',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
               }}
             >
               <Image
@@ -164,7 +139,7 @@ export default function WeddingSection() {
                 alt={photo.alt}
                 fill
                 style={{ objectFit: 'cover' }}
-                sizes="(max-width: 768px) 50vw, 33vw"
+                sizes="(max-width: 768px) 50vw, 25vw"
               />
             </div>
           ))}

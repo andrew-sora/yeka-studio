@@ -333,15 +333,18 @@ export default function HeroSection() {
           {/* Main Visual Photo Card Container */}
           <div style={{
             position: 'relative',
-            borderRadius: '16px',
-            padding: '8px',
+            borderRadius: '14px',
+            padding: '6px',
             background: 'linear-gradient(135deg, rgba(201,169,75,0.4) 0%, rgba(123,28,42,0.3) 100%)',
-            boxShadow: '0 20px 50px rgba(0,0,0,0.6)',
+            boxShadow: '0 12px 36px rgba(0,0,0,0.5)',
+            maxWidth: '460px',
+            margin: '0 auto',
           }}>
             <div style={{
               position: 'relative',
-              aspectRatio: '4/5',
-              borderRadius: '12px',
+              aspectRatio: '4/3',
+              maxHeight: '300px',
+              borderRadius: '10px',
               overflow: 'hidden',
               background: '#120305',
             }}>
