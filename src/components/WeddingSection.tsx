@@ -1,0 +1,250 @@
+'use client';
+import { useEffect, useRef } from 'react';
+import Image from 'next/image';
+
+const WEDDING_PHOTOS = [
+  { src: '/images/wedding-1.jpg', alt: 'Foto wedding adat Jawa studio Jogja' },
+  { src: '/images/wedding-2.jpg', alt: 'Prewedding kebaya merah maroon' },
+  { src: '/images/wedding-3.jpg', alt: 'Foto engagement outdoor garden' },
+  { src: '/images/wedding-4.jpg', alt: 'Portrait pengantin kebaya putih gold' },
+];
+
+export default function WeddingSection() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.querySelectorAll('.reveal-wedding').forEach((el, i) => {
+              setTimeout(() => {
+                (el as HTMLElement).style.opacity = '1';
+                (el as HTMLElement).style.transform = 'translateY(0)';
+              }, i * 120);
+            });
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section
+      id="wedding"
+      ref={sectionRef}
+      style={{
+        background: '#1a0508',
+        padding: 'clamp(4rem, 8vw, 7rem) 1.5rem',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      {/* Background decoration */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundImage: `
+          radial-gradient(ellipse at 80% 50%, rgba(123,28,42,0.4) 0%, transparent 60%),
+          radial-gradient(ellipse at 10% 80%, rgba(201,169,75,0.06) 0%, transparent 40%)
+        `,
+        pointerEvents: 'none',
+      }} />
+
+      <div style={{ maxWidth: '1100px', margin: '0 auto', position: 'relative' }}>
+        {/* Section Header */}
+        <div
+          className="reveal-wedding"
+          style={{
+            textAlign: 'center',
+            marginBottom: '3.5rem',
+            opacity: 0,
+            transform: 'translateY(24px)',
+            transition: 'all 0.7s ease',
+          }}
+        >
+          <div style={{
+            display: 'inline-block',
+            border: '1px solid rgba(201,169,75,0.3)',
+            color: '#C9A94B',
+            padding: '0.3rem 1rem',
+            fontSize: '0.7rem',
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase',
+            fontFamily: 'Inter, sans-serif',
+            fontWeight: 600,
+            marginBottom: '1rem',
+          }}>
+            💍 Wedding & Prewedding
+          </div>
+          <h2 className="font-display" style={{
+            fontSize: 'clamp(2rem, 5vw, 3rem)',
+            fontWeight: 600,
+            color: 'white',
+            lineHeight: 1.2,
+            marginBottom: '0.75rem',
+          }}>
+            Keindahan Momen<br />
+            <span style={{ color: '#C9A94B', fontStyle: 'italic' }}>Yang Tak Terlupakan</span>
+          </h2>
+          <div style={{
+            width: '60px',
+            height: '2px',
+            background: 'linear-gradient(90deg, var(--maroon), #C9A94B)',
+            margin: '0 auto 1.5rem',
+          }} />
+          <p style={{
+            fontSize: '1rem',
+            color: 'rgba(255,255,255,0.65)',
+            maxWidth: '520px',
+            margin: '0 auto',
+            lineHeight: 1.75,
+            fontFamily: 'Inter, sans-serif',
+          }}>
+            Dari pernikahan adat Jawa yang sakral hingga prewedding modern yang intim.
+            Setiap frame dirancang untuk menceritakan kisah cinta Anda.
+          </p>
+        </div>
+
+        {/* Featured Photo + Grid Layout */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: '12px',
+          marginBottom: '3rem',
+        }}>
+          {/* Large featured photo */}
+          <div
+            className="img-zoom reveal-wedding"
+            style={{
+              gridRow: 'span 2',
+              aspectRatio: '3/4',
+              borderRadius: '4px',
+              overflow: 'hidden',
+              position: 'relative',
+              opacity: 0,
+              transform: 'translateY(24px)',
+              transition: 'all 0.7s ease',
+              boxShadow: '0 8px 40px rgba(0,0,0,0.4)',
+            }}
+          >
+            <Image
+              src={WEDDING_PHOTOS[0].src}
+              alt={WEDDING_PHOTOS[0].alt}
+              fill
+              style={{ objectFit: 'cover' }}
+              sizes="(max-width: 768px) 50vw, 33vw"
+            />
+          </div>
+
+          {/* Right side photos */}
+          {WEDDING_PHOTOS.slice(1).map((photo, i) => (
+            <div
+              key={i}
+              className="img-zoom reveal-wedding"
+              style={{
+                aspectRatio: '3/4',
+                borderRadius: '4px',
+                overflow: 'hidden',
+                position: 'relative',
+                opacity: 0,
+                transform: 'translateY(24px)',
+                transition: 'all 0.7s ease',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+              }}
+            >
+              <Image
+                src={photo.src}
+                alt={photo.alt}
+                fill
+                style={{ objectFit: 'cover' }}
+                sizes="(max-width: 768px) 50vw, 33vw"
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Feature tags */}
+        <div
+          className="reveal-wedding"
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '0.75rem',
+            justifyContent: 'center',
+            marginBottom: '2.5rem',
+            opacity: 0,
+            transform: 'translateY(24px)',
+            transition: 'all 0.7s ease',
+          }}
+        >
+          {['🏛️ Studio Indoor Eksklusif', '🌺 Adat Jawa & Modern', '💍 Wedding, Engagement, Prewedding', '✨ Editorial Luxury Look'].map((tag, i) => (
+            <span key={i} style={{
+              border: '1px solid rgba(201,169,75,0.3)',
+              color: 'rgba(255,255,255,0.8)',
+              padding: '0.4rem 1rem',
+              borderRadius: '100px',
+              fontSize: '0.8rem',
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: 500,
+            }}>
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <div
+          className="reveal-wedding"
+          style={{
+            textAlign: 'center',
+            opacity: 0,
+            transform: 'translateY(24px)',
+            transition: 'all 0.7s ease',
+          }}
+        >
+          <a
+            href="https://wa.me/6285952879644?text=Halo%20Yeka%20Studio!%20Saya%20ingin%20konsultasi%20paket%20foto%20wedding%2Fprewedding%20%F0%9F%92%8D"
+            id="cta-wedding-wa"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              background: 'linear-gradient(135deg, var(--maroon) 0%, #A52A3A 100%)',
+              color: 'white',
+              padding: '1rem 2.5rem',
+              borderRadius: '2px',
+              fontFamily: 'Inter, sans-serif',
+              fontSize: '0.875rem',
+              fontWeight: 500,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              transition: 'all 0.3s ease',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              textDecoration: 'none',
+              border: '2px solid rgba(201,169,75,0.2)',
+            }}
+          >
+            <span>💬</span>
+            Konsultasi Paket Wedding
+          </a>
+          <p style={{
+            marginTop: '0.75rem',
+            fontSize: '0.75rem',
+            color: 'rgba(255,255,255,0.4)',
+            fontFamily: 'Inter, sans-serif',
+          }}>
+            Gratis konsultasi — ceritakan momen spesial Anda
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
