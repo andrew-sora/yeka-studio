@@ -1,18 +1,20 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 
 const WISUDA_PHOTOS = [
-  { src: '/images/wisuda-1.jpg', alt: 'Foto wisuda outdoor campus Jogja' },
-  { src: '/images/wisuda-2.jpg', alt: 'Wisuda UGM candid joyful' },
-  { src: '/images/wisuda-3.jpg', alt: 'Wisuda melempar toga celebration' },
-  { src: '/images/wisuda-4.jpg', alt: 'Portrait wisuda elegan' },
-  { src: '/images/wisuda-5.jpg', alt: 'Foto wisuda bersama sahabat' },
-  { src: '/images/wisuda-6.jpg', alt: 'Wisuda outdoor botanical garden' },
+  { src: '/images/wisuda-1.jpg', alt: 'Foto wisuda outdoor campus Jogja', title: 'Outdoor Campus Shoot', tag: 'Area Jogja & Solo' },
+  { src: '/images/wisuda-2.jpg', alt: 'Wisuda UGM candid joyful', title: 'Candid & Natural', tag: 'UGM Balairung' },
+  { src: '/images/wisuda-3.jpg', alt: 'Wisuda melempar toga celebration', title: 'Celebration Moment', tag: 'Kampus Outdoor' },
+  { src: '/images/wisuda-4.jpg', alt: 'Portrait wisuda elegan', title: 'Portrait Elegan', tag: 'Spot Classical' },
+  { src: '/images/wisuda-5.jpg', alt: 'Foto wisuda bersama sahabat', title: 'Sahabat & Bestie', tag: 'Group Shoot' },
+  { src: '/images/wisuda-6.jpg', alt: 'Wisuda outdoor botanical garden', title: 'Botanical Session', tag: 'Garden Aesthetic' },
 ];
 
 export default function WisudaSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -33,6 +35,37 @@ export default function WisudaSection() {
     if (sectionRef.current) observer.observe(sectionRef.current);
     return () => observer.disconnect();
   }, []);
+
+  const handleScroll = () => {
+    if (!carouselRef.current) return;
+    const container = carouselRef.current;
+    const scrollPosition = container.scrollLeft;
+    const cardWidth = container.firstElementChild ? (container.firstElementChild as HTMLElement).offsetWidth + 16 : 280;
+    const newIndex = Math.round(scrollPosition / cardWidth);
+    setActiveIndex(Math.min(Math.max(newIndex, 0), WISUDA_PHOTOS.length - 1));
+  };
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (!carouselRef.current) return;
+    const container = carouselRef.current;
+    const scrollAmount = container.clientWidth * 0.75;
+    container.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth',
+    });
+  };
+
+  const scrollToIndex = (index: number) => {
+    if (!carouselRef.current) return;
+    const container = carouselRef.current;
+    const card = container.children[index] as HTMLElement;
+    if (card) {
+      container.scrollTo({
+        left: card.offsetLeft - container.offsetLeft,
+        behavior: 'smooth',
+      });
+    }
+  };
 
   return (
     <section
@@ -93,37 +126,110 @@ export default function WisudaSection() {
           </p>
         </div>
 
-        {/* Photo Grid - Staggered Editorial Gallery */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: 'clamp(10px, 2vw, 16px)',
-          maxWidth: '820px',
-          margin: '0 auto 3rem',
-          alignItems: 'start',
-        }}>
-          {WISUDA_PHOTOS.map((photo, i) => {
-            // Staggered offsets for odd columns (middle column & alternating items)
-            const isMiddleCol = i % 3 === 1;
-            const isRightCol = i % 3 === 2;
-            const offsetY = isMiddleCol ? '1.5rem' : isRightCol ? '0.5rem' : '0px';
-            const aspect = isMiddleCol ? '4/5' : '3/4';
+        {/* ── Interactive Carousel / Swiper Gallery ── */}
+        <div className="reveal-item" style={{ marginBottom: '2.5rem', position: 'relative' }}>
 
-            return (
+          {/* Swipe Hint Header */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '1rem',
+            padding: '0 0.5rem',
+          }}>
+            <div style={{
+              fontSize: '0.75rem',
+              color: 'var(--maroon)',
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: 600,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+            }}>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--maroon)' }} />
+              Geser Galeri Portofolio &rarr;
+            </div>
+
+            {/* Navigation Buttons */}
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button
+                onClick={() => scroll('left')}
+                aria-label="Previous slide"
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  border: '1px solid rgba(123,28,42,0.2)',
+                  background: 'white',
+                  color: 'var(--maroon)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  fontSize: '1rem',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                &#8249;
+              </button>
+              <button
+                onClick={() => scroll('right')}
+                aria-label="Next slide"
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  border: '1px solid rgba(123,28,42,0.2)',
+                  background: 'var(--maroon)',
+                  color: 'white',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  fontSize: '1rem',
+                  boxShadow: '0 2px 8px rgba(123,28,42,0.25)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                &#8250;
+              </button>
+            </div>
+          </div>
+
+          {/* Scroll Track Container */}
+          <div
+            ref={carouselRef}
+            onScroll={handleScroll}
+            style={{
+              display: 'flex',
+              gap: '1rem',
+              overflowX: 'auto',
+              scrollSnapType: 'x mandatory',
+              scrollBehavior: 'smooth',
+              paddingBottom: '1rem',
+              paddingTop: '0.25rem',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+            }}
+            className="no-scrollbar"
+          >
+            {WISUDA_PHOTOS.map((photo, i) => (
               <div
                 key={i}
-                className="img-zoom reveal-item"
+                className="img-zoom"
                 style={{
-                  aspectRatio: aspect,
-                  borderRadius: '10px',
+                  flex: '0 0 clamp(230px, 32vw, 280px)',
+                  scrollSnapAlign: 'start',
+                  aspectRatio: '3/4',
+                  borderRadius: '12px',
                   overflow: 'hidden',
                   position: 'relative',
-                  marginTop: offsetY,
-                  opacity: 0,
-                  transform: 'translateY(24px)',
-                  transition: 'all 0.7s ease',
-                  boxShadow: '0 8px 24px rgba(123,28,42,0.08)',
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
                   border: '1px solid rgba(123,28,42,0.08)',
+                  background: '#2A080E',
                 }}
               >
                 <Image
@@ -131,22 +237,70 @@ export default function WisudaSection() {
                   alt={photo.alt}
                   fill
                   style={{ objectFit: 'cover' }}
-                  sizes="(max-width: 768px) 50vw, 33vw"
+                  sizes="(max-width: 768px) 70vw, 30vw"
                 />
-                {/* Subtle Gradient & Hover Overlay */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    inset: 0,
-                    background: 'linear-gradient(to top, rgba(18,3,5,0.6) 0%, transparent 60%)',
-                    opacity: 0.4,
-                    transition: 'opacity 0.4s ease',
-                  }}
-                  className="hover-overlay"
-                />
+
+                {/* Glassmorphism Bottom Info Card */}
+                <div style={{
+                  position: 'absolute',
+                  bottom: '0.75rem',
+                  left: '0.75rem',
+                  right: '0.75rem',
+                  background: 'rgba(18, 3, 5, 0.75)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  borderRadius: '8px',
+                  padding: '0.6rem 0.85rem',
+                }}>
+                  <div style={{
+                    fontSize: '0.62rem',
+                    color: '#C9A94B',
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    fontFamily: 'Inter, sans-serif',
+                    fontWeight: 600,
+                  }}>
+                    {photo.tag}
+                  </div>
+                  <div style={{
+                    fontFamily: 'Cormorant Garamond, serif',
+                    fontSize: '1.05rem',
+                    fontWeight: 600,
+                    color: 'white',
+                    lineHeight: 1.2,
+                    marginTop: '1px',
+                  }}>
+                    {photo.title}
+                  </div>
+                </div>
               </div>
-            );
-          })}
+            ))}
+          </div>
+
+          {/* Dots Navigation Tracker */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '0.4rem',
+            marginTop: '0.75rem',
+          }}>
+            {WISUDA_PHOTOS.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => scrollToIndex(i)}
+                aria-label={`Go to slide ${i + 1}`}
+                style={{
+                  width: activeIndex === i ? '24px' : '8px',
+                  height: '8px',
+                  borderRadius: '100px',
+                  background: activeIndex === i ? 'var(--maroon)' : 'rgba(123,28,42,0.2)',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                }}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Theme & Price List Cards */}
@@ -300,4 +454,3 @@ export default function WisudaSection() {
     </section>
   );
 }
-

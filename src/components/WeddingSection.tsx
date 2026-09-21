@@ -1,16 +1,18 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 
 const WEDDING_PHOTOS = [
-  { src: '/images/wedding-1.jpg', alt: 'Foto wedding adat Jawa studio Jogja' },
-  { src: '/images/wedding-2.jpg', alt: 'Prewedding kebaya merah maroon' },
-  { src: '/images/wedding-3.jpg', alt: 'Foto engagement outdoor garden' },
-  { src: '/images/wedding-4.jpg', alt: 'Portrait pengantin kebaya putih gold' },
+  { src: '/images/wedding-1.jpg', alt: 'Foto wedding adat Jawa studio Jogja', title: 'Studio Adat Jawa', tag: 'Signature Setup' },
+  { src: '/images/wedding-2.jpg', alt: 'Prewedding kebaya merah maroon', title: 'Classic Beskap & Kebaya', tag: 'Indoor Studio' },
+  { src: '/images/wedding-3.jpg', alt: 'Foto engagement outdoor garden', title: 'Intimate Outdoor', tag: 'Garden Prewedding' },
+  { src: '/images/wedding-4.jpg', alt: 'Portrait pengantin kebaya putih gold', title: 'Kebaya Modern', tag: 'Editorial Look' },
 ];
 
 export default function WeddingSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -31,6 +33,37 @@ export default function WeddingSection() {
     if (sectionRef.current) observer.observe(sectionRef.current);
     return () => observer.disconnect();
   }, []);
+
+  const handleScroll = () => {
+    if (!carouselRef.current) return;
+    const container = carouselRef.current;
+    const scrollPosition = container.scrollLeft;
+    const cardWidth = container.firstElementChild ? (container.firstElementChild as HTMLElement).offsetWidth + 16 : 280;
+    const newIndex = Math.round(scrollPosition / cardWidth);
+    setActiveIndex(Math.min(Math.max(newIndex, 0), WEDDING_PHOTOS.length - 1));
+  };
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (!carouselRef.current) return;
+    const container = carouselRef.current;
+    const scrollAmount = container.clientWidth * 0.75;
+    container.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth',
+    });
+  };
+
+  const scrollToIndex = (index: number) => {
+    if (!carouselRef.current) return;
+    const container = carouselRef.current;
+    const card = container.children[index] as HTMLElement;
+    if (card) {
+      container.scrollTo({
+        left: card.offsetLeft - container.offsetLeft,
+        behavior: 'smooth',
+      });
+    }
+  };
 
   return (
     <section
@@ -112,37 +145,110 @@ export default function WeddingSection() {
           </p>
         </div>
 
-        {/* Photo Grid - Staggered Luxury Editorial Gallery */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: 'clamp(10px, 2vw, 16px)',
-          maxWidth: '820px',
-          margin: '0 auto 3rem',
-          alignItems: 'start',
-        }}>
-          {WEDDING_PHOTOS.map((photo, i) => {
-            // Staggered offsets for middle column & alternating items
-            const isMiddleCol = i % 3 === 1;
-            const isRightCol = i % 3 === 2;
-            const offsetY = isMiddleCol ? '1.5rem' : isRightCol ? '0.5rem' : '0px';
-            const aspect = isMiddleCol ? '4/5' : '3/4';
+        {/* ── Interactive Swiper / Carousel Gallery ── */}
+        <div className="reveal-wedding" style={{ marginBottom: '2.5rem', position: 'relative' }}>
 
-            return (
+          {/* Swipe Hint & Navigation Controls */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '1rem',
+            padding: '0 0.5rem',
+          }}>
+            <div style={{
+              fontSize: '0.75rem',
+              color: '#C9A94B',
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: 600,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+            }}>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#C9A94B' }} />
+              Geser Galeri Portofolio &rarr;
+            </div>
+
+            {/* Navigation Buttons */}
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button
+                onClick={() => scroll('left')}
+                aria-label="Previous slide"
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  border: '1px solid rgba(201,169,75,0.3)',
+                  background: 'rgba(255,255,255,0.05)',
+                  color: '#C9A94B',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  fontSize: '1rem',
+                  backdropFilter: 'blur(6px)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                &#8249;
+              </button>
+              <button
+                onClick={() => scroll('right')}
+                aria-label="Next slide"
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  border: '1px solid rgba(201,169,75,0.5)',
+                  background: '#C9A94B',
+                  color: '#1a0508',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  fontSize: '1rem',
+                  boxShadow: '0 2px 10px rgba(201,169,75,0.3)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                &#8250;
+              </button>
+            </div>
+          </div>
+
+          {/* Scroll Track Container */}
+          <div
+            ref={carouselRef}
+            onScroll={handleScroll}
+            style={{
+              display: 'flex',
+              gap: '1rem',
+              overflowX: 'auto',
+              scrollSnapType: 'x mandatory',
+              scrollBehavior: 'smooth',
+              paddingBottom: '1rem',
+              paddingTop: '0.25rem',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+            }}
+            className="no-scrollbar"
+          >
+            {WEDDING_PHOTOS.map((photo, i) => (
               <div
                 key={i}
-                className="img-zoom reveal-wedding"
+                className="img-zoom"
                 style={{
-                  aspectRatio: aspect,
-                  borderRadius: '10px',
+                  flex: '0 0 clamp(230px, 32vw, 280px)',
+                  scrollSnapAlign: 'start',
+                  aspectRatio: '3/4',
+                  borderRadius: '12px',
                   overflow: 'hidden',
                   position: 'relative',
-                  marginTop: offsetY,
-                  opacity: 0,
-                  transform: 'translateY(24px)',
-                  transition: 'all 0.7s ease',
-                  boxShadow: '0 8px 30px rgba(0,0,0,0.4)',
+                  boxShadow: '0 8px 30px rgba(0,0,0,0.5)',
                   border: '1px solid rgba(201,169,75,0.2)',
+                  background: '#120305',
                 }}
               >
                 <Image
@@ -150,22 +256,70 @@ export default function WeddingSection() {
                   alt={photo.alt}
                   fill
                   style={{ objectFit: 'cover' }}
-                  sizes="(max-width: 768px) 50vw, 33vw"
+                  sizes="(max-width: 768px) 70vw, 30vw"
                 />
-                {/* Subtle Luxury Gradient Overlay */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    inset: 0,
-                    background: 'linear-gradient(to top, rgba(26,5,8,0.7) 0%, transparent 60%)',
-                    opacity: 0.5,
-                    transition: 'opacity 0.4s ease',
-                  }}
-                  className="hover-overlay"
-                />
+
+                {/* Glassmorphism Bottom Info Card */}
+                <div style={{
+                  position: 'absolute',
+                  bottom: '0.75rem',
+                  left: '0.75rem',
+                  right: '0.75rem',
+                  background: 'rgba(26, 5, 8, 0.85)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(201, 169, 75, 0.3)',
+                  borderRadius: '8px',
+                  padding: '0.6rem 0.85rem',
+                }}>
+                  <div style={{
+                    fontSize: '0.62rem',
+                    color: '#C9A94B',
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    fontFamily: 'Inter, sans-serif',
+                    fontWeight: 600,
+                  }}>
+                    {photo.tag}
+                  </div>
+                  <div style={{
+                    fontFamily: 'Cormorant Garamond, serif',
+                    fontSize: '1.05rem',
+                    fontWeight: 600,
+                    color: 'white',
+                    lineHeight: 1.2,
+                    marginTop: '1px',
+                  }}>
+                    {photo.title}
+                  </div>
+                </div>
               </div>
-            );
-          })}
+            ))}
+          </div>
+
+          {/* Dots Navigation Tracker */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '0.4rem',
+            marginTop: '0.75rem',
+          }}>
+            {WEDDING_PHOTOS.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => scrollToIndex(i)}
+                aria-label={`Go to slide ${i + 1}`}
+                style={{
+                  width: activeIndex === i ? '24px' : '8px',
+                  height: '8px',
+                  borderRadius: '100px',
+                  background: activeIndex === i ? '#C9A94B' : 'rgba(201,169,75,0.25)',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                }}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Theme & Price List Cards */}
@@ -318,16 +472,8 @@ export default function WeddingSection() {
               border: '2px solid rgba(201,169,75,0.2)',
             }}
           >
-            Konsultasi Paket Wedding
+            Booking Wedding / Prewedding
           </a>
-          <p style={{
-            marginTop: '0.75rem',
-            fontSize: '0.75rem',
-            color: 'rgba(255,255,255,0.4)',
-            fontFamily: 'Inter, sans-serif',
-          }}>
-            Pilih tanggal & jam — langsung terhubung ke WhatsApp kami
-          </p>
         </div>
       </div>
     </section>
