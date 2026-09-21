@@ -124,17 +124,19 @@ export default function HeroSection() {
           width: '100%',
           margin: '0 auto',
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: 'clamp(2rem, 5vw, 4rem)',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
+          gap: 'clamp(1.5rem, 4vw, 3.5rem)',
           alignItems: 'center',
+          overflowWrap: 'break-word',
+          wordBreak: 'break-word',
         }}
       >
         {/* ── LEFT COLUMN: Magazine Split Typography & Script Accent ── */}
-        <div style={{ textAlign: 'left' }}>
+        <div style={{ textAlign: 'left', maxWidth: '100%' }}>
 
           {/* Brand Header & Hand-lettering Script Tagline Accent */}
-          <div className="animate-on-enter opacity-0-init" style={{ marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <svg width="26" height="26" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <div className="animate-on-enter opacity-0-init" style={{ marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle cx="24" cy="24" r="4" fill="none" stroke="#C9A94B" strokeWidth="1.5"/>
               {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, i) => (
                 <ellipse
@@ -151,9 +153,10 @@ export default function HeroSection() {
               ))}
             </svg>
             <span className="font-script" style={{
-              fontSize: '1.2rem',
+              fontSize: '1.15rem',
               color: '#C9A94B',
-              letterSpacing: '0.15em',
+              letterSpacing: '0.08em',
+              lineHeight: 1.2,
             }}>
               YEKA CREATIVE STUDIO
             </span>
@@ -165,38 +168,41 @@ export default function HeroSection() {
             border: '1px solid rgba(201, 169, 75, 0.4)',
             background: 'rgba(201, 169, 75, 0.08)',
             color: '#C9A94B',
-            padding: '0.3rem 0.9rem',
-            fontSize: '0.7rem',
-            letterSpacing: '0.18em',
+            padding: '0.3rem 0.8rem',
+            fontSize: '0.68rem',
+            letterSpacing: '0.12em',
             textTransform: 'uppercase',
             marginBottom: '1.25rem',
             fontFamily: 'Inter, sans-serif',
             fontWeight: 500,
             borderRadius: '2px',
+            maxWidth: '100%',
           }}>
             Female Photographer Team
           </div>
 
           {/* Main Headline with Script Hand-lettering Accent */}
           <h1 className="animate-on-enter opacity-0-init font-display" style={{
-            fontSize: 'clamp(2.3rem, 5.2vw, 4rem)',
+            fontSize: 'clamp(1.85rem, 5.2vw, 3.8rem)',
             fontWeight: 600,
             color: 'white',
-            lineHeight: 1.12,
+            lineHeight: 1.15,
             marginBottom: '1.25rem',
             letterSpacing: '-0.01em',
+            wordBreak: 'break-word',
           }}>
             Abadikan Momen<br />
             <span className="font-script" style={{
               color: '#C9A94B',
-              fontSize: '1.15em',
+              fontSize: '1.12em',
               fontWeight: 400,
               fontStyle: 'normal',
-              lineHeight: 1,
+              lineHeight: 1.1,
+              display: 'inline-block',
             }}>
               Paling Berharga
             </span>
-            <span style={{ fontSize: '0.58em', fontWeight: 300, color: 'rgba(255,255,255,0.9)', display: 'block', marginTop: '0.5rem', fontFamily: 'Cormorant Garamond, serif' }}>
+            <span style={{ fontSize: '0.55em', fontWeight: 300, color: 'rgba(255,255,255,0.9)', display: 'block', marginTop: '0.5rem', fontFamily: 'Cormorant Garamond, serif', lineHeight: 1.3 }}>
               Wedding, Prewedding &amp; Wisuda di Jogja &amp; Solo
             </span>
           </h1>
@@ -296,7 +302,8 @@ export default function HeroSection() {
 
           <div style={{
             position: 'relative',
-            maxWidth: '440px',
+            maxWidth: '100%',
+            width: '100%',
             margin: '0 auto',
             paddingBottom: '1rem',
           }}>

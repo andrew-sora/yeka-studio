@@ -52,8 +52,8 @@ export default function ContactSection() {
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: 'clamp(2rem, 5vw, 4rem)',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
+          gap: 'clamp(1.5rem, 4vw, 3.5rem)',
           alignItems: 'center',
         }}>
 
