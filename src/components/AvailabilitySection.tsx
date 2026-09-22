@@ -434,19 +434,65 @@ export default function AvailabilitySection() {
               background: 'white',
               borderRadius: '12px',
               padding: '1.5rem',
-              boxShadow: '0 4px 24px rgba(0,0,0,0.07)',
-              border: '1px solid rgba(123,28,42,0.1)',
+              boxShadow: '0 8px 32px rgba(123,28,42,0.12)',
+              border: '1.5px solid var(--maroon)',
             }}>
+              {/* Prominent Selected Date Banner */}
+              <div style={{
+                background: 'linear-gradient(135deg, var(--maroon) 0%, #A52A3A 100%)',
+                borderRadius: '8px',
+                padding: '0.85rem 1.15rem',
+                color: 'white',
+                marginBottom: '1.25rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '0.5rem',
+              }}>
+                <div>
+                  <div style={{
+                    fontSize: '0.68rem',
+                    color: '#C9A94B',
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    fontFamily: 'Inter, sans-serif',
+                    fontWeight: 600,
+                  }}>
+                    Tanggal Terpilih
+                  </div>
+                  <div className="font-display" style={{
+                    fontSize: '1.25rem',
+                    fontWeight: 600,
+                    lineHeight: 1.2,
+                  }}>
+                    {DAY_SHORT[new Date(viewYear, viewMonth, selectedDate).getDay()]}, {selectedDate} {MONTH_ID[viewMonth]} {viewYear}
+                  </div>
+                </div>
+                <div style={{
+                  background: 'rgba(255,255,255,0.15)',
+                  backdropFilter: 'blur(6px)',
+                  padding: '0.3rem 0.75rem',
+                  borderRadius: '100px',
+                  fontSize: '0.75rem',
+                  fontFamily: 'Inter, sans-serif',
+                  fontWeight: 600,
+                  color: 'white',
+                  border: '1px solid rgba(255,255,255,0.25)',
+                }}>
+                  {selectedDayData.slots.filter(s => s.status === 'available').length} Slot Tersedia
+                </div>
+              </div>
+
               <div style={{
                 fontFamily: 'Inter, sans-serif',
                 fontSize: '0.82rem',
                 fontWeight: 600,
-                color: 'var(--maroon)',
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                marginBottom: '1rem',
+                color: 'var(--charcoal)',
+                letterSpacing: '0.04em',
+                marginBottom: '0.85rem',
               }}>
-                {selectedDate} {MONTH_ID[viewMonth]} {viewYear} — Pilih Jam Sesi:
+                Pilih Jam Sesi Foto:
               </div>
 
               {/* Time Slots Grid */}

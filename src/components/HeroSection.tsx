@@ -134,106 +134,66 @@ export default function HeroSection() {
         {/* ── LEFT COLUMN: Magazine Split Typography & Script Accent ── */}
         <div style={{ textAlign: 'left', maxWidth: '100%' }}>
 
-          {/* Brand Header & Hand-lettering Script Tagline Accent */}
-          <div className="animate-on-enter opacity-0-init" style={{ marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-            <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="24" cy="24" r="4" fill="none" stroke="#C9A94B" strokeWidth="1.5"/>
-              {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, i) => (
-                <ellipse
-                  key={i}
-                  cx={24 + 10 * Math.cos((angle * Math.PI) / 180)}
-                  cy={24 + 10 * Math.sin((angle * Math.PI) / 180)}
-                  rx="4"
-                  ry="7"
-                  fill="none"
-                  stroke="rgba(201,169,75,0.6)"
-                  strokeWidth="1"
-                  transform={`rotate(${angle} ${24 + 10 * Math.cos((angle * Math.PI) / 180)} ${24 + 10 * Math.sin((angle * Math.PI) / 180)})`}
-                />
-              ))}
-            </svg>
-            <span className="font-script" style={{
-              fontSize: '1.15rem',
+          {/* Brand Header */}
+          <div className="animate-on-enter opacity-0-init" style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
+            <span style={{
+              fontSize: '0.72rem',
+              letterSpacing: '0.22em',
               color: '#C9A94B',
-              letterSpacing: '0.08em',
-              lineHeight: 1.2,
+              textTransform: 'uppercase',
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: 600,
             }}>
               YEKA CREATIVE STUDIO
             </span>
+            <span style={{ height: '1px', width: '28px', background: 'rgba(201,169,75,0.4)' }} />
+            <span style={{
+              fontSize: '0.68rem',
+              color: 'rgba(201, 169, 75, 0.9)',
+              background: 'rgba(201, 169, 75, 0.1)',
+              border: '1px solid rgba(201, 169, 75, 0.3)',
+              padding: '0.2rem 0.6rem',
+              borderRadius: '2px',
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              fontFamily: 'Inter, sans-serif',
+            }}>
+              Female Photographer Team
+            </span>
           </div>
 
-          {/* Female Photographer Badge */}
-          <div className="animate-on-enter opacity-0-init" style={{
-            display: 'inline-block',
-            border: '1px solid rgba(201, 169, 75, 0.4)',
-            background: 'rgba(201, 169, 75, 0.08)',
-            color: '#C9A94B',
-            padding: '0.3rem 0.8rem',
-            fontSize: '0.68rem',
-            letterSpacing: '0.12em',
-            textTransform: 'uppercase',
-            marginBottom: '1.25rem',
-            fontFamily: 'Inter, sans-serif',
-            fontWeight: 500,
-            borderRadius: '2px',
-            maxWidth: '100%',
-          }}>
-            Female Photographer Team
-          </div>
-
-          {/* Main Headline with Script Hand-lettering Accent */}
+          {/* Main Headline with High-Impact Value Proposition */}
           <h1 className="animate-on-enter opacity-0-init font-display" style={{
-            fontSize: 'clamp(1.85rem, 5.2vw, 3.8rem)',
+            fontSize: 'clamp(2rem, 5.5vw, 3.8rem)',
             fontWeight: 600,
             color: 'white',
             lineHeight: 1.15,
-            marginBottom: '1.25rem',
+            marginBottom: '1rem',
             letterSpacing: '-0.01em',
             wordBreak: 'break-word',
           }}>
             Abadikan Momen<br />
             <span className="font-script" style={{
               color: '#C9A94B',
-              fontSize: '1.12em',
+              fontSize: '1.1em',
               fontWeight: 400,
-              fontStyle: 'normal',
-              lineHeight: 1.1,
               display: 'inline-block',
             }}>
               Paling Berharga
             </span>
-            <span style={{ fontSize: '0.55em', fontWeight: 300, color: 'rgba(255,255,255,0.9)', display: 'block', marginTop: '0.5rem', fontFamily: 'Cormorant Garamond, serif', lineHeight: 1.3 }}>
-              Wedding, Prewedding &amp; Wisuda di Jogja &amp; Solo
-            </span>
           </h1>
 
-          {/* Script Accent Tagline Quote */}
-          <div className="animate-on-enter opacity-0-init" style={{
-            position: 'relative',
-            paddingLeft: '1rem',
-            borderLeft: '2px solid #C9A94B',
-            marginBottom: '1.75rem',
+          {/* Explicit 3-Second Value Proposition Subtitle */}
+          <p className="animate-on-enter opacity-0-init" style={{
+            fontFamily: 'Inter, sans-serif',
+            fontSize: 'clamp(0.95rem, 1.8vw, 1.1rem)',
+            color: 'rgba(255, 255, 255, 0.88)',
+            lineHeight: 1.6,
+            marginBottom: '1.5rem',
+            maxWidth: '520px',
           }}>
-            <p style={{
-              fontFamily: 'Cormorant Garamond, serif',
-              fontSize: 'clamp(1.05rem, 2.2vw, 1.25rem)',
-              color: 'rgba(255,255,255,0.85)',
-              fontStyle: 'italic',
-              lineHeight: 1.5,
-              margin: 0,
-            }}>
-              &ldquo;Fly High Your Moment With Us&rdquo;
-            </p>
-            <p style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '0.8rem',
-              color: 'rgba(255,255,255,0.6)',
-              marginTop: '0.25rem',
-              lineHeight: 1.5,
-            }}>
-              Sentuhan estetis, hangat, dan natural dari perspektif tim fotografer wanita.
-            </p>
-          </div>
+            Jasa foto <strong>Wedding, Prewedding &amp; Wisuda</strong> di Jogja &amp; Solo dengan sentuhan warm, natural &amp; personal dari perspektif tim fotografer wanita.
+          </p>
 
           {/* Trust Metric Badge */}
           <div className="animate-on-enter opacity-0-init" style={{

@@ -320,37 +320,60 @@ export default function WisudaSection() {
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
-            gap: '1rem',
+            gap: '1.25rem',
+            alignItems: 'stretch',
           }}>
             {[
-              { id: 'wisuda-outdoor', title: 'Wisuda Outdoor', price: 'Rp 450.000', desc: 'Sesi candid outdoor area kampus Jogja/Solo' },
-              { id: 'wisuda-indoor', title: 'Wisuda Indoor', price: 'Rp 550.000', desc: 'Sesi indoor spot, hall kampus &amp; cafe' },
-              { id: 'wisuda-studio', title: 'Wisuda Studio', price: 'Rp 650.000', desc: 'Studio setup lighting eksklusif Yeka' },
-              { id: 'wisuda-all', title: 'Wisuda All-In', price: 'Rp 950.000', desc: 'Kombinasi Studio + Outdoor Campus Shoot' },
+              { id: 'wisuda-outdoor', title: 'Wisuda Outdoor', price: 'Rp 450.000', desc: 'Sesi candid outdoor area kampus Jogja/Solo', featured: true, badge: 'Terfavorit' },
+              { id: 'wisuda-indoor', title: 'Wisuda Indoor', price: 'Rp 550.000', desc: 'Sesi indoor spot, hall kampus &amp; cafe', featured: false },
+              { id: 'wisuda-studio', title: 'Wisuda Studio', price: 'Rp 650.000', desc: 'Studio setup lighting eksklusif Yeka', featured: false },
+              { id: 'wisuda-all', title: 'Wisuda All-In', price: 'Rp 950.000', desc: 'Kombinasi Studio + Outdoor Campus Shoot', featured: false },
             ].map((pkg, i) => (
               <div key={i} style={{
                 background: 'white',
-                padding: '1.5rem',
+                padding: '1.75rem 1.5rem',
                 borderRadius: '8px',
-                boxShadow: '0 4px 16px rgba(0,0,0,0.05)',
-                border: '1px solid rgba(123,28,42,0.1)',
+                boxShadow: pkg.featured ? '0 8px 30px rgba(123,28,42,0.15)' : '0 4px 16px rgba(0,0,0,0.05)',
+                border: pkg.featured ? '2px solid var(--maroon)' : '1px solid rgba(123,28,42,0.1)',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
+                position: 'relative',
               }}>
+                {pkg.featured && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '-12px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: 'var(--maroon)',
+                    color: 'white',
+                    fontSize: '0.65rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    padding: '0.25rem 0.85rem',
+                    borderRadius: '100px',
+                    fontFamily: 'Inter, sans-serif',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    {pkg.badge}
+                  </div>
+                )}
                 <div>
                   <h3 style={{
                     fontFamily: 'Cormorant Garamond, serif',
-                    fontSize: '1.3rem',
+                    fontSize: '1.35rem',
                     fontWeight: 600,
                     color: 'var(--charcoal)',
                     marginBottom: '0.3rem',
+                    lineHeight: 1.25,
                   }}>
                     {pkg.title}
                   </h3>
                   <div style={{
                     fontFamily: 'Inter, sans-serif',
-                    fontSize: '1.15rem',
+                    fontSize: '1.25rem',
                     fontWeight: 700,
                     color: 'var(--maroon)',
                     marginBottom: '0.6rem',
@@ -358,11 +381,11 @@ export default function WisudaSection() {
                     {pkg.price}
                   </div>
                   <p style={{
-                    fontSize: '0.78rem',
+                    fontSize: '0.82rem',
                     color: 'var(--muted)',
                     fontFamily: 'Inter, sans-serif',
-                    lineHeight: 1.5,
-                    marginBottom: '1.25rem',
+                    lineHeight: 1.6,
+                    marginBottom: '1.5rem',
                   }} dangerouslySetInnerHTML={{ __html: pkg.desc }} />
                 </div>
                 <a
@@ -376,18 +399,20 @@ export default function WisudaSection() {
                   style={{
                     display: 'block',
                     textAlign: 'center',
-                    background: 'var(--maroon)',
-                    color: 'white',
-                    padding: '0.6rem 1rem',
+                    background: pkg.featured ? 'var(--maroon)' : 'rgba(123,28,42,0.08)',
+                    color: pkg.featured ? 'white' : 'var(--maroon)',
+                    border: '1px solid var(--maroon)',
+                    padding: '0.75rem 1rem',
                     borderRadius: '4px',
                     fontFamily: 'Inter, sans-serif',
-                    fontSize: '0.78rem',
-                    fontWeight: 500,
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                    letterSpacing: '0.05em',
                     textDecoration: 'none',
-                    transition: 'opacity 0.2s',
+                    transition: 'all 0.2s ease',
                   }}
                 >
-                  Pilih Paket ini
+                  Pilih Paket ini &rarr;
                 </a>
               </div>
             ))}

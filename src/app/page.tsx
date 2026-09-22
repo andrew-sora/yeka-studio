@@ -6,6 +6,7 @@ import WeddingSection from '@/components/WeddingSection';
 import AboutSection from '@/components/AboutSection';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
+import StickyMobileCTA from '@/components/StickyMobileCTA';
 
 export default function Home() {
   return (
@@ -18,7 +19,9 @@ export default function Home() {
       <AboutSection />
       <ContactSection />
       <Footer />
+      <StickyMobileCTA />
     </main>
   );
 }
+
 

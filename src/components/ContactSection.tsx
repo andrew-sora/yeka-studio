@@ -145,8 +145,8 @@ export default function ContactSection() {
                 lineHeight: 1.15,
                 marginBottom: '0.75rem',
               }}>
-                Siap Abadikan<br />
-                <span style={{ color: '#C9A94B', fontStyle: 'italic' }}>Momen Spesialmu?</span>
+                Cerita &amp; Momen Spesialmu<br />
+                <span style={{ color: '#C9A94B', fontStyle: 'italic' }}>Layak Diabadikan Sempurna</span>
               </h2>
               <div style={{
                 width: '60px',
@@ -156,12 +156,12 @@ export default function ContactSection() {
               }} />
               <p style={{
                 fontSize: '0.98rem',
-                color: 'rgba(255,255,255,0.7)',
+                color: 'rgba(255,255,255,0.8)',
                 lineHeight: 1.75,
                 fontFamily: 'Inter, sans-serif',
                 marginBottom: '2rem',
               }}>
-                Hubungi tim kami untuk tanya pricelist lengkap, cek jadwal foto, atau diskusi konsep sesi wisuda &amp; wedding-mu. Fast response via WhatsApp!
+                Setiap senyum wisuda dan tatapan hangat pernikahan punya kisah tersendiri. Diskusi konsep foto Anda bersama tim fotografer wanita kami sekarang.
               </p>
             </div>
 

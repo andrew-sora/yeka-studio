@@ -338,37 +338,61 @@ export default function WeddingSection() {
           </div>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-            gap: '1rem',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gap: '1.25rem',
+            alignItems: 'stretch',
           }}>
             {[
-              { title: 'Prewedding Studio Adat Jawa', price: 'Rp 1.850.000', desc: 'Studio tirai merah, busana &amp; makeup adat Jawa lengkap' },
-              { title: 'Prewedding Outdoor Scenic', price: 'Rp 2.250.000', desc: 'Lokasi outdoor Jogja/Solo + dokumentasi video reel' },
-              { title: 'Intimate Wedding Coverage', price: 'Rp 4.500.000', desc: 'Full-day coverage akad &amp; resepsi + album cetak eksklusif' },
+              { title: 'Prewedding Studio Adat Jawa', price: 'Rp 1.850.000', desc: 'Studio tirai merah, busana &amp; makeup adat Jawa lengkap', featured: false },
+              { title: 'Prewedding Outdoor Scenic', price: 'Rp 2.250.000', desc: 'Lokasi outdoor Jogja/Solo + dokumentasi video reel', featured: true, badge: 'Paling Populer' },
+              { title: 'Intimate Wedding Coverage', price: 'Rp 4.500.000', desc: 'Full-day coverage akad &amp; resepsi + album cetak eksklusif', featured: false },
             ].map((pkg, i) => (
               <div key={i} style={{
-                background: 'rgba(255,255,255,0.05)',
+                background: pkg.featured ? 'linear-gradient(145deg, rgba(123,28,42,0.4) 0%, rgba(201,169,75,0.15) 100%)' : 'rgba(255,255,255,0.05)',
                 backdropFilter: 'blur(8px)',
-                padding: '1.5rem',
+                padding: '1.75rem 1.5rem',
                 borderRadius: '8px',
-                border: '1px solid rgba(201,169,75,0.2)',
+                border: pkg.featured ? '1.5px solid #C9A94B' : '1px solid rgba(201,169,75,0.2)',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
+                position: 'relative',
+                boxShadow: pkg.featured ? '0 12px 36px rgba(201,169,75,0.2)' : 'none',
               }}>
+                {pkg.featured && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '-12px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: '#C9A94B',
+                    color: '#1a0508',
+                    fontSize: '0.65rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    padding: '0.25rem 0.85rem',
+                    borderRadius: '100px',
+                    fontFamily: 'Inter, sans-serif',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    {pkg.badge}
+                  </div>
+                )}
                 <div>
                   <h3 style={{
                     fontFamily: 'Cormorant Garamond, serif',
-                    fontSize: '1.3rem',
+                    fontSize: '1.35rem',
                     fontWeight: 600,
                     color: 'white',
                     marginBottom: '0.3rem',
+                    lineHeight: 1.25,
                   }}>
                     {pkg.title}
                   </h3>
                   <div style={{
                     fontFamily: 'Inter, sans-serif',
-                    fontSize: '1.15rem',
+                    fontSize: '1.25rem',
                     fontWeight: 700,
                     color: '#C9A94B',
                     marginBottom: '0.6rem',
@@ -376,11 +400,11 @@ export default function WeddingSection() {
                     {pkg.price}
                   </div>
                   <p style={{
-                    fontSize: '0.78rem',
-                    color: 'rgba(255,255,255,0.7)',
+                    fontSize: '0.82rem',
+                    color: 'rgba(255,255,255,0.75)',
                     fontFamily: 'Inter, sans-serif',
-                    lineHeight: 1.5,
-                    marginBottom: '1.25rem',
+                    lineHeight: 1.6,
+                    marginBottom: '1.5rem',
                   }} dangerouslySetInnerHTML={{ __html: pkg.desc }} />
                 </div>
                 <a
@@ -394,18 +418,20 @@ export default function WeddingSection() {
                   style={{
                     display: 'block',
                     textAlign: 'center',
-                    background: '#C9A94B',
-                    color: '#1a0508',
-                    padding: '0.6rem 1rem',
+                    background: pkg.featured ? '#C9A94B' : 'rgba(201,169,75,0.15)',
+                    color: pkg.featured ? '#1a0508' : '#C9A94B',
+                    border: '1px solid #C9A94B',
+                    padding: '0.75rem 1rem',
                     borderRadius: '4px',
                     fontFamily: 'Inter, sans-serif',
-                    fontSize: '0.78rem',
+                    fontSize: '0.8rem',
                     fontWeight: 600,
+                    letterSpacing: '0.05em',
                     textDecoration: 'none',
-                    transition: 'opacity 0.2s',
+                    transition: 'all 0.2s ease',
                   }}
                 >
-                  Pilih Paket ini
+                  Pilih Paket ini &rarr;
                 </a>
               </div>
             ))}
