@@ -200,7 +200,8 @@ export default function AdminPage() {
   const [selectedPhotoId, setSelectedPhotoId] = useState<string>('wisuda-1');
   const [photoFilterCategory, setPhotoFilterCategory] = useState<'all' | 'wisuda' | 'wedding'>('all');
   const [photoSearchQuery, setPhotoSearchQuery] = useState('');
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const editFileInputRef = useRef<HTMLInputElement>(null);
+  const addPhotoFileInputRef = useRef<HTMLInputElement>(null);
 
   // Photo Form Fields
   const [photoCategoryInput, setPhotoCategoryInput] = useState<'wisuda' | 'wedding'>('wisuda');
@@ -439,8 +440,40 @@ export default function AdminPage() {
     }
   };
 
-  // Photo Handlers & File Reader Upload
-  const handlePhotoFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Photo Handlers & File Reader Upload (From Device Gallery)
+  const handleAddPhotoFromGallery = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 8 * 1024 * 1024) {
+      alert('Ukuran file foto maksimal 8MB.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        const newId = `photo-${Date.now()}`;
+        const cat = photoFilterCategory !== 'all' ? photoFilterCategory : 'wisuda';
+        const newPhoto: PhotoData = {
+          id: newId,
+          category: cat,
+          src: reader.result,
+          title: 'Foto Baru',
+          tag: cat === 'wisuda' ? 'Area Jogja & Solo' : 'Signature Setup',
+          alt: 'Foto portofolio Yeka Creative Studio',
+        };
+        const updated = [newPhoto, ...photos];
+        setPhotos(updated);
+        setSelectedPhotoId(newId);
+        localStorage.setItem('yeka_photo_overrides', JSON.stringify(updated));
+        showToast('✓ Foto berhasil diunggah dari galeri! Silakan isi judul & lokasi.');
+      }
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  const handlePhotoEditFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 8 * 1024 * 1024) {
@@ -452,19 +485,21 @@ export default function AdminPage() {
     reader.onload = () => {
       if (typeof reader.result === 'string') {
         setPhotoSrcInput(reader.result);
-        showToast('Foto dari galeri perangkat berhasil dimuat!');
+        showToast('Gambar foto berhasil diganti!');
       }
     };
     reader.readAsDataURL(file);
+    e.target.value = '';
   };
 
-  const handleAddNewPhoto = () => {
+  const handleAddBlankPhotoUrl = () => {
     const newId = `photo-${Date.now()}`;
+    const cat = photoFilterCategory !== 'all' ? photoFilterCategory : 'wisuda';
     const newPhoto: PhotoData = {
       id: newId,
-      category: 'wisuda',
+      category: cat,
       src: '/images/wisuda-1.jpg',
-      title: 'Judul Foto Baru',
+      title: 'Foto Baru (URL)',
       tag: 'Lokasi Photoshoot',
       alt: 'Foto portofolio',
     };
@@ -472,7 +507,7 @@ export default function AdminPage() {
     setPhotos(updated);
     setSelectedPhotoId(newId);
     localStorage.setItem('yeka_photo_overrides', JSON.stringify(updated));
-    showToast('Foto portofolio baru ditambahkan.');
+    showToast('Foto baru via URL ditambahkan. Masukkan link gambar.');
   };
 
   const handleDeletePhoto = (idToDelete: string) => {
@@ -633,6 +668,15 @@ export default function AdminPage() {
       fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
       paddingBottom: '4rem',
     }}>
+      {/* Hidden File Picker for Direct Gallery Add */}
+      <input
+        type="file"
+        ref={addPhotoFileInputRef}
+        accept="image/*"
+        onChange={handleAddPhotoFromGallery}
+        style={{ display: 'none' }}
+      />
+
       {/* Top Navbar */}
       <header style={{
         background: '#0F172A',
@@ -1403,21 +1447,46 @@ export default function AdminPage() {
                 <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#475569' }}>
                   PORTOFOLIO FOTO ({filteredPhotos.length})
                 </span>
-                <button
-                  onClick={handleAddNewPhoto}
-                  style={{
-                    background: '#0F172A',
-                    color: '#FFFFFF',
-                    border: 'none',
-                    padding: '0.35rem 0.75rem',
-                    borderRadius: '6px',
-                    fontSize: '0.75rem',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                  }}
-                >
-                  + Tambah Foto
-                </button>
+                
+                <div style={{ display: 'flex', gap: '0.35rem' }}>
+                  {/* Primary Add Photo Button -> Directly Triggers Device Gallery / File Picker */}
+                  <button
+                    onClick={() => addPhotoFileInputRef.current?.click()}
+                    title="Pilih foto dari Galeri HP / Komputer"
+                    style={{
+                      background: '#0F172A',
+                      color: '#FFFFFF',
+                      border: 'none',
+                      padding: '0.45rem 0.85rem',
+                      borderRadius: '6px',
+                      fontSize: '0.78rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                    }}
+                  >
+                    📷 + Tambah Foto
+                  </button>
+
+                  <button
+                    onClick={handleAddBlankPhotoUrl}
+                    title="Tambah via Link URL Gambar"
+                    style={{
+                      background: '#F1F5F9',
+                      color: '#475569',
+                      border: '1px solid #CBD5E1',
+                      padding: '0.45rem 0.6rem',
+                      borderRadius: '6px',
+                      fontSize: '0.72rem',
+                      fontWeight: 500,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Via URL
+                  </button>
+                </div>
               </div>
 
               {/* Filter Tabs & Search Bar */}
@@ -1536,7 +1605,7 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Right: Photo Edit Form + Direct Upload File Picker + Live Preview */}
+            {/* Right: Photo Edit Form + Replace Image from Device */}
             <div style={{
               background: '#FFFFFF',
               borderRadius: '12px',
@@ -1590,29 +1659,29 @@ export default function AdminPage() {
                   </select>
                 </div>
 
-                {/* Direct Upload File Picker */}
+                {/* Replace Image Button for selected photo */}
                 <div style={{ marginBottom: '1rem', background: '#F8FAFC', padding: '0.85rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
                   <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#0F172A', marginBottom: '0.4rem' }}>
-                    📷 Upload File Foto dari HP / Perangkat
+                    📷 Ganti File Gambar Foto Ini
                   </label>
                   
                   <input
                     type="file"
-                    ref={fileInputRef}
+                    ref={editFileInputRef}
                     accept="image/*"
-                    onChange={handlePhotoFileUpload}
+                    onChange={handlePhotoEditFileUpload}
                     style={{ display: 'none' }}
                   />
 
                   <button
                     type="button"
-                    onClick={() => fileInputRef.current?.click()}
+                    onClick={() => editFileInputRef.current?.click()}
                     style={{
                       width: '100%',
                       background: '#FFFFFF',
                       color: '#0F172A',
                       border: '1px solid #CBD5E1',
-                      padding: '0.5rem 0.85rem',
+                      padding: '0.55rem 0.85rem',
                       borderRadius: '6px',
                       fontSize: '0.8rem',
                       fontWeight: 600,
@@ -1623,7 +1692,7 @@ export default function AdminPage() {
                       gap: '0.4rem',
                     }}
                   >
-                    📁 Pilih File Gambar dari Perangkat
+                    📁 Pilih Gambar Baru dari Galeri HP / PC
                   </button>
                 </div>
 
