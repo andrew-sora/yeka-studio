@@ -581,27 +581,17 @@ export default function WeddingSection() {
 
         {/* Feature tags */}
         <div
-          className="reveal-wedding"
+          className="reveal-wedding feature-pills-grid"
           style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '0.75rem',
-            justifyContent: 'center',
-            marginBottom: '2.5rem',
             opacity: 0,
             transform: 'translateY(24px)',
             transition: 'all 0.7s ease',
           }}
         >
           {['Studio Indoor Eksklusif', 'Konsep Adat Jawa & Modern', 'Wedding, Engagement, Prewedding', 'Editorial Luxury Look'].map((tag, i) => (
-            <span key={i} style={{
+            <span key={i} className="feature-pill-item" style={{
               border: '1px solid rgba(201,169,75,0.3)',
               color: 'rgba(255,255,255,0.8)',
-              padding: '0.4rem 1rem',
-              borderRadius: '100px',
-              fontSize: '0.8rem',
-              fontFamily: 'Inter, sans-serif',
-              fontWeight: 500,
             }}>
               {tag}
             </span>

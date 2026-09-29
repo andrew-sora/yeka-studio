@@ -562,27 +562,17 @@ export default function WisudaSection() {
 
         {/* Feature Pills */}
         <div
-          className="reveal-item"
+          className="reveal-item feature-pills-grid"
           style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '0.75rem',
-            justifyContent: 'center',
-            marginBottom: '2.5rem',
             opacity: 0,
             transform: 'translateY(24px)',
             transition: 'all 0.7s ease',
           }}
         >
           {['Outdoor Campus Shoot', 'Gaya Candid & Natural', 'Area Kampus Jogja & Solo', 'Hasil Film-Look Editorial'].map((tag, i) => (
-            <span key={i} style={{
+            <span key={i} className="feature-pill-item" style={{
               border: '1px solid rgba(123,28,42,0.25)',
               color: 'var(--maroon)',
-              padding: '0.4rem 1rem',
-              borderRadius: '100px',
-              fontSize: '0.8rem',
-              fontFamily: 'Inter, sans-serif',
-              fontWeight: 500,
             }}>
               {tag}
             </span>

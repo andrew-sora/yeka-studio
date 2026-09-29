@@ -167,36 +167,17 @@ export default function AboutSection() {
             <p
               className="reveal-about"
               style={{
-                fontSize: '1rem',
+                fontSize: 'clamp(0.875rem, 1.2vw, 0.95rem)',
                 color: 'var(--muted)',
-                lineHeight: 1.85,
+                lineHeight: 1.65,
                 fontFamily: 'Inter, sans-serif',
-                marginBottom: '1.25rem',
+                marginBottom: '1.5rem',
                 opacity: 0,
                 transform: 'translateY(24px)',
                 transition: 'all 0.7s ease',
               }}
             >
-              Yeka Creative Studio dikelola oleh dua fotografer perempuan yang berbasis di Yogyakarta &amp; Solo.
-              Kami percaya bahwa foto terbaik lahir dari rasa nyaman — dan kami hadir sebagai
-              <em> female photographer</em> yang memahami momen personal Anda dari perspektif yang sama.
-            </p>
-
-            <p
-              className="reveal-about"
-              style={{
-                fontSize: '1rem',
-                color: 'var(--muted)',
-                lineHeight: 1.85,
-                fontFamily: 'Inter, sans-serif',
-                marginBottom: '2rem',
-                opacity: 0,
-                transform: 'translateY(24px)',
-                transition: 'all 0.7s ease',
-              }}
-            >
-              Dari momen wisuda candid penuh kehangatan hingga pernikahan adat yang penuh elegansi —
-              kami ada untuk menangkap setiap ekspresi autentik Anda.
+              Yeka Creative Studio dikelola oleh dua fotografer perempuan berbasis di Yogyakarta &amp; Solo. Kami percaya foto terbaik lahir dari rasa nyaman — siap mengabadikan setiap ekspresi candid wisuda hingga kehangatan momen pernikahan Anda secara personal dan autentik.
             </p>
 
             {/* Values */}
