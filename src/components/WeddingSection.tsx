@@ -45,10 +45,19 @@ export default function WeddingSection() {
   const handleScroll = () => {
     if (!carouselRef.current) return;
     const container = carouselRef.current;
+    const maxScroll = container.scrollWidth - container.clientWidth;
+    if (maxScroll <= 0) {
+      setActiveIndex(0);
+      return;
+    }
     const scrollPosition = container.scrollLeft;
-    const cardWidth = container.firstElementChild ? (container.firstElementChild as HTMLElement).offsetWidth + 16 : 280;
-    const newIndex = Math.round(scrollPosition / cardWidth);
-    setActiveIndex(Math.min(Math.max(newIndex, 0), WEDDING_PHOTOS.length - 1));
+    if (scrollPosition >= maxScroll - 8) {
+      setActiveIndex(WEDDING_PHOTOS.length - 1);
+    } else {
+      const progress = Math.max(0, Math.min(1, scrollPosition / maxScroll));
+      const newIndex = Math.round(progress * (WEDDING_PHOTOS.length - 1));
+      setActiveIndex(newIndex);
+    }
   };
 
   const scroll = (direction: 'left' | 'right') => {
@@ -64,22 +73,31 @@ export default function WeddingSection() {
   const scrollToIndex = (index: number) => {
     if (!carouselRef.current) return;
     const container = carouselRef.current;
-    const card = container.children[index] as HTMLElement;
-    if (card) {
-      container.scrollTo({
-        left: card.offsetLeft - container.offsetLeft,
-        behavior: 'smooth',
-      });
-    }
+    const maxScroll = container.scrollWidth - container.clientWidth;
+    if (maxScroll <= 0) return;
+    const targetScroll = (maxScroll / (WEDDING_PHOTOS.length - 1)) * index;
+    container.scrollTo({
+      left: targetScroll,
+      behavior: 'smooth',
+    });
   };
 
   const handlePkgScroll = () => {
     if (!pkgCarouselRef.current) return;
     const container = pkgCarouselRef.current;
+    const maxScroll = container.scrollWidth - container.clientWidth;
+    if (maxScroll <= 0) {
+      setActivePkgIndex(0);
+      return;
+    }
     const scrollPosition = container.scrollLeft;
-    const cardWidth = container.firstElementChild ? (container.firstElementChild as HTMLElement).offsetWidth + 20 : 280;
-    const newIndex = Math.round(scrollPosition / cardWidth);
-    setActivePkgIndex(Math.min(Math.max(newIndex, 0), WEDDING_PACKAGES.length - 1));
+    if (scrollPosition >= maxScroll - 8) {
+      setActivePkgIndex(WEDDING_PACKAGES.length - 1);
+    } else {
+      const progress = Math.max(0, Math.min(1, scrollPosition / maxScroll));
+      const newIndex = Math.round(progress * (WEDDING_PACKAGES.length - 1));
+      setActivePkgIndex(newIndex);
+    }
   };
 
   const scrollPkg = (direction: 'left' | 'right') => {
@@ -95,13 +113,13 @@ export default function WeddingSection() {
   const scrollToPkgIndex = (index: number) => {
     if (!pkgCarouselRef.current) return;
     const container = pkgCarouselRef.current;
-    const card = container.children[index] as HTMLElement;
-    if (card) {
-      container.scrollTo({
-        left: card.offsetLeft - container.offsetLeft,
-        behavior: 'smooth',
-      });
-    }
+    const maxScroll = container.scrollWidth - container.clientWidth;
+    if (maxScroll <= 0) return;
+    const targetScroll = (maxScroll / (WEDDING_PACKAGES.length - 1)) * index;
+    container.scrollTo({
+      left: targetScroll,
+      behavior: 'smooth',
+    });
   };
 
   return (

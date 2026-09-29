@@ -117,22 +117,31 @@ export default function TestimonialSection() {
   const handleScroll = () => {
     if (!carouselRef.current) return;
     const container = carouselRef.current;
+    const maxScroll = container.scrollWidth - container.clientWidth;
+    if (maxScroll <= 0) {
+      setActiveIndex(0);
+      return;
+    }
     const scrollPosition = container.scrollLeft;
-    const cardWidth = container.firstElementChild ? (container.firstElementChild as HTMLElement).offsetWidth + 16 : 300;
-    const newIndex = Math.round(scrollPosition / cardWidth);
-    setActiveIndex(Math.min(Math.max(newIndex, 0), testimonials.length - 1));
+    if (scrollPosition >= maxScroll - 8) {
+      setActiveIndex(testimonials.length - 1);
+    } else {
+      const progress = Math.max(0, Math.min(1, scrollPosition / maxScroll));
+      const newIndex = Math.round(progress * (testimonials.length - 1));
+      setActiveIndex(newIndex);
+    }
   };
 
   const scrollToIndex = (index: number) => {
     if (!carouselRef.current) return;
     const container = carouselRef.current;
-    const card = container.children[index] as HTMLElement;
-    if (card) {
-      container.scrollTo({
-        left: card.offsetLeft - container.offsetLeft,
-        behavior: 'smooth',
-      });
-    }
+    const maxScroll = container.scrollWidth - container.clientWidth;
+    if (maxScroll <= 0) return;
+    const targetScroll = (maxScroll / (testimonials.length - 1)) * index;
+    container.scrollTo({
+      left: targetScroll,
+      behavior: 'smooth',
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
