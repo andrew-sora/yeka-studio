@@ -40,34 +40,42 @@ function buildCurrentMonthCalendar(): CalendarDay[] {
 
     if (isPast) {
       slots = [
-        { time: '09.00', status: 'booked' },
-        { time: '11.00', status: 'booked' },
-        { time: '13.00', status: 'booked' },
-        { time: '15.00', status: 'booked' },
+        { time: '08.00 - 09.00', status: 'booked' },
+        { time: '09.00 - 10.00', status: 'booked' },
+        { time: '10.00 - 11.00', status: 'booked' },
+        { time: '13.00 - 14.00', status: 'booked' },
+        { time: '14.00 - 15.00', status: 'booked' },
+        { time: '15.00 - 16.00', status: 'booked' },
       ];
     } else if (d % 5 === 0) {
       // Fully booked dates
       slots = [
-        { time: '09.00', status: 'booked' },
-        { time: '11.00', status: 'booked' },
-        { time: '13.00', status: 'booked' },
-        { time: '15.00', status: 'booked' },
+        { time: '08.00 - 09.00', status: 'booked' },
+        { time: '09.00 - 10.00', status: 'booked' },
+        { time: '10.00 - 11.00', status: 'booked' },
+        { time: '13.00 - 14.00', status: 'booked' },
+        { time: '14.00 - 15.00', status: 'booked' },
+        { time: '15.00 - 16.00', status: 'booked' },
       ];
     } else if (d % 2 === 0 || dayOfWeek === 0 || dayOfWeek === 6) {
       // Partially booked dates
       slots = [
-        { time: '09.00', status: 'booked' },
-        { time: '11.00', status: 'available' },
-        { time: '13.00', status: d % 4 === 0 ? 'booked' : 'available' },
-        { time: '15.00', status: 'available' },
+        { time: '08.00 - 09.00', status: 'available' },
+        { time: '09.00 - 10.00', status: 'booked' },
+        { time: '10.00 - 11.00', status: 'available' },
+        { time: '13.00 - 14.00', status: 'booked' },
+        { time: '14.00 - 15.00', status: 'available' },
+        { time: '15.00 - 16.00', status: 'booked' },
       ];
     } else {
       // Fully available dates
       slots = [
-        { time: '09.00', status: 'available' },
-        { time: '11.00', status: 'available' },
-        { time: '13.00', status: 'available' },
-        { time: '15.00', status: 'available' },
+        { time: '08.00 - 09.00', status: 'available' },
+        { time: '09.00 - 10.00', status: 'available' },
+        { time: '10.00 - 11.00', status: 'available' },
+        { time: '13.00 - 14.00', status: 'available' },
+        { time: '14.00 - 15.00', status: 'available' },
+        { time: '15.00 - 16.00', status: 'available' },
       ];
     }
 
@@ -92,10 +100,12 @@ export default function AvailabilitySection() {
   const today = new Date();
   const viewMonth = today.getMonth();
   const viewYear = today.getFullYear();
+  const todayDate = today.getDate();
 
-  const [selectedDate, setSelectedDate] = useState<number | null>(null);
+  // Set default selected date to today (or first available day)
+  const [selectedDate, setSelectedDate] = useState<number | null>(todayDate);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
-  const [selectedPackage, setSelectedPackage] = useState<string>('Paket Wisuda Outdoor');
+  const [selectedPackage, setSelectedPackage] = useState<string>('Wisuda Outdoor');
   const [guestName, setGuestName] = useState<string>('');
 
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -143,21 +153,13 @@ export default function AvailabilitySection() {
     return () => observer.disconnect();
   }, []);
 
-  // Scroll to slot panel when date selected
-  useEffect(() => {
-    if (selectedDate !== null && slotPanelRef.current) {
-      setTimeout(() => {
-        slotPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }, 100);
-    }
-  }, [selectedDate]);
-
-  // Format WA pre-filled message per Section 5 requirement
+  // Format WA pre-filled message
   const waPrefilledLink = useMemo(() => {
-    if (!selectedDate || !selectedSlot) return null;
+    if (!selectedDate) return null;
     const dateStr = `${selectedDate} ${MONTH_ID[viewMonth]} ${viewYear}`;
     const nameStr = guestName.trim() || '[Nama Klien]';
-    const msg = `Halo, saya ${nameStr}, mau booking paket ${selectedPackage} tanggal ${dateStr} jam ${selectedSlot} WIB`;
+    const slotStr = selectedSlot ? `jam ${selectedSlot} WIB` : 'sesi foto';
+    const msg = `Halo, saya ${nameStr}, mau booking paket ${selectedPackage} tanggal ${dateStr} ${slotStr}`;
     return `https://wa.me/6285952879644?text=${encodeURIComponent(msg)}`;
   }, [selectedDate, selectedSlot, selectedPackage, guestName, viewMonth, viewYear]);
 
@@ -167,128 +169,151 @@ export default function AvailabilitySection() {
       ref={sectionRef}
       style={{
         background: 'var(--cream)',
-        padding: 'clamp(2.5rem, 5vw, 4rem) 1.25rem',
+        padding: 'clamp(2.5rem, 5vw, 4.5rem) 1.25rem',
       }}
     >
-      <div style={{ maxWidth: '480px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
 
         {/* ── Section Header ── */}
         <div
           className="reveal-avail"
           style={{
-            textAlign: 'center',
-            marginBottom: '1.5rem',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-end',
+            marginBottom: '2rem',
+            flexWrap: 'wrap',
+            gap: '1rem',
             opacity: 0,
             transform: 'translateY(24px)',
             transition: 'all 0.7s ease',
           }}
         >
-          <div style={{
-            display: 'inline-block',
-            background: 'rgba(123,28,42,0.08)',
-            color: 'var(--maroon)',
-            padding: '0.3rem 1rem',
-            fontSize: '0.7rem',
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-            fontFamily: 'Inter, sans-serif',
-            fontWeight: 600,
-            marginBottom: '0.5rem',
-            borderRadius: '2px',
-          }}>
-            Cek Ketersediaan
+          <div>
+            <div style={{
+              fontSize: '0.7rem',
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              color: 'var(--maroon)',
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: 600,
+              marginBottom: '0.4rem',
+            }}>
+              CEK KETERSEDIAAN
+            </div>
+            <h2 className="font-display" style={{
+              fontSize: 'clamp(1.8rem, 4vw, 2.75rem)',
+              fontWeight: 600,
+              color: 'var(--charcoal)',
+              lineHeight: 1.15,
+            }}>
+              Jadwal Sesi Foto
+            </h2>
           </div>
-          <h2 className="font-display" style={{
-            fontSize: 'clamp(1.75rem, 4vw, 2.3rem)',
-            fontWeight: 600,
-            color: 'var(--charcoal)',
-            lineHeight: 1.2,
-            marginBottom: '0.5rem',
-          }}>
-            Pilih Tanggal &amp; Jadwalkan
-          </h2>
-          <div className="section-divider" />
+
           <p style={{
-            fontSize: '0.88rem',
+            fontSize: '0.85rem',
             color: 'var(--muted)',
-            maxWidth: '460px',
-            margin: '0 auto',
-            lineHeight: 1.6,
+            maxWidth: '360px',
+            lineHeight: 1.55,
             fontFamily: 'Inter, sans-serif',
           }}>
-            Cek langsung slot kosong bulan ini. Klik tanggal &rarr; pilih jam &rarr; isi nama &rarr; terhubung ke WhatsApp kami.
+            Klik tanggal untuk melihat slot jam. Jadwal terbatas — segera amankan tanggalmu sebelum terisi.
           </p>
         </div>
 
-        {/* ── Calendar Card (Compact View) ── */}
+        {/* ── 2-Column Desktop Grid Layout ── */}
         <div
           className="reveal-avail"
           style={{
-            background: 'white',
-            borderRadius: '10px',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
-            overflow: 'hidden',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))',
+            gap: '1.5rem',
+            alignItems: 'start',
             opacity: 0,
             transform: 'translateY(24px)',
             transition: 'all 0.7s ease',
-            border: '1px solid rgba(123,28,42,0.1)',
           }}
         >
-          {/* Header Month Title */}
-          <div style={{
-            background: 'var(--maroon)',
-            color: 'white',
-            padding: '0.85rem 1rem',
-            textAlign: 'center',
-          }}>
-            <div className="font-display" style={{
-              fontSize: '1.2rem',
-              fontWeight: 600,
-              letterSpacing: '0.05em',
-            }}>
-              {MONTH_ID[viewMonth]} {viewYear}
-            </div>
-            <div style={{
-              fontSize: '0.65rem',
-              color: '#C9A94B',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              fontFamily: 'Inter, sans-serif',
-              marginTop: '1px',
-            }}>
-              Jadwal Sesi Wisuda, Wedding &amp; Prewedding
-            </div>
-          </div>
 
-          <div style={{ padding: '0.85rem 0.75rem 0.75rem' }}>
+          {/* ── LEFT COLUMN: Calendar Grid Card ── */}
+          <div
+            style={{
+              background: 'white',
+              borderRadius: '16px',
+              padding: 'clamp(1.25rem, 3vw, 1.75rem)',
+              boxShadow: '0 8px 30px rgba(0,0,0,0.04)',
+              border: '1px solid rgba(123,28,42,0.08)',
+            }}
+          >
+            {/* Header: Month Title & Legend */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '1.5rem',
+              flexWrap: 'wrap',
+              gap: '0.5rem',
+            }}>
+              <div className="font-display" style={{
+                fontSize: '1.35rem',
+                fontWeight: 700,
+                color: 'var(--charcoal)',
+              }}>
+                {MONTH_ID[viewMonth]} {viewYear}
+              </div>
+
+              {/* Inline Legend Track */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                fontSize: '0.7rem',
+                fontFamily: 'Inter, sans-serif',
+                color: 'var(--muted)',
+              }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#16A34A' }} />
+                  Tersedia
+                </span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#CA8A04' }} />
+                  Sebagian
+                </span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#DC2626' }} />
+                  Penuh
+                </span>
+              </div>
+            </div>
+
             {/* Day labels */}
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(7, 1fr)',
-              gap: '3px',
-              marginBottom: '4px',
+              gap: '4px',
+              marginBottom: '0.75rem',
             }}>
               {DAY_SHORT.map(d => (
                 <div key={d} style={{
                   textAlign: 'center',
-                  fontSize: '0.65rem',
+                  fontSize: '0.72rem',
                   fontWeight: 600,
                   letterSpacing: '0.05em',
                   color: d === 'Min' || d === 'Sab' ? 'var(--muted)' : 'var(--charcoal)',
-                  padding: '0.2rem 0',
+                  padding: '0.3rem 0',
                   fontFamily: 'Inter, sans-serif',
-                  textTransform: 'uppercase',
                 }}>
                   {d}
                 </div>
               ))}
             </div>
 
-            {/* Grid */}
+            {/* Calendar Days Grid */}
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(7, 1fr)',
-              gap: '4px',
+              gap: '6px',
             }}>
               {/* Empty cells before first day */}
               {Array.from({ length: firstWeekday }).map((_, i) => (
@@ -302,44 +327,50 @@ export default function AvailabilitySection() {
 
                 const cellStyle: React.CSSProperties = {
                   aspectRatio: '1',
-                  borderRadius: '6px',
+                  borderRadius: '10px',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '0.85rem',
+                  fontSize: '0.88rem',
                   transition: 'all 0.2s ease',
                   position: 'relative',
-                  fontWeight: 600,
+                  fontWeight: isSelected ? 700 : 500,
                   fontFamily: 'Inter, sans-serif',
                   cursor: isClickable ? 'pointer' : 'not-allowed',
                 };
 
-                if (day.dateStatus === 'past') {
+                if (isSelected) {
+                  Object.assign(cellStyle, {
+                    background: 'var(--maroon)',
+                    color: 'white',
+                    boxShadow: '0 4px 14px rgba(123,28,42,0.3)',
+                    border: '1.5px solid var(--maroon)',
+                  });
+                } else if (day.dateStatus === 'past') {
                   Object.assign(cellStyle, {
                     background: 'transparent',
-                    color: 'rgba(44,40,40,0.2)',
-                    border: '1.5px solid transparent',
+                    color: 'rgba(44,40,40,0.25)',
+                    border: '1px solid transparent',
                   });
                 } else if (day.dateStatus === 'fully_booked') {
                   Object.assign(cellStyle, {
-                    background: 'rgba(0,0,0,0.04)',
-                    color: 'rgba(44,40,40,0.3)',
-                    border: '1.5px solid rgba(0,0,0,0.06)',
-                    textDecoration: 'line-through',
+                    background: 'rgba(0,0,0,0.03)',
+                    color: 'rgba(44,40,40,0.35)',
+                    border: '1px solid rgba(0,0,0,0.05)',
                   });
                 } else if (day.dateStatus === 'partially_booked') {
                   Object.assign(cellStyle, {
-                    background: isSelected ? 'var(--maroon)' : 'rgba(201,169,75,0.12)',
-                    color: isSelected ? 'white' : 'var(--charcoal)',
-                    border: `1.5px solid ${isSelected ? 'var(--maroon)' : 'rgba(201,169,75,0.5)'}`,
+                    background: 'white',
+                    color: 'var(--charcoal)',
+                    border: '1.5px solid #C9A94B',
                   });
                 } else {
                   // fully_available
                   Object.assign(cellStyle, {
-                    background: isSelected ? 'var(--maroon)' : 'white',
-                    color: isSelected ? 'white' : 'var(--charcoal)',
-                    border: `1.5px solid ${isSelected ? 'var(--maroon)' : 'rgba(123,28,42,0.2)'}`,
+                    background: 'white',
+                    color: 'var(--charcoal)',
+                    border: '1px solid rgba(0,0,0,0.08)',
                   });
                 }
 
@@ -356,24 +387,33 @@ export default function AvailabilitySection() {
                   >
                     <span>{day.date}</span>
 
-                    {day.dateStatus === 'partially_booked' && (
-                      <span style={{
-                        fontSize: '0.5rem',
-                        fontWeight: 500,
-                        color: isSelected ? 'rgba(255,255,255,0.9)' : '#B48418',
-                        marginTop: '1px',
-                        letterSpacing: 0,
-                      }}>
-                        Terbatas
-                      </span>
-                    )}
-
+                    {/* Dot indicator underneath number */}
                     {day.dateStatus === 'fully_available' && (
                       <span style={{
                         width: '4px',
                         height: '4px',
                         borderRadius: '50%',
-                        background: isSelected ? 'rgba(255,255,255,0.8)' : 'var(--maroon)',
+                        background: isSelected ? 'white' : '#16A34A',
+                        marginTop: '2px',
+                      }} />
+                    )}
+
+                    {day.dateStatus === 'partially_booked' && (
+                      <span style={{
+                        width: '4px',
+                        height: '4px',
+                        borderRadius: '50%',
+                        background: isSelected ? 'white' : '#CA8A04',
+                        marginTop: '2px',
+                      }} />
+                    )}
+
+                    {day.dateStatus === 'fully_booked' && (
+                      <span style={{
+                        width: '4px',
+                        height: '4px',
+                        borderRadius: '50%',
+                        background: '#DC2626',
                         marginTop: '2px',
                       }} />
                     )}
@@ -381,322 +421,273 @@ export default function AvailabilitySection() {
                 );
               })}
             </div>
-
-            {/* Legend */}
-            <div style={{
-              display: 'flex',
-              gap: '1.25rem',
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-              marginTop: '1.25rem',
-              paddingTop: '1rem',
-              borderTop: '1px solid rgba(0,0,0,0.06)',
-            }}>
-              {[
-                { color: 'white', border: 'rgba(123,28,42,0.25)', label: 'Tersedia Penuh' },
-                { color: 'rgba(201,169,75,0.15)', border: 'rgba(201,169,75,0.5)', label: 'Slot Terbatas (Clickable)' },
-                { color: 'rgba(0,0,0,0.04)', border: 'rgba(0,0,0,0.08)', label: 'Fully Booked (Non-Clickable)' },
-              ].map(({ color, border, label }) => (
-                <div key={label} style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.4rem',
-                  fontSize: '0.72rem',
-                  color: 'var(--muted)',
-                  fontFamily: 'Inter, sans-serif',
-                }}>
-                  <div style={{
-                    width: '16px',
-                    height: '16px',
-                    borderRadius: '3px',
-                    background: color,
-                    border: `1.5px solid ${border}`,
-                  }} />
-                  {label}
-                </div>
-              ))}
-            </div>
           </div>
-        </div>
 
-        {/* ── Slot Breakdown & Guest Flow Booking Form ── */}
-        <div
-          ref={slotPanelRef}
-          style={{
-            marginTop: '1.5rem',
-            maxHeight: selectedDate && selectedDayData?.dateStatus !== 'fully_booked' ? '600px' : '0',
-            overflow: 'hidden',
-            transition: 'max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-          }}
-        >
-          {selectedDate && selectedDayData && (
-            <div style={{
+          {/* ── RIGHT COLUMN: Slot Details & Booking Panel ── */}
+          <div
+            ref={slotPanelRef}
+            style={{
               background: 'white',
-              borderRadius: '12px',
-              padding: 'clamp(0.85rem, 3vw, 1.25rem)',
-              boxShadow: '0 8px 32px rgba(123,28,42,0.12)',
-              border: '1.5px solid var(--maroon)',
-            }}>
-              {/* Prominent Selected Date Banner */}
-              <div style={{
-                background: 'linear-gradient(135deg, var(--maroon) 0%, #A52A3A 100%)',
-                borderRadius: '8px',
-                padding: '0.6rem 0.85rem',
-                color: 'white',
-                marginBottom: '0.85rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: '0.4rem',
-              }}>
-                <div>
-                  <div style={{
-                    fontSize: '0.62rem',
-                    color: '#C9A94B',
-                    letterSpacing: '0.1em',
-                    textTransform: 'uppercase',
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 600,
-                  }}>
-                    Tanggal Terpilih
-                  </div>
-                  <div className="font-display" style={{
-                    fontSize: '1.05rem',
-                    fontWeight: 600,
-                    lineHeight: 1.2,
-                  }}>
-                    {DAY_SHORT[new Date(viewYear, viewMonth, selectedDate).getDay()]}, {selectedDate} {MONTH_ID[viewMonth]} {viewYear}
-                  </div>
-                </div>
+              borderRadius: '16px',
+              padding: 'clamp(1.25rem, 3vw, 1.75rem)',
+              boxShadow: '0 8px 30px rgba(0,0,0,0.04)',
+              border: '1px solid rgba(123,28,42,0.08)',
+              minHeight: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div>
+              {/* Header inside Panel */}
+              <div style={{ marginBottom: '1.25rem' }}>
                 <div style={{
-                  background: 'rgba(255,255,255,0.15)',
-                  backdropFilter: 'blur(6px)',
-                  padding: '0.2rem 0.55rem',
-                  borderRadius: '100px',
                   fontSize: '0.68rem',
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                  color: 'var(--maroon)',
                   fontFamily: 'Inter, sans-serif',
                   fontWeight: 600,
-                  color: 'white',
-                  border: '1px solid rgba(255,255,255,0.25)',
+                  marginBottom: '0.2rem',
                 }}>
-                  {selectedDayData.slots.filter(s => s.status === 'available').length} Slot Tersedia
+                  TANGGAL DIPILIH
                 </div>
-              </div>
 
-              <div style={{
-                fontFamily: 'Inter, sans-serif',
-                fontSize: '0.78rem',
-                fontWeight: 600,
-                color: 'var(--charcoal)',
-                letterSpacing: '0.04em',
-                marginBottom: '0.6rem',
-              }}>
-                Pilih Jam Sesi Foto:
-              </div>
+                {selectedDate && selectedDayData ? (
+                  <>
+                    <div className="font-display" style={{
+                      fontSize: '1.35rem',
+                      fontWeight: 700,
+                      color: 'var(--charcoal)',
+                      lineHeight: 1.2,
+                      marginBottom: '0.4rem',
+                    }}>
+                      {selectedDate} {MONTH_ID[viewMonth]} {viewYear}
+                    </div>
 
-              {/* Time Slots Grid */}
-              <div style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: '0.4rem',
-                marginBottom: '1rem',
-              }}>
-                {selectedDayData.slots.map((slotItem) => {
-                  const isAvailable = slotItem.status === 'available';
-                  const isPicked = selectedSlot === slotItem.time;
-
-                  return (
-                    <button
-                      key={slotItem.time}
-                      disabled={!isAvailable}
-                      onClick={isAvailable ? () => setSelectedSlot(prev => prev === slotItem.time ? null : slotItem.time) : undefined}
-                      style={{
-                        padding: '0.4rem 0.75rem',
-                        borderRadius: '5px',
-                        border: `1.5px solid ${
-                          !isAvailable ? 'rgba(0,0,0,0.08)' :
-                          isPicked ? 'var(--maroon)' : 'rgba(123,28,42,0.2)'
-                        }`,
-                        background: !isAvailable ? 'rgba(0,0,0,0.04)' : isPicked ? 'var(--maroon)' : 'white',
-                        color: !isAvailable ? 'rgba(0,0,0,0.3)' : isPicked ? 'white' : 'var(--charcoal)',
-                        fontFamily: 'Inter, sans-serif',
-                        fontSize: '0.78rem',
-                        fontWeight: 600,
-                        cursor: isAvailable ? 'pointer' : 'not-allowed',
-                        textDecoration: !isAvailable ? 'line-through' : 'none',
-                        transition: 'all 0.2s ease',
-                      }}
-                    >
-                      {slotItem.time} WIB {!isAvailable && '(Terisi)'}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Guest Form (appears when slot selected) */}
-              {selectedSlot && (
-                <div style={{
-                  borderTop: '1px solid rgba(123,28,42,0.1)',
-                  paddingTop: '0.85rem',
-                  marginTop: '0.75rem',
-                }}>
+                    <span style={{
+                      display: 'inline-block',
+                      background: selectedDayData.dateStatus === 'fully_available' ? 'rgba(22,163,74,0.1)' :
+                        selectedDayData.dateStatus === 'partially_booked' ? 'rgba(201,169,75,0.15)' : 'rgba(220,38,38,0.1)',
+                      color: selectedDayData.dateStatus === 'fully_available' ? '#15803D' :
+                        selectedDayData.dateStatus === 'partially_booked' ? '#946B00' : '#DC2626',
+                      padding: '0.2rem 0.65rem',
+                      borderRadius: '4px',
+                      fontSize: '0.68rem',
+                      fontFamily: 'Inter, sans-serif',
+                      fontWeight: 700,
+                      letterSpacing: '0.05em',
+                      textTransform: 'uppercase',
+                    }}>
+                      {selectedDayData.dateStatus === 'fully_available' ? 'TERSEDIA PENUH' :
+                       selectedDayData.dateStatus === 'partially_booked' ? 'SEBAGIAN TERSEDIA' : 'FULLY BOOKED'}
+                    </span>
+                  </>
+                ) : (
                   <div style={{
+                    fontSize: '0.9rem',
+                    color: 'var(--muted)',
                     fontFamily: 'Inter, sans-serif',
-                    fontSize: '0.75rem',
-                    fontWeight: 600,
-                    color: 'var(--charcoal)',
-                    marginBottom: '0.65rem',
+                    fontStyle: 'italic',
+                    marginTop: '0.2rem',
                   }}>
-                    Lengkapi Detail Booking (Guest Flow):
+                    Silakan klik salah satu tanggal pada kalender.
+                  </div>
+                )}
+              </div>
+
+              {/* Time Slot List Rows */}
+              {selectedDate && selectedDayData && (
+                <div>
+                  <div style={{
+                    fontSize: '0.68rem',
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    color: 'var(--muted)',
+                    fontFamily: 'Inter, sans-serif',
+                    fontWeight: 600,
+                    marginBottom: '0.75rem',
+                  }}>
+                    SLOT JAM
                   </div>
 
                   <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                    gap: '0.65rem',
-                    marginBottom: '0.85rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.5rem',
+                    marginBottom: '1.25rem',
                   }}>
-                    <div>
-                      <label style={{
-                        display: 'block',
-                        fontSize: '0.7rem',
-                        fontFamily: 'Inter, sans-serif',
-                        color: 'var(--muted)',
-                        marginBottom: '0.25rem',
-                        fontWeight: 500,
-                      }}>
-                        Nama Pemesan:
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Masukkan nama Anda..."
-                        value={guestName}
-                        onChange={(e) => setGuestName(e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '0.45rem 0.75rem',
-                          borderRadius: '5px',
-                          border: '1px solid rgba(123,28,42,0.2)',
-                          fontFamily: 'Inter, sans-serif',
-                          fontSize: '0.8rem',
-                          color: 'var(--charcoal)',
-                          outline: 'none',
-                        }}
-                      />
-                    </div>
+                    {selectedDayData.slots.map((slotItem) => {
+                      const isAvailable = slotItem.status === 'available';
+                      const isPicked = selectedSlot === slotItem.time;
 
-                    <div>
-                      <label style={{
-                        display: 'block',
-                        fontSize: '0.7rem',
-                        fontFamily: 'Inter, sans-serif',
-                        color: 'var(--muted)',
-                        marginBottom: '0.25rem',
-                        fontWeight: 500,
-                      }}>
-                        Paket Foto Terpilih:
-                      </label>
-                      <select
-                        value={selectedPackage}
-                        onChange={(e) => setSelectedPackage(e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '0.45rem 0.75rem',
-                          borderRadius: '5px',
-                          border: '1px solid rgba(123,28,42,0.2)',
-                          fontFamily: 'Inter, sans-serif',
-                          fontSize: '0.8rem',
-                          color: 'var(--charcoal)',
-                          background: 'white',
-                          outline: 'none',
-                        }}
-                      >
-                        <option value="Wisuda Outdoor">Wisuda Outdoor (Rp 450.000)</option>
-                        <option value="Wisuda Indoor">Wisuda Indoor (Rp 550.000)</option>
-                        <option value="Wisuda Studio">Wisuda Studio (Rp 650.000)</option>
-                        <option value="Wisuda All-In">Wisuda All-In (Rp 950.000)</option>
-                        <option value="Prewedding Studio Adat Jawa">Prewedding Studio Adat Jawa (Rp 1.850.000)</option>
-                        <option value="Prewedding Outdoor Scenic">Prewedding Outdoor Scenic (Rp 2.250.000)</option>
-                        <option value="Intimate Wedding Coverage">Intimate Wedding Coverage (Rp 4.500.000)</option>
-                      </select>
-                    </div>
+                      return (
+                        <div
+                          key={slotItem.time}
+                          onClick={isAvailable ? () => setSelectedSlot(prev => prev === slotItem.time ? null : slotItem.time) : undefined}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            padding: '0.65rem 0.95rem',
+                            borderRadius: '8px',
+                            cursor: isAvailable ? 'pointer' : 'not-allowed',
+                            transition: 'all 0.2s ease',
+                            border: isPicked
+                              ? '1.5px solid var(--maroon)'
+                              : isAvailable
+                              ? '1px solid rgba(37,211,102,0.3)'
+                              : '1px solid rgba(220,38,38,0.15)',
+                            background: isPicked
+                              ? 'var(--maroon)'
+                              : isAvailable
+                              ? 'rgba(37,211,102,0.06)'
+                              : 'rgba(220,38,38,0.04)',
+                          }}
+                        >
+                          <span style={{
+                            fontSize: '0.85rem',
+                            fontFamily: 'Inter, sans-serif',
+                            fontWeight: 600,
+                            color: isPicked ? 'white' : isAvailable ? 'var(--charcoal)' : 'rgba(44,40,40,0.35)',
+                            textDecoration: !isAvailable ? 'line-through' : 'none',
+                          }}>
+                            {slotItem.time}
+                          </span>
+
+                          <span style={{
+                            fontSize: '0.68rem',
+                            fontFamily: 'Inter, sans-serif',
+                            fontWeight: 700,
+                            letterSpacing: '0.05em',
+                            color: isPicked ? 'white' : isAvailable ? '#15803D' : '#B91C1C',
+                          }}>
+                            {isAvailable ? 'TERSEDIA' : 'TERISI'}
+                          </span>
+                        </div>
+                      );
+                    })}
                   </div>
-
-                  {waPrefilledLink && (
-                    <a
-                      href={waPrefilledLink}
-                      id="cta-booking-slot-wa"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        background: '#25D366',
-                        color: 'white',
-                        padding: '0.65rem 1.25rem',
-                        borderRadius: '5px',
-                        fontFamily: 'Inter, sans-serif',
-                        fontSize: '0.8rem',
-                        fontWeight: 600,
-                        textDecoration: 'none',
-                        boxShadow: '0 4px 16px rgba(37,211,102,0.3)',
-                        transition: 'all 0.25s ease',
-                        width: '100%',
-                        justifyContent: 'center',
-                      }}
-                      onMouseEnter={e => {
-                        (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
-                        (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 24px rgba(37,211,102,0.4)';
-                      }}
-                      onMouseLeave={e => {
-                        (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-                        (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 16px rgba(37,211,102,0.3)';
-                      }}
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                      </svg>
-                      Request Booking — Kirim Pesan ke WhatsApp
-                    </a>
-                  )}
                 </div>
-              )}
-
-              {!selectedSlot && (
-                <p style={{
-                  fontSize: '0.78rem',
-                  color: 'var(--muted)',
-                  fontFamily: 'Inter, sans-serif',
-                  fontStyle: 'italic',
-                }}>
-                  Pilih jam di atas untuk melanjutkan ke pengisian nama &amp; WhatsApp.
-                </p>
               )}
             </div>
-          )}
-        </div>
 
-        {/* Note */}
-        <div
-          className="reveal-avail"
-          style={{
-            textAlign: 'center',
-            marginTop: '1.5rem',
-            opacity: 0,
-            transform: 'translateY(24px)',
-            transition: 'all 0.7s ease',
-          }}
-        >
-          <p style={{
-            fontSize: '0.78rem',
-            color: 'var(--muted)',
-            fontFamily: 'Inter, sans-serif',
-            lineHeight: 1.7,
-          }}>
-            Kalender ini menampilkan ketersediaan bulan berjalan. Konfirmasi final via WhatsApp.
-          </p>
+            {/* Guest Details & Booking Button */}
+            {selectedDate && selectedDayData && selectedDayData.dateStatus !== 'fully_booked' && (
+              <div style={{
+                borderTop: '1px solid rgba(0,0,0,0.06)',
+                paddingTop: '1rem',
+                marginTop: '0.5rem',
+              }}>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                  gap: '0.65rem',
+                  marginBottom: '1rem',
+                }}>
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.7rem',
+                      fontFamily: 'Inter, sans-serif',
+                      color: 'var(--muted)',
+                      marginBottom: '0.25rem',
+                      fontWeight: 500,
+                    }}>
+                      Nama Pemesan:
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Nama Anda..."
+                      value={guestName}
+                      onChange={(e) => setGuestName(e.target.value)}
+                      style={{
+                        width: '100%',
+                        padding: '0.5rem 0.75rem',
+                        borderRadius: '6px',
+                        border: '1px solid rgba(123,28,42,0.2)',
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: '0.8rem',
+                        color: 'var(--charcoal)',
+                        outline: 'none',
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.7rem',
+                      fontFamily: 'Inter, sans-serif',
+                      color: 'var(--muted)',
+                      marginBottom: '0.25rem',
+                      fontWeight: 500,
+                    }}>
+                      Paket Foto Terpilih:
+                    </label>
+                    <select
+                      value={selectedPackage}
+                      onChange={(e) => setSelectedPackage(e.target.value)}
+                      style={{
+                        width: '100%',
+                        padding: '0.5rem 0.75rem',
+                        borderRadius: '6px',
+                        border: '1px solid rgba(123,28,42,0.2)',
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: '0.8rem',
+                        color: 'var(--charcoal)',
+                        background: 'white',
+                        outline: 'none',
+                      }}
+                    >
+                      <option value="Wisuda Outdoor">Wisuda Outdoor (Rp 450.000)</option>
+                      <option value="Wisuda Indoor">Wisuda Indoor (Rp 550.000)</option>
+                      <option value="Wisuda Studio">Wisuda Studio (Rp 650.000)</option>
+                      <option value="Wisuda All-In">Wisuda All-In (Rp 950.000)</option>
+                      <option value="Prewedding Studio Adat Jawa">Prewedding Studio Adat Jawa (Rp 1.850.000)</option>
+                      <option value="Prewedding Outdoor Scenic">Prewedding Outdoor Scenic (Rp 2.250.000)</option>
+                      <option value="Intimate Wedding Coverage">Intimate Wedding Coverage (Rp 4.500.000)</option>
+                    </select>
+                  </div>
+                </div>
+
+                {waPrefilledLink && (
+                  <a
+                    href={waPrefilledLink}
+                    id="cta-booking-slot-wa"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'block',
+                      textAlign: 'center',
+                      background: 'var(--maroon)',
+                      color: 'white',
+                      padding: '0.85rem 1.25rem',
+                      borderRadius: '8px',
+                      fontFamily: 'Inter, sans-serif',
+                      fontSize: '0.85rem',
+                      fontWeight: 600,
+                      textDecoration: 'none',
+                      boxShadow: '0 4px 16px rgba(123,28,42,0.25)',
+                      transition: 'all 0.25s ease',
+                      width: '100%',
+                    }}
+                    onMouseEnter={e => {
+                      (e.currentTarget as HTMLElement).style.background = 'var(--maroon-dark)';
+                      (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={e => {
+                      (e.currentTarget as HTMLElement).style.background = 'var(--maroon)';
+                      (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+                    }}
+                  >
+                    Booking Tanggal Ini &rarr;
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
+
         </div>
 
       </div>
