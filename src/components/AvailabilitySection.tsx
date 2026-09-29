@@ -22,19 +22,22 @@ const MONTH_ID = [
 ];
 const DAY_SHORT = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
 
-// Generate slot data for current month
-function buildCurrentMonthCalendar(): CalendarDay[] {
+// Generate slot data for any requested month and year
+function buildMonthCalendar(targetYear: number, targetMonth: number): CalendarDay[] {
   const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth();
-  const todayDate = today.getDate();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth();
+  const currentDate = today.getDate();
 
+  const isCurrentMonth = targetYear === currentYear && targetMonth === currentMonth;
+  const isPastMonth = targetYear < currentYear || (targetYear === currentYear && targetMonth < currentMonth);
+
+  const daysInMonth = new Date(targetYear, targetMonth + 1, 0).getDate();
   const days: CalendarDay[] = [];
 
   for (let d = 1; d <= daysInMonth; d++) {
-    const isPast = d < todayDate;
-    const dayOfWeek = new Date(year, month, d).getDay();
+    const isPast = isPastMonth || (isCurrentMonth && d < currentDate);
+    const dayOfWeek = new Date(targetYear, targetMonth, d).getDay();
 
     let slots: TimeSlot[] = [];
 
@@ -97,13 +100,18 @@ function buildCurrentMonthCalendar(): CalendarDay[] {
 }
 
 export default function AvailabilitySection() {
-  const today = new Date();
-  const viewMonth = today.getMonth();
-  const viewYear = today.getFullYear();
-  const todayDate = today.getDate();
+  const today = useMemo(() => new Date(), []);
+  const [monthOffset, setMonthOffset] = useState(0);
 
-  // Set default selected date to today (or first available day)
-  const [selectedDate, setSelectedDate] = useState<number | null>(todayDate);
+  const targetDate = useMemo(() => {
+    return new Date(today.getFullYear(), today.getMonth() + monthOffset, 1);
+  }, [today, monthOffset]);
+
+  const viewYear = targetDate.getFullYear();
+  const viewMonth = targetDate.getMonth();
+
+  // Set default selected date to today or null when changing month
+  const [selectedDate, setSelectedDate] = useState<number | null>(() => monthOffset === 0 ? today.getDate() : null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [selectedPackage, setSelectedPackage] = useState<string>('Wisuda Outdoor');
   const [guestName, setGuestName] = useState<string>('');
@@ -111,9 +119,16 @@ export default function AvailabilitySection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const slotPanelRef = useRef<HTMLDivElement>(null);
 
-  const calendarDays = useMemo(() => buildCurrentMonthCalendar(), []);
+  const calendarDays = useMemo(() => buildMonthCalendar(viewYear, viewMonth), [viewYear, viewMonth]);
   const firstWeekday = new Date(viewYear, viewMonth, 1).getDay();
   const selectedDayData = calendarDays.find(d => d.date === selectedDate);
+
+  const changeMonth = (delta: number) => {
+    const newOffset = Math.max(0, Math.min(6, monthOffset + delta));
+    setMonthOffset(newOffset);
+    setSelectedDate(newOffset === 0 ? today.getDate() : null);
+    setSelectedSlot(null);
+  };
 
   // Listen to selectPackage custom event from pricing cards
   useEffect(() => {
@@ -246,21 +261,70 @@ export default function AvailabilitySection() {
               border: '1px solid rgba(123,28,42,0.08)',
             }}
           >
-            {/* Header: Month Title & Legend */}
+            {/* Header: Month Title with Navigation Arrows & Legend */}
             <div style={{
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
               marginBottom: '1.5rem',
               flexWrap: 'wrap',
-              gap: '0.5rem',
+              gap: '0.75rem',
             }}>
-              <div className="font-display" style={{
-                fontSize: '1.35rem',
-                fontWeight: 700,
-                color: 'var(--charcoal)',
-              }}>
-                {MONTH_ID[viewMonth]} {viewYear}
+              {/* Month Navigation Controls */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <button
+                  onClick={() => changeMonth(-1)}
+                  disabled={monthOffset === 0}
+                  aria-label="Bulan sebelumnya"
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    border: '1px solid rgba(123,28,42,0.2)',
+                    background: monthOffset === 0 ? 'rgba(0,0,0,0.04)' : 'white',
+                    color: monthOffset === 0 ? '#CBD5E1' : 'var(--maroon)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: monthOffset === 0 ? 'not-allowed' : 'pointer',
+                    fontSize: '1rem',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  &#8249;
+                </button>
+
+                <div className="font-display" style={{
+                  fontSize: '1.35rem',
+                  fontWeight: 700,
+                  color: 'var(--charcoal)',
+                  minWidth: '150px',
+                  textAlign: 'center',
+                }}>
+                  {MONTH_ID[viewMonth]} {viewYear}
+                </div>
+
+                <button
+                  onClick={() => changeMonth(1)}
+                  disabled={monthOffset >= 6}
+                  aria-label="Bulan berikutnya"
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    border: '1px solid var(--maroon)',
+                    background: monthOffset >= 6 ? 'rgba(0,0,0,0.04)' : 'var(--maroon)',
+                    color: monthOffset >= 6 ? '#CBD5E1' : 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: monthOffset >= 6 ? 'not-allowed' : 'pointer',
+                    fontSize: '1rem',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  &#8250;
+                </button>
               </div>
 
               {/* Inline Legend Track */}
