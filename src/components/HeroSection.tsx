@@ -74,7 +74,7 @@ export default function HeroSection() {
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
-        padding: 'clamp(4.5rem, 7vw, 6.5rem) 1.5rem clamp(2.5rem, 5vw, 4rem)',
+        padding: 'clamp(3.25rem, 6vw, 5.5rem) 1rem clamp(1.75rem, 4vw, 3rem)',
         overflow: 'hidden',
       }}
     >
@@ -125,7 +125,7 @@ export default function HeroSection() {
           margin: '0 auto',
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
-          gap: 'clamp(1.5rem, 4vw, 3.5rem)',
+          gap: 'clamp(1.25rem, 3.5vw, 3rem)',
           alignItems: 'center',
           overflowWrap: 'break-word',
           wordBreak: 'break-word',
@@ -135,10 +135,10 @@ export default function HeroSection() {
         <div style={{ textAlign: 'left', maxWidth: '100%' }}>
 
           {/* Brand Header */}
-          <div className="animate-on-enter opacity-0-init" style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
+          <div className="animate-on-enter opacity-0-init" style={{ marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
             <span style={{
-              fontSize: '0.72rem',
-              letterSpacing: '0.22em',
+              fontSize: '0.68rem',
+              letterSpacing: '0.18em',
               color: '#C9A94B',
               textTransform: 'uppercase',
               fontFamily: 'Inter, sans-serif',
@@ -146,15 +146,15 @@ export default function HeroSection() {
             }}>
               YEKA CREATIVE STUDIO
             </span>
-            <span style={{ height: '1px', width: '28px', background: 'rgba(201,169,75,0.4)' }} />
+            <span style={{ height: '1px', width: '20px', background: 'rgba(201,169,75,0.4)' }} />
             <span style={{
-              fontSize: '0.68rem',
+              fontSize: '0.64rem',
               color: 'rgba(201, 169, 75, 0.9)',
               background: 'rgba(201, 169, 75, 0.1)',
               border: '1px solid rgba(201, 169, 75, 0.3)',
-              padding: '0.2rem 0.6rem',
+              padding: '0.18rem 0.5rem',
               borderRadius: '2px',
-              letterSpacing: '0.1em',
+              letterSpacing: '0.08em',
               textTransform: 'uppercase',
               fontFamily: 'Inter, sans-serif',
             }}>
@@ -164,18 +164,18 @@ export default function HeroSection() {
 
           {/* Main Headline with High-Impact Value Proposition */}
           <h1 className="animate-on-enter opacity-0-init font-display" style={{
-            fontSize: 'clamp(2rem, 5.5vw, 3.8rem)',
+            fontSize: 'clamp(1.5rem, 4.2vw, 3.4rem)',
             fontWeight: 600,
             color: 'white',
-            lineHeight: 1.15,
-            marginBottom: '1rem',
+            lineHeight: 1.18,
+            marginBottom: '0.75rem',
             letterSpacing: '-0.01em',
             wordBreak: 'break-word',
           }}>
             Abadikan Momen<br />
             <span className="font-script" style={{
               color: '#C9A94B',
-              fontSize: '1.1em',
+              fontSize: '1.05em',
               fontWeight: 400,
               display: 'inline-block',
             }}>
@@ -186,11 +186,11 @@ export default function HeroSection() {
           {/* Explicit 3-Second Value Proposition Subtitle */}
           <p className="animate-on-enter opacity-0-init" style={{
             fontFamily: 'Inter, sans-serif',
-            fontSize: 'clamp(0.95rem, 1.8vw, 1.1rem)',
+            fontSize: 'clamp(0.85rem, 1.4vw, 1.05rem)',
             color: 'rgba(255, 255, 255, 0.88)',
-            lineHeight: 1.6,
-            marginBottom: '1.5rem',
-            maxWidth: '520px',
+            lineHeight: 1.55,
+            marginBottom: '1rem',
+            maxWidth: '480px',
           }}>
             Jasa foto <strong>Wedding, Prewedding &amp; Wisuda</strong> di Jogja &amp; Solo dengan sentuhan warm, natural &amp; personal dari perspektif tim fotografer wanita.
           </p>
@@ -199,21 +199,21 @@ export default function HeroSection() {
           <div className="animate-on-enter opacity-0-init" style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '0.85rem',
-            marginBottom: '2rem',
-            padding: '0.65rem 1.15rem',
+            gap: '0.65rem',
+            marginBottom: '1.25rem',
+            padding: '0.4rem 0.85rem',
             background: 'rgba(255, 255, 255, 0.04)',
             border: '1px solid rgba(255, 255, 255, 0.1)',
             borderRadius: '6px',
             maxWidth: 'fit-content',
             backdropFilter: 'blur(8px)',
           }}>
-            <div style={{ display: 'flex', color: '#F59E0B', fontSize: '0.85rem', gap: '3px' }}>
+            <div style={{ display: 'flex', color: '#F59E0B', fontSize: '0.75rem', gap: '2px' }}>
               ★★★★★
             </div>
             <div style={{
               fontFamily: 'Inter, sans-serif',
-              fontSize: '0.78rem',
+              fontSize: '0.72rem',
               color: 'rgba(255,255,255,0.85)',
               lineHeight: 1.3,
             }}>
@@ -224,7 +224,7 @@ export default function HeroSection() {
           {/* Clean Dual CTAs */}
           <div className="animate-on-enter opacity-0-init" style={{
             display: 'flex',
-            gap: '0.85rem',
+            gap: '0.65rem',
             flexWrap: 'wrap',
             alignItems: 'center',
           }}>
@@ -235,9 +235,9 @@ export default function HeroSection() {
               style={{
                 background: 'var(--maroon)',
                 borderColor: 'var(--maroon)',
-                padding: '0.85rem 1.6rem',
-                fontSize: '0.85rem',
-                boxShadow: '0 8px 24px rgba(123,28,42,0.4)',
+                padding: '0.65rem 1.25rem',
+                fontSize: '0.78rem',
+                boxShadow: '0 4px 16px rgba(123,28,42,0.3)',
               }}
             >
               Lihat Paket Wisuda
@@ -247,8 +247,8 @@ export default function HeroSection() {
               id="cta-wedding-hero"
               className="btn-outline"
               style={{
-                padding: '0.85rem 1.6rem',
-                fontSize: '0.85rem',
+                padding: '0.65rem 1.25rem',
+                fontSize: '0.78rem',
               }}
             >
               Wedding &amp; Prewedding
