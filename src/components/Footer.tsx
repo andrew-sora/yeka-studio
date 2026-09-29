@@ -33,7 +33,7 @@ export default function Footer() {
       <div style={{
         maxWidth: '1100px',
         margin: '0 auto',
-        padding: '2.5rem 1.5rem',
+        padding: '2.5rem 1.5rem clamp(5.5rem, 9vh, 7.5rem) 1.5rem',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

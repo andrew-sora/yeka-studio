@@ -6,8 +6,10 @@ export default function StickyMobileCTA() {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Show sticky CTA after scrolling down 300px
-      if (window.scrollY > 300) {
+      const scrollY = window.scrollY;
+      const isBottom = window.innerHeight + scrollY >= document.documentElement.scrollHeight - 140;
+
+      if (scrollY > 300 && !isBottom) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
