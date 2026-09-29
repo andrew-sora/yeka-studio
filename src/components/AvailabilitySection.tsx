@@ -23,7 +23,7 @@ const MONTH_ID = [
 const DAY_SHORT = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
 
 // Generate slot data for any requested month and year
-function buildMonthCalendar(targetYear: number, targetMonth: number): CalendarDay[] {
+function buildMonthCalendar(targetYear: number, targetMonth: number, overrides: Record<string, any> = {}): CalendarDay[] {
   const today = new Date();
   const currentYear = today.getFullYear();
   const currentMonth = today.getMonth();
@@ -82,12 +82,26 @@ function buildMonthCalendar(targetYear: number, targetMonth: number): CalendarDa
       ];
     }
 
+    // Merge Admin Overrides if present
+    const dateKey = `${targetYear}-${(targetMonth + 1).toString().padStart(2, '0')}-${d.toString().padStart(2, '0')}`;
+    const dayOverride = overrides[dateKey];
+    if (dayOverride && !isPast) {
+      if (dayOverride.status === 'fully_booked') {
+        slots = slots.map((s) => ({ ...s, status: 'booked' }));
+      } else if (Array.isArray(dayOverride.bookedSlots)) {
+        slots = slots.map((s) => ({
+          ...s,
+          status: dayOverride.bookedSlots.includes(s.time) ? 'booked' : 'available',
+        }));
+      }
+    }
+
     // Derive date status from slots
     let dateStatus: DateAvailabilityStatus = 'fully_available';
     if (isPast) {
       dateStatus = 'past';
     } else {
-      const availableCount = slots.filter(s => s.status === 'available').length;
+      const availableCount = slots.filter((s) => s.status === 'available').length;
       if (availableCount === 0) dateStatus = 'fully_booked';
       else if (availableCount < slots.length) dateStatus = 'partially_booked';
       else dateStatus = 'fully_available';
@@ -102,6 +116,19 @@ function buildMonthCalendar(targetYear: number, targetMonth: number): CalendarDa
 export default function AvailabilitySection() {
   const today = useMemo(() => new Date(), []);
   const [monthOffset, setMonthOffset] = useState(0);
+  const [adminOverrides, setAdminOverrides] = useState<Record<string, any>>({});
+
+  // Load Admin overrides from localStorage
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('yeka_slot_overrides');
+      if (stored) {
+        setAdminOverrides(JSON.parse(stored));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
 
   const targetDate = useMemo(() => {
     return new Date(today.getFullYear(), today.getMonth() + monthOffset, 1);
@@ -119,7 +146,7 @@ export default function AvailabilitySection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const slotPanelRef = useRef<HTMLDivElement>(null);
 
-  const calendarDays = useMemo(() => buildMonthCalendar(viewYear, viewMonth), [viewYear, viewMonth]);
+  const calendarDays = useMemo(() => buildMonthCalendar(viewYear, viewMonth, adminOverrides), [viewYear, viewMonth, adminOverrides]);
   const firstWeekday = new Date(viewYear, viewMonth, 1).getDay();
   const selectedDayData = calendarDays.find(d => d.date === selectedDate);
 
