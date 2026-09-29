@@ -1,9 +1,9 @@
 'use client';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 
 // Default PIN for Yeka Studio Owner/Admin
-const ADMIN_PIN = '1234';
+const DEFAULT_ADMIN_PIN = '1234';
 
 const MONTH_NAMES = [
   'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
@@ -160,9 +160,14 @@ const DEFAULT_PHOTOS: PhotoData[] = [
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [adminPin, setAdminPin] = useState(DEFAULT_ADMIN_PIN);
   const [pinInput, setPinInput] = useState('');
   const [pinError, setPinError] = useState(false);
-  const [activeTab, setActiveTab] = useState<'calendar' | 'packages' | 'photos' | 'reviews'>('calendar');
+  const [activeTab, setActiveTab] = useState<'calendar' | 'packages' | 'photos' | 'reviews' | 'settings'>('calendar');
+
+  // Change PIN State
+  const [newPinInput, setNewPinInput] = useState('');
+  const [confirmPinInput, setConfirmPinInput] = useState('');
 
   // Calendar State
   const today = useMemo(() => new Date(), []);
@@ -178,6 +183,10 @@ export default function AdminPage() {
   // Package Management State
   const [packages, setPackages] = useState<PackageData[]>(DEFAULT_PACKAGES);
   const [selectedPkgId, setSelectedPkgId] = useState<string>('wisuda-outdoor');
+  const [pkgFilterCategory, setPkgFilterCategory] = useState<'all' | 'wisuda' | 'wedding'>('all');
+  const [pkgSearchQuery, setPkgSearchQuery] = useState('');
+
+  // Package Form Fields
   const [pkgCategoryInput, setPkgCategoryInput] = useState<'wisuda' | 'wedding'>('wisuda');
   const [pkgTitleInput, setPkgTitleInput] = useState('');
   const [pkgPriceInput, setPkgPriceInput] = useState('');
@@ -189,6 +198,11 @@ export default function AdminPage() {
   // Photo Management State
   const [photos, setPhotos] = useState<PhotoData[]>(DEFAULT_PHOTOS);
   const [selectedPhotoId, setSelectedPhotoId] = useState<string>('wisuda-1');
+  const [photoFilterCategory, setPhotoFilterCategory] = useState<'all' | 'wisuda' | 'wedding'>('all');
+  const [photoSearchQuery, setPhotoSearchQuery] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Photo Form Fields
   const [photoCategoryInput, setPhotoCategoryInput] = useState<'wisuda' | 'wedding'>('wisuda');
   const [photoSrcInput, setPhotoSrcInput] = useState('');
   const [photoTitleInput, setPhotoTitleInput] = useState('');
@@ -203,6 +217,9 @@ export default function AdminPage() {
 
   useEffect(() => {
     try {
+      const storedPin = localStorage.getItem('yeka_admin_pin');
+      if (storedPin) setAdminPin(storedPin);
+
       const storedSlots = localStorage.getItem('yeka_slot_overrides');
       if (storedSlots) setOverrides(JSON.parse(storedSlots));
 
@@ -216,6 +233,7 @@ export default function AdminPage() {
     }
   }, []);
 
+  // Update Package Edit Form when selection changes
   useEffect(() => {
     const currentPkg = packages.find((p) => p.id === selectedPkgId) || packages[0];
     if (currentPkg) {
@@ -229,6 +247,7 @@ export default function AdminPage() {
     }
   }, [selectedPkgId, packages]);
 
+  // Update Photo Edit Form when selection changes
   useEffect(() => {
     const currentPhoto = photos.find((ph) => ph.id === selectedPhotoId) || photos[0];
     if (currentPhoto) {
@@ -247,7 +266,7 @@ export default function AdminPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (pinInput === ADMIN_PIN) {
+    if (pinInput === adminPin) {
       sessionStorage.setItem('yeka_admin_auth', 'true');
       setIsAuthenticated(true);
       setPinError(false);
@@ -262,6 +281,24 @@ export default function AdminPage() {
     setPinInput('');
   };
 
+  const handleChangePin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPinInput.length < 4) {
+      alert('PIN minimal 4 karakter.');
+      return;
+    }
+    if (newPinInput !== confirmPinInput) {
+      alert('Konfirmasi PIN baru tidak cocok.');
+      return;
+    }
+    setAdminPin(newPinInput);
+    localStorage.setItem('yeka_admin_pin', newPinInput);
+    setNewPinInput('');
+    setConfirmPinInput('');
+    showToast('PIN Admin berhasil diperbarui!');
+  };
+
+  // Calendar Key & Override Helpers
   const currentDateKey = useMemo(() => {
     const m = (viewMonth + 1).toString().padStart(2, '0');
     const d = selectedDay.toString().padStart(2, '0');
@@ -321,7 +358,26 @@ export default function AdminPage() {
     showToast('Status tanggal berhasil diperbarui.');
   };
 
-  // Package Management Handlers
+  // Filtered Packages & Photos Lists
+  const filteredPackages = useMemo(() => {
+    return packages.filter((pkg) => {
+      const matchCategory = pkgFilterCategory === 'all' || pkg.category === pkgFilterCategory;
+      const matchSearch = pkg.title.toLowerCase().includes(pkgSearchQuery.toLowerCase()) ||
+                          pkg.price.toLowerCase().includes(pkgSearchQuery.toLowerCase());
+      return matchCategory && matchSearch;
+    });
+  }, [packages, pkgFilterCategory, pkgSearchQuery]);
+
+  const filteredPhotos = useMemo(() => {
+    return photos.filter((ph) => {
+      const matchCategory = photoFilterCategory === 'all' || ph.category === photoFilterCategory;
+      const matchSearch = ph.title.toLowerCase().includes(photoSearchQuery.toLowerCase()) ||
+                          ph.tag.toLowerCase().includes(photoSearchQuery.toLowerCase());
+      return matchCategory && matchSearch;
+    });
+  }, [photos, photoFilterCategory, photoSearchQuery]);
+
+  // Package Handlers
   const handleAddNewPackage = () => {
     const newId = `pkg-${Date.now()}`;
     const newPkg: PackageData = {
@@ -383,7 +439,25 @@ export default function AdminPage() {
     }
   };
 
-  // Photo Management Handlers
+  // Photo Handlers & File Reader Upload
+  const handlePhotoFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 8 * 1024 * 1024) {
+      alert('Ukuran file foto maksimal 8MB.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        setPhotoSrcInput(reader.result);
+        showToast('Foto dari galeri perangkat berhasil dimuat!');
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleAddNewPhoto = () => {
     const newId = `photo-${Date.now()}`;
     const newPhoto: PhotoData = {
@@ -441,7 +515,7 @@ export default function AdminPage() {
     }
   };
 
-  // ── AUTH / LOGIN SCREEN (Clean Minimalist) ─────────────────────────────────
+  // ── AUTH / LOGIN SCREEN ───────────────────────────────────────────────────
   if (!isAuthenticated) {
     return (
       <div style={{
@@ -472,7 +546,7 @@ export default function AdminPage() {
             Masuk ke Owner Portal
           </h1>
           <p style={{ fontSize: '0.82rem', color: '#64748B', marginBottom: '1.75rem', lineHeight: 1.5 }}>
-            Masukkan 4-digit PIN keamanan untuk mengelola jadwal, paket, dan foto.
+            Masukkan PIN rahasia untuk mengelola jadwal, harga paket, dan foto.
           </p>
 
           <form onSubmit={handleLogin}>
@@ -505,7 +579,7 @@ export default function AdminPage() {
 
             {pinError && (
               <div style={{ color: '#DC2626', fontSize: '0.75rem', marginBottom: '1rem', fontWeight: 500 }}>
-                PIN salah. PIN default adalah 1234.
+                PIN salah. Masukkan PIN yang terdaftar.
               </div>
             )}
 
@@ -538,7 +612,7 @@ export default function AdminPage() {
     );
   }
 
-  // ── MAIN DASHBOARD (Clean Professional SaaS UI) ───────────────────────────
+  // ── MAIN DASHBOARD (Clean Modern SaaS UI) ──────────────────────────────────
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
   const firstWeekday = new Date(viewYear, viewMonth, 1).getDay();
 
@@ -559,7 +633,7 @@ export default function AdminPage() {
       fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
       paddingBottom: '4rem',
     }}>
-      {/* Top Bar Navigation */}
+      {/* Top Navbar */}
       <header style={{
         background: '#0F172A',
         color: '#FFFFFF',
@@ -645,7 +719,7 @@ export default function AdminPage() {
             onClick={() => setActiveTab('calendar')}
             style={{
               flex: 1,
-              padding: '0.6rem 1rem',
+              padding: '0.6rem 0.85rem',
               borderRadius: '7px',
               border: 'none',
               background: activeTab === 'calendar' ? '#0F172A' : 'transparent',
@@ -663,7 +737,7 @@ export default function AdminPage() {
             onClick={() => setActiveTab('packages')}
             style={{
               flex: 1,
-              padding: '0.6rem 1rem',
+              padding: '0.6rem 0.85rem',
               borderRadius: '7px',
               border: 'none',
               background: activeTab === 'packages' ? '#0F172A' : 'transparent',
@@ -681,7 +755,7 @@ export default function AdminPage() {
             onClick={() => setActiveTab('photos')}
             style={{
               flex: 1,
-              padding: '0.6rem 1rem',
+              padding: '0.6rem 0.85rem',
               borderRadius: '7px',
               border: 'none',
               background: activeTab === 'photos' ? '#0F172A' : 'transparent',
@@ -699,7 +773,7 @@ export default function AdminPage() {
             onClick={() => setActiveTab('reviews')}
             style={{
               flex: 1,
-              padding: '0.6rem 1rem',
+              padding: '0.6rem 0.85rem',
               borderRadius: '7px',
               border: 'none',
               background: activeTab === 'reviews' ? '#0F172A' : 'transparent',
@@ -711,6 +785,23 @@ export default function AdminPage() {
             }}
           >
             Testimoni Klien
+          </button>
+
+          <button
+            onClick={() => setActiveTab('settings')}
+            style={{
+              padding: '0.6rem 0.85rem',
+              borderRadius: '7px',
+              border: 'none',
+              background: activeTab === 'settings' ? '#0F172A' : 'transparent',
+              color: activeTab === 'settings' ? '#FFFFFF' : '#64748B',
+              fontWeight: activeTab === 'settings' ? 600 : 500,
+              fontSize: '0.85rem',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            Pengaturan PIN
           </button>
         </div>
 
@@ -935,7 +1026,7 @@ export default function AdminPage() {
         {/* ── TAB 2: PACKAGES & PRICING MANAGER ── */}
         {activeTab === 'packages' && (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '1.5rem' }}>
-            {/* Left: Package List */}
+            {/* Left: Package List with Search & Filter */}
             <div style={{
               background: '#FFFFFF',
               borderRadius: '12px',
@@ -943,9 +1034,9 @@ export default function AdminPage() {
               border: '1px solid #E2E8F0',
               boxShadow: '0 1px 3px 0 rgba(0,0,0,0.02)',
             }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
                 <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#475569' }}>
-                  DAFTAR PAKET ({packages.length})
+                  DAFTAR PAKET ({filteredPackages.length})
                 </span>
                 <button
                   onClick={handleAddNewPackage}
@@ -953,7 +1044,7 @@ export default function AdminPage() {
                     background: '#0F172A',
                     color: '#FFFFFF',
                     border: 'none',
-                    padding: '0.4rem 0.75rem',
+                    padding: '0.35rem 0.75rem',
                     borderRadius: '6px',
                     fontSize: '0.75rem',
                     fontWeight: 600,
@@ -964,8 +1055,51 @@ export default function AdminPage() {
                 </button>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                {packages.map((pkg) => {
+              {/* Filter Tabs & Search Bar */}
+              <div style={{ marginBottom: '0.85rem' }}>
+                <div style={{ display: 'flex', gap: '0.25rem', background: '#F8FAFC', padding: '0.2rem', borderRadius: '6px', border: '1px solid #E2E8F0', marginBottom: '0.5rem' }}>
+                  {(['all', 'wisuda', 'wedding'] as const).map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => setPkgFilterCategory(cat)}
+                      style={{
+                        flex: 1,
+                        padding: '0.3rem',
+                        fontSize: '0.72rem',
+                        borderRadius: '4px',
+                        border: 'none',
+                        background: pkgFilterCategory === cat ? '#FFFFFF' : 'transparent',
+                        color: pkgFilterCategory === cat ? '#0F172A' : '#64748B',
+                        fontWeight: pkgFilterCategory === cat ? 600 : 500,
+                        cursor: 'pointer',
+                        boxShadow: pkgFilterCategory === cat ? '0 1px 2px rgba(0,0,0,0.05)' : 'none',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {cat === 'all' ? 'Semua' : cat}
+                    </button>
+                  ))}
+                </div>
+
+                <input
+                  type="text"
+                  placeholder="Cari nama paket atau harga..."
+                  value={pkgSearchQuery}
+                  onChange={(e) => setPkgSearchQuery(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.45rem 0.65rem',
+                    fontSize: '0.78rem',
+                    borderRadius: '6px',
+                    border: '1px solid #CBD5E1',
+                    outline: 'none',
+                    boxSizing: 'border-box',
+                  }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', maxHeight: '420px', overflowY: 'auto' }}>
+                {filteredPackages.map((pkg) => {
                   const isSelected = selectedPkgId === pkg.id;
                   return (
                     <div
@@ -1030,7 +1164,7 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Right: Package Edit Form */}
+            {/* Right: Package Edit Form + Live Preview */}
             <div style={{
               background: '#FFFFFF',
               borderRadius: '12px',
@@ -1178,7 +1312,7 @@ export default function AdminPage() {
                     style={{ width: '15px', height: '15px', cursor: 'pointer' }}
                   />
                   <label htmlFor="pkgFeatured" style={{ fontSize: '0.78rem', fontWeight: 500, color: '#334155', cursor: 'pointer' }}>
-                    Tampilkan sebagai paket unggulan (Highlighted)
+                    Tampilkan sebagai paket unggulan (Highlighted Card)
                   </label>
                 </div>
 
@@ -1187,7 +1321,7 @@ export default function AdminPage() {
                     Fasilitas / Inklusi (1 Per Baris)
                   </label>
                   <textarea
-                    rows={5}
+                    rows={4}
                     value={pkgFeaturesInput}
                     onChange={(e) => setPkgFeaturesInput(e.target.value)}
                     placeholder="Contoh:&#10;Durasi 1.5 Jam Photoshoot&#10;ALL File Mentah (Drive)"
@@ -1202,6 +1336,35 @@ export default function AdminPage() {
                       boxSizing: 'border-box',
                     }}
                   />
+                </div>
+
+                {/* Real-time Live Preview Card */}
+                <div style={{ marginBottom: '1.25rem', background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px dashed #CBD5E1' }}>
+                  <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+                    LIVE PREVIEW KARTU PAKET WEB:
+                  </div>
+                  <div style={{
+                    background: '#FFFFFF',
+                    borderRadius: '8px',
+                    padding: '0.85rem',
+                    border: pkgFeaturedInput ? '2px solid #7B1C2A' : '1px solid #E2E8F0',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                  }}>
+                    {pkgBadgeInput && (
+                      <span style={{ fontSize: '0.6rem', fontWeight: 700, background: '#7B1C2A', color: '#FFFFFF', padding: '0.1rem 0.4rem', borderRadius: '4px', textTransform: 'uppercase' }}>
+                        {pkgBadgeInput}
+                      </span>
+                    )}
+                    <div style={{ fontSize: '1rem', fontWeight: 700, color: '#0F172A', marginTop: '4px' }}>
+                      {pkgTitleInput || 'Nama Paket'}
+                    </div>
+                    <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#7B1C2A' }}>
+                      {pkgPriceInput || 'Rp 0'}
+                    </div>
+                    <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '2px' }}>
+                      {pkgDescInput || 'Deskripsi singkat paket'}
+                    </div>
+                  </div>
                 </div>
 
                 <button
@@ -1228,7 +1391,7 @@ export default function AdminPage() {
         {/* ── TAB 3: PORTFOLIO PHOTO MANAGER ── */}
         {activeTab === 'photos' && (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '1.5rem' }}>
-            {/* Left: Photo Grid List */}
+            {/* Left: Photo Grid List with Search & Filter */}
             <div style={{
               background: '#FFFFFF',
               borderRadius: '12px',
@@ -1236,9 +1399,9 @@ export default function AdminPage() {
               border: '1px solid #E2E8F0',
               boxShadow: '0 1px 3px 0 rgba(0,0,0,0.02)',
             }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
                 <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#475569' }}>
-                  PORTOFOLIO FOTO ({photos.length})
+                  PORTOFOLIO FOTO ({filteredPhotos.length})
                 </span>
                 <button
                   onClick={handleAddNewPhoto}
@@ -1246,7 +1409,7 @@ export default function AdminPage() {
                     background: '#0F172A',
                     color: '#FFFFFF',
                     border: 'none',
-                    padding: '0.4rem 0.75rem',
+                    padding: '0.35rem 0.75rem',
                     borderRadius: '6px',
                     fontSize: '0.75rem',
                     fontWeight: 600,
@@ -1257,15 +1420,58 @@ export default function AdminPage() {
                 </button>
               </div>
 
+              {/* Filter Tabs & Search Bar */}
+              <div style={{ marginBottom: '0.85rem' }}>
+                <div style={{ display: 'flex', gap: '0.25rem', background: '#F8FAFC', padding: '0.2rem', borderRadius: '6px', border: '1px solid #E2E8F0', marginBottom: '0.5rem' }}>
+                  {(['all', 'wisuda', 'wedding'] as const).map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => setPhotoFilterCategory(cat)}
+                      style={{
+                        flex: 1,
+                        padding: '0.3rem',
+                        fontSize: '0.72rem',
+                        borderRadius: '4px',
+                        border: 'none',
+                        background: photoFilterCategory === cat ? '#FFFFFF' : 'transparent',
+                        color: photoFilterCategory === cat ? '#0F172A' : '#64748B',
+                        fontWeight: photoFilterCategory === cat ? 600 : 500,
+                        cursor: 'pointer',
+                        boxShadow: photoFilterCategory === cat ? '0 1px 2px rgba(0,0,0,0.05)' : 'none',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {cat === 'all' ? 'Semua' : cat}
+                    </button>
+                  ))}
+                </div>
+
+                <input
+                  type="text"
+                  placeholder="Cari judul foto atau spot..."
+                  value={photoSearchQuery}
+                  onChange={(e) => setPhotoSearchQuery(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.45rem 0.65rem',
+                    fontSize: '0.78rem',
+                    borderRadius: '6px',
+                    border: '1px solid #CBD5E1',
+                    outline: 'none',
+                    boxSizing: 'border-box',
+                  }}
+                />
+              </div>
+
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))',
                 gap: '0.65rem',
-                maxHeight: '480px',
+                maxHeight: '440px',
                 overflowY: 'auto',
                 paddingRight: '0.2rem',
               }}>
-                {photos.map((ph) => {
+                {filteredPhotos.map((ph) => {
                   const isSelected = selectedPhotoId === ph.id;
                   return (
                     <div
@@ -1293,7 +1499,7 @@ export default function AdminPage() {
                           left: '3px',
                           fontSize: '0.55rem',
                           fontWeight: 600,
-                          background: 'rgba(15,23,42,0.8)',
+                          background: 'rgba(15,23,42,0.85)',
                           color: '#FFFFFF',
                           padding: '0.1rem 0.3rem',
                           borderRadius: '3px',
@@ -1330,7 +1536,7 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Right: Photo Edit Form */}
+            {/* Right: Photo Edit Form + Direct Upload File Picker + Live Preview */}
             <div style={{
               background: '#FFFFFF',
               borderRadius: '12px',
@@ -1379,9 +1585,46 @@ export default function AdminPage() {
                       boxSizing: 'border-box',
                     }}
                   >
-                    <option value="wisuda">Wisuda (Tampil di Galeri Wisuda)</option>
-                    <option value="wedding">Wedding (Tampil di Galeri Wedding)</option>
+                    <option value="wisuda">Wisuda (Galeri Wisuda)</option>
+                    <option value="wedding">Wedding (Galeri Wedding)</option>
                   </select>
+                </div>
+
+                {/* Direct Upload File Picker */}
+                <div style={{ marginBottom: '1rem', background: '#F8FAFC', padding: '0.85rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#0F172A', marginBottom: '0.4rem' }}>
+                    📷 Upload File Foto dari HP / Perangkat
+                  </label>
+                  
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    accept="image/*"
+                    onChange={handlePhotoFileUpload}
+                    style={{ display: 'none' }}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    style={{
+                      width: '100%',
+                      background: '#FFFFFF',
+                      color: '#0F172A',
+                      border: '1px solid #CBD5E1',
+                      padding: '0.5rem 0.85rem',
+                      borderRadius: '6px',
+                      fontSize: '0.8rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.4rem',
+                    }}
+                  >
+                    📁 Pilih File Gambar dari Perangkat
+                  </button>
                 </div>
 
                 <div style={{ marginBottom: '1rem' }}>
@@ -1404,9 +1647,6 @@ export default function AdminPage() {
                       boxSizing: 'border-box',
                     }}
                   />
-                  <div style={{ fontSize: '0.7rem', color: '#94A3B8', marginTop: '3px' }}>
-                    Menggunakan file lokal `/images/...` atau URL publik (Unsplash, Drive, dll).
-                  </div>
                 </div>
 
                 <div style={{ marginBottom: '1rem' }}>
@@ -1474,6 +1714,48 @@ export default function AdminPage() {
                   />
                 </div>
 
+                {/* Real-Time Live Preview Photo */}
+                <div style={{ marginBottom: '1.25rem', background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px dashed #CBD5E1' }}>
+                  <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+                    LIVE PREVIEW PORTOFOLIO:
+                  </div>
+                  <div style={{
+                    width: '160px',
+                    aspectRatio: '3/4',
+                    borderRadius: '8px',
+                    overflow: 'hidden',
+                    position: 'relative',
+                    background: '#0F172A',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                    margin: '0 auto',
+                  }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={photoSrcInput || '/images/wisuda-1.jpg'}
+                      alt="Preview"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                    <div style={{
+                      position: 'absolute',
+                      bottom: '8px',
+                      left: '8px',
+                      right: '8px',
+                      background: 'rgba(15, 23, 42, 0.85)',
+                      backdropFilter: 'blur(4px)',
+                      borderRadius: '6px',
+                      padding: '0.4rem 0.5rem',
+                      color: 'white',
+                    }}>
+                      <div style={{ fontSize: '0.55rem', color: '#FCD34D', textTransform: 'uppercase', fontWeight: 600 }}>
+                        {photoTagInput || 'Tag Lokasi'}
+                      </div>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 600, marginTop: '1px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {photoTitleInput || 'Judul Foto'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <button
                   type="submit"
                   style={{
@@ -1535,6 +1817,91 @@ export default function AdminPage() {
                 Reset Ulasan Tambahan (Testing Data)
               </button>
             </div>
+          </div>
+        )}
+
+        {/* ── TAB 5: PIN & SECURITY SETTINGS ── */}
+        {activeTab === 'settings' && (
+          <div style={{
+            background: '#FFFFFF',
+            borderRadius: '12px',
+            padding: '1.5rem',
+            maxWidth: '500px',
+            margin: '0 auto',
+            border: '1px solid #E2E8F0',
+            boxShadow: '0 1px 3px 0 rgba(0,0,0,0.02)',
+          }}>
+            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.35rem' }}>
+              Pengaturan PIN Keamanan Admin
+            </h3>
+            <p style={{ fontSize: '0.82rem', color: '#64748B', marginBottom: '1.5rem', lineHeight: 1.5 }}>
+              Ubah PIN login Owner/Admin untuk mengamankan akses ke halaman pengelola jadwal dan harga ini.
+            </p>
+
+            <form onSubmit={handleChangePin}>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>
+                  PIN BARU (MIN. 4 ANGKA/KARAKTER)
+                </label>
+                <input
+                  type="password"
+                  required
+                  maxLength={6}
+                  placeholder="Masukkan PIN baru"
+                  value={newPinInput}
+                  onChange={(e) => setNewPinInput(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.6rem 0.75rem',
+                    fontSize: '0.9rem',
+                    borderRadius: '6px',
+                    border: '1px solid #CBD5E1',
+                    outline: 'none',
+                    boxSizing: 'border-box',
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: '1.25rem' }}>
+                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>
+                  KONFIRMASI PIN BARU
+                </label>
+                <input
+                  type="password"
+                  required
+                  maxLength={6}
+                  placeholder="Ulangi PIN baru"
+                  value={confirmPinInput}
+                  onChange={(e) => setConfirmPinInput(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.6rem 0.75rem',
+                    fontSize: '0.9rem',
+                    borderRadius: '6px',
+                    border: '1px solid #CBD5E1',
+                    outline: 'none',
+                    boxSizing: 'border-box',
+                  }}
+                />
+              </div>
+
+              <button
+                type="submit"
+                style={{
+                  width: '100%',
+                  background: '#0F172A',
+                  color: '#FFFFFF',
+                  padding: '0.7rem',
+                  borderRadius: '6px',
+                  border: 'none',
+                  fontWeight: 600,
+                  fontSize: '0.85rem',
+                  cursor: 'pointer',
+                }}
+              >
+                Simpan PIN Rahasia Baru
+              </button>
+            </form>
           </div>
         )}
       </main>
