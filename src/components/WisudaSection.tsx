@@ -24,6 +24,22 @@ export default function WisudaSection() {
   const pkgCarouselRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [activePkgIndex, setActivePkgIndex] = useState(0);
+  const [canScrollPhotos, setCanScrollPhotos] = useState(false);
+  const [canScrollPkgs, setCanScrollPkgs] = useState(false);
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (carouselRef.current) {
+        setCanScrollPhotos(carouselRef.current.scrollWidth > carouselRef.current.clientWidth + 10);
+      }
+      if (pkgCarouselRef.current) {
+        setCanScrollPkgs(pkgCarouselRef.current.scrollWidth > pkgCarouselRef.current.clientWidth + 10);
+      }
+    };
+    checkOverflow();
+    window.addEventListener('resize', checkOverflow);
+    return () => window.removeEventListener('resize', checkOverflow);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -211,7 +227,7 @@ export default function WisudaSection() {
             </div>
 
             {/* Navigation Buttons */}
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <div style={{ display: canScrollPhotos ? 'flex' : 'none', gap: '0.5rem' }}>
               <button
                 onClick={() => scroll('left')}
                 aria-label="Previous slide"
@@ -337,7 +353,7 @@ export default function WisudaSection() {
 
           {/* Dots Navigation Tracker */}
           <div style={{
-            display: 'flex',
+            display: canScrollPhotos ? 'flex' : 'none',
             justifyContent: 'center',
             gap: '0.4rem',
             marginTop: '0.75rem',
@@ -389,7 +405,7 @@ export default function WisudaSection() {
             </div>
 
             {/* Navigation Buttons */}
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <div style={{ display: canScrollPkgs ? 'flex' : 'none', gap: '0.5rem' }}>
               <button
                 onClick={() => scrollPkg('left')}
                 aria-label="Previous package"
@@ -444,6 +460,7 @@ export default function WisudaSection() {
               display: 'flex',
               flexDirection: 'row',
               flexWrap: 'nowrap',
+              justifyContent: canScrollPkgs ? 'flex-start' : 'center',
               gap: '1.25rem',
               overflowX: 'auto',
               WebkitOverflowScrolling: 'touch',
@@ -554,7 +571,7 @@ export default function WisudaSection() {
 
           {/* Dots Navigation Tracker */}
           <div style={{
-            display: 'flex',
+            display: canScrollPkgs ? 'flex' : 'none',
             justifyContent: 'center',
             gap: '0.4rem',
             marginTop: '0.75rem',

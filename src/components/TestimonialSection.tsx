@@ -69,6 +69,18 @@ export default function TestimonialSection() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [canScroll, setCanScroll] = useState(false);
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (carouselRef.current) {
+        setCanScroll(carouselRef.current.scrollWidth > carouselRef.current.clientWidth + 10);
+      }
+    };
+    checkOverflow();
+    window.addEventListener('resize', checkOverflow);
+    return () => window.removeEventListener('resize', checkOverflow);
+  }, [testimonials]);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -462,6 +474,7 @@ export default function TestimonialSection() {
             style={{
               display: 'flex',
               gap: '1.25rem',
+              justifyContent: canScroll ? 'flex-start' : 'center',
               overflowX: 'auto',
               scrollSnapType: 'x mandatory',
               scrollBehavior: 'smooth',
@@ -633,7 +646,7 @@ export default function TestimonialSection() {
 
           {/* Dots Indicator */}
           <div style={{
-            display: 'flex',
+            display: canScroll ? 'flex' : 'none',
             justifyContent: 'center',
             gap: '0.4rem',
             marginTop: '0.5rem',
