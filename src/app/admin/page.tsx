@@ -13,7 +13,7 @@ const MONTH_NAMES = [
 interface SlotOverride {
   dateKey: string; // YYYY-MM-DD
   status: 'fully_available' | 'partially_booked' | 'fully_booked';
-  bookedSlots: string[]; // List of booked slot strings e.g. ["09.00 - 10.00"]
+  bookedSlots: string[];
 }
 
 interface PackageData {
@@ -173,8 +173,7 @@ export default function AdminPage() {
 
   const [selectedDay, setSelectedDay] = useState<number>(today.getDate());
   const [overrides, setOverrides] = useState<Record<string, SlotOverride>>({});
-  const [savedSuccessToast, setSavedSuccessToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Package Management State
   const [packages, setPackages] = useState<PackageData[]>(DEFAULT_PACKAGES);
@@ -187,7 +186,7 @@ export default function AdminPage() {
   const [pkgFeaturedInput, setPkgFeaturedInput] = useState(false);
   const [pkgFeaturesInput, setPkgFeaturesInput] = useState('');
 
-  // Photo Portfolio Management State
+  // Photo Management State
   const [photos, setPhotos] = useState<PhotoData[]>(DEFAULT_PHOTOS);
   const [selectedPhotoId, setSelectedPhotoId] = useState<string>('wisuda-1');
   const [photoCategoryInput, setPhotoCategoryInput] = useState<'wisuda' | 'wedding'>('wisuda');
@@ -196,15 +195,12 @@ export default function AdminPage() {
   const [photoTagInput, setPhotoTagInput] = useState('');
   const [photoAltInput, setPhotoAltInput] = useState('');
 
-  // Check auth session on load
   useEffect(() => {
-    const auth = sessionStorage.getItem('yeka_admin_auth');
-    if (auth === 'true') {
+    if (sessionStorage.getItem('yeka_admin_auth') === 'true') {
       setIsAuthenticated(true);
     }
   }, []);
 
-  // Load saved overrides from localStorage
   useEffect(() => {
     try {
       const storedSlots = localStorage.getItem('yeka_slot_overrides');
@@ -220,7 +216,6 @@ export default function AdminPage() {
     }
   }, []);
 
-  // Sync Package Edit Form when selected package changes
   useEffect(() => {
     const currentPkg = packages.find((p) => p.id === selectedPkgId) || packages[0];
     if (currentPkg) {
@@ -234,7 +229,6 @@ export default function AdminPage() {
     }
   }, [selectedPkgId, packages]);
 
-  // Sync Photo Edit Form when selected photo changes
   useEffect(() => {
     const currentPhoto = photos.find((ph) => ph.id === selectedPhotoId) || photos[0];
     if (currentPhoto) {
@@ -248,8 +242,7 @@ export default function AdminPage() {
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
-    setSavedSuccessToast(true);
-    setTimeout(() => setSavedSuccessToast(false), 2400);
+    setTimeout(() => setToastMessage(null), 2500);
   };
 
   const handleLogin = (e: React.FormEvent) => {
@@ -305,7 +298,7 @@ export default function AdminPage() {
 
     setOverrides(updated);
     localStorage.setItem('yeka_slot_overrides', JSON.stringify(updated));
-    showToast('✓ Status Slot Jam Berhasil Diperbarui!');
+    showToast('Status slot jam berhasil diperbarui.');
   };
 
   const setDayStatus = (status: 'fully_available' | 'partially_booked' | 'fully_booked') => {
@@ -325,41 +318,37 @@ export default function AdminPage() {
 
     setOverrides(updated);
     localStorage.setItem('yeka_slot_overrides', JSON.stringify(updated));
-    showToast('✓ Status Tanggal Berhasil Diperbarui!');
+    showToast('Status tanggal berhasil diperbarui.');
   };
 
-  // ── PACKAGE MANAGEMENT HANDLERS ─────────────────────────────────────────────
+  // Package Management Handlers
   const handleAddNewPackage = () => {
     const newId = `pkg-${Date.now()}`;
     const newPkg: PackageData = {
       id: newId,
       category: 'wisuda',
-      title: 'Paket Wisuda Baru',
+      title: 'Paket Baru',
       price: 'Rp 500.000',
-      desc: 'Deskripsi paket baru Yeka Studio',
+      desc: 'Deskripsi singkat paket baru',
       featured: false,
       badge: '',
-      features: ['Durasi 1,5 Jam Photoshoot', 'ALL File Mentah (Drive H+1)'],
+      features: ['Durasi 1.5 Jam Photoshoot', 'ALL File Mentah (Drive)'],
     };
     const updated = [newPkg, ...packages];
     setPackages(updated);
     setSelectedPkgId(newId);
     localStorage.setItem('yeka_package_overrides', JSON.stringify(updated));
-    showToast('✨ Paket Baru Ditambahkan! Silakan lengkapi detailnya.');
+    showToast('Paket baru berhasil ditambahkan.');
   };
 
   const handleDeletePackage = (idToDelete: string) => {
-    if (packages.length <= 1) {
-      alert('Minimal harus ada 1 paket di sistem.');
-      return;
-    }
-    if (!confirm('Apakah Anda yakin ingin menghapus paket ini?')) return;
-
+    if (packages.length <= 1) return alert('Minimal harus ada 1 paket.');
+    if (!confirm('Hapus paket ini dari website?')) return;
     const updated = packages.filter((p) => p.id !== idToDelete);
     setPackages(updated);
     setSelectedPkgId(updated[0].id);
     localStorage.setItem('yeka_package_overrides', JSON.stringify(updated));
-    showToast('🗑️ Paket Berhasil Dihapus!');
+    showToast('Paket berhasil dihapus.');
   };
 
   const handleSavePackage = (e: React.FormEvent) => {
@@ -382,48 +371,44 @@ export default function AdminPage() {
 
     setPackages(updatedPkgs);
     localStorage.setItem('yeka_package_overrides', JSON.stringify(updatedPkgs));
-    showToast('✓ detail Paket Berhasil Disimpan & Live di Website!');
+    showToast('Detail paket berhasil disimpan.');
   };
 
   const handleResetPackages = () => {
-    if (confirm('Kembalikan seluruh daftar paket ke tampilan default pabrik?')) {
+    if (confirm('Kembalikan seluruh paket ke pengaturan awal?')) {
       setPackages(DEFAULT_PACKAGES);
       setSelectedPkgId(DEFAULT_PACKAGES[0].id);
       localStorage.removeItem('yeka_package_overrides');
-      showToast('🔄 Paket Berhasil Di-reset ke Default!');
+      showToast('Paket berhasil di-reset.');
     }
   };
 
-  // ── PHOTO PORTFOLIO MANAGEMENT HANDLERS ────────────────────────────────────
+  // Photo Management Handlers
   const handleAddNewPhoto = () => {
     const newId = `photo-${Date.now()}`;
     const newPhoto: PhotoData = {
       id: newId,
       category: 'wisuda',
       src: '/images/wisuda-1.jpg',
-      title: 'Foto Portofolio Baru',
-      tag: 'Kampus Outdoor',
-      alt: 'Foto portofolio Yeka Creative Studio',
+      title: 'Judul Foto Baru',
+      tag: 'Lokasi Photoshoot',
+      alt: 'Foto portofolio',
     };
     const updated = [newPhoto, ...photos];
     setPhotos(updated);
     setSelectedPhotoId(newId);
     localStorage.setItem('yeka_photo_overrides', JSON.stringify(updated));
-    showToast('✨ Foto Baru Ditambahkan! Silakan atur URL & Judulnya.');
+    showToast('Foto portofolio baru ditambahkan.');
   };
 
   const handleDeletePhoto = (idToDelete: string) => {
-    if (photos.length <= 1) {
-      alert('Minimal harus ada 1 foto di portofolio.');
-      return;
-    }
-    if (!confirm('Apakah Anda yakin ingin menghapus foto ini dari portofolio?')) return;
-
+    if (photos.length <= 1) return alert('Minimal harus ada 1 foto.');
+    if (!confirm('Hapus foto ini dari galeri portofolio?')) return;
     const updated = photos.filter((ph) => ph.id !== idToDelete);
     setPhotos(updated);
     setSelectedPhotoId(updated[0].id);
     localStorage.setItem('yeka_photo_overrides', JSON.stringify(updated));
-    showToast('🗑️ Foto Berhasil Dihapus!');
+    showToast('Foto berhasil dihapus.');
   };
 
   const handleSavePhoto = (e: React.FormEvent) => {
@@ -444,81 +429,83 @@ export default function AdminPage() {
 
     setPhotos(updatedPhotos);
     localStorage.setItem('yeka_photo_overrides', JSON.stringify(updatedPhotos));
-    showToast('✓ Portofolio Foto Berhasil Disimpan & Live di Web!');
+    showToast('Foto portofolio berhasil disimpan.');
   };
 
   const handleResetPhotos = () => {
-    if (confirm('Kembalikan seluruh galeri foto portofolio ke default awal?')) {
+    if (confirm('Kembalikan galeri foto ke pengaturan awal?')) {
       setPhotos(DEFAULT_PHOTOS);
       setSelectedPhotoId(DEFAULT_PHOTOS[0].id);
       localStorage.removeItem('yeka_photo_overrides');
-      showToast('🔄 Galeri Foto Berhasil Di-reset ke Default!');
+      showToast('Galeri foto di-reset.');
     }
   };
 
-  // ── PIN LOGIN SCREEN ────────────────────────────────────────────────────────
+  // ── AUTH / LOGIN SCREEN (Clean Minimalist) ─────────────────────────────────
   if (!isAuthenticated) {
     return (
       <div style={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #120305 0%, #29080F 50%, #4C101B 100%)',
+        background: '#0F172A',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         padding: '1.5rem',
-        fontFamily: 'Inter, sans-serif',
+        fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
       }}>
         <div style={{
-          maxWidth: '380px',
+          maxWidth: '360px',
           width: '100%',
-          background: 'white',
-          borderRadius: '16px',
-          padding: '2rem 1.5rem',
-          boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
-          textAlign: 'center',
+          background: '#FFFFFF',
+          borderRadius: '12px',
+          padding: '2.25rem 2rem',
+          boxShadow: '0 20px 25px -5px rgba(0,0,0,0.3), 0 8px 10px -6px rgba(0,0,0,0.2)',
         }}>
-          <div style={{
-            fontSize: '0.7rem',
-            letterSpacing: '0.2em',
-            color: 'var(--maroon)',
-            fontWeight: 700,
-            textTransform: 'uppercase',
-            marginBottom: '0.5rem',
-          }}>
-            YEKA CREATIVE STUDIO
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
+            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#7B1C2A' }} />
+            <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+              Yeka Studio Admin
+            </span>
           </div>
 
-          <h1 className="font-display" style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--charcoal)', marginBottom: '0.5rem' }}>
-            Admin Dashboard
+          <h1 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.35rem', letterSpacing: '-0.02em' }}>
+            Masuk ke Owner Portal
           </h1>
-
-          <p style={{ fontSize: '0.8rem', color: 'var(--muted)', marginBottom: '1.5rem' }}>
-            Masukkan PIN rahasia Owner/Admin untuk mengelola jadwal, paket, foto portofolio &amp; ulasan.
+          <p style={{ fontSize: '0.82rem', color: '#64748B', marginBottom: '1.75rem', lineHeight: 1.5 }}>
+            Masukkan 4-digit PIN keamanan untuk mengelola jadwal, paket, dan foto.
           </p>
 
           <form onSubmit={handleLogin}>
-            <input
-              type="password"
-              maxLength={6}
-              placeholder="Masukkan PIN (Default: 1234)"
-              value={pinInput}
-              onChange={(e) => setPinInput(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                fontSize: '1rem',
-                textAlign: 'center',
-                letterSpacing: '0.3em',
-                borderRadius: '8px',
-                border: pinError ? '2px solid #DC2626' : '1px solid rgba(123,28,42,0.25)',
-                outline: 'none',
-                marginBottom: '1rem',
-              }}
-            />
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.4rem' }}>
+                PIN KEAMANAN
+              </label>
+              <input
+                type="password"
+                maxLength={6}
+                placeholder="••••"
+                value={pinInput}
+                onChange={(e) => setPinInput(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.7rem',
+                  fontSize: '1.1rem',
+                  textAlign: 'center',
+                  letterSpacing: '0.4em',
+                  borderRadius: '8px',
+                  border: pinError ? '1.5px solid #EF4444' : '1px solid #CBD5E1',
+                  outline: 'none',
+                  background: '#F8FAFC',
+                  color: '#0F172A',
+                  fontWeight: 600,
+                  boxSizing: 'border-box',
+                }}
+              />
+            </div>
 
             {pinError && (
-              <div style={{ color: '#DC2626', fontSize: '0.75rem', marginBottom: '1rem', fontWeight: 600 }}>
-                PIN salah. Silakan coba lagi (Default PIN: 1234).
+              <div style={{ color: '#DC2626', fontSize: '0.75rem', marginBottom: '1rem', fontWeight: 500 }}>
+                PIN salah. PIN default adalah 1234.
               </div>
             )}
 
@@ -526,23 +513,23 @@ export default function AdminPage() {
               type="submit"
               style={{
                 width: '100%',
-                background: 'var(--maroon)',
-                color: 'white',
-                padding: '0.85rem',
+                background: '#0F172A',
+                color: '#FFFFFF',
+                padding: '0.75rem',
                 borderRadius: '8px',
                 border: 'none',
                 fontWeight: 600,
-                fontSize: '0.85rem',
+                fontSize: '0.875rem',
                 cursor: 'pointer',
-                letterSpacing: '0.05em',
+                transition: 'background 0.15s ease',
               }}
             >
-              Masuk ke Dashboard &rarr;
+              Masuk Dashboard
             </button>
           </form>
 
-          <div style={{ marginTop: '1.5rem' }}>
-            <Link href="/" style={{ fontSize: '0.75rem', color: 'var(--muted)', textDecoration: 'none' }}>
+          <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+            <Link href="/" style={{ fontSize: '0.78rem', color: '#64748B', textDecoration: 'none', fontWeight: 500 }}>
               &larr; Kembali ke Website Utama
             </Link>
           </div>
@@ -551,7 +538,7 @@ export default function AdminPage() {
     );
   }
 
-  // ── MAIN ADMIN DASHBOARD ───────────────────────────────────────────────────
+  // ── MAIN DASHBOARD (Clean Professional SaaS UI) ───────────────────────────
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
   const firstWeekday = new Date(viewYear, viewMonth, 1).getDay();
 
@@ -567,381 +554,378 @@ export default function AdminPage() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'var(--cream)',
-      fontFamily: 'Inter, sans-serif',
-      paddingBottom: '3rem',
+      background: '#F8FAFC',
+      color: '#0F172A',
+      fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+      paddingBottom: '4rem',
     }}>
-      {/* Admin Header */}
+      {/* Top Bar Navigation */}
       <header style={{
-        background: '#120305',
-        color: 'white',
-        padding: '1rem 1.5rem',
+        background: '#0F172A',
+        color: '#FFFFFF',
+        padding: '0.85rem 1.75rem',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+        borderBottom: '1px solid #1E293B',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
           <div style={{
-            fontSize: '0.65rem',
-            letterSpacing: '0.15em',
-            background: 'var(--gold)',
-            color: '#120305',
-            padding: '0.2rem 0.5rem',
-            borderRadius: '3px',
+            fontSize: '0.7rem',
             fontWeight: 700,
-            textTransform: 'uppercase',
+            background: 'rgba(255,255,255,0.1)',
+            color: '#E2E8F0',
+            padding: '0.2rem 0.55rem',
+            borderRadius: '4px',
+            letterSpacing: '0.05em',
           }}>
-            OWNER PANEL
+            OWNER PORTAL
           </div>
-          <span style={{ fontSize: '1rem', fontWeight: 600 }}>Yeka Studio Admin</span>
+          <span style={{ fontSize: '0.95rem', fontWeight: 600, color: '#F8FAFC' }}>
+            Yeka Creative Studio
+          </span>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <Link href="/" style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.8rem', textDecoration: 'none' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+          <Link href="/" style={{ color: '#94A3B8', fontSize: '0.82rem', textDecoration: 'none', fontWeight: 500 }}>
             Lihat Web Utama ↗
           </Link>
           <button
             onClick={handleLogout}
             style={{
-              background: 'rgba(255,255,255,0.1)',
-              color: 'white',
-              border: '1px solid rgba(255,255,255,0.2)',
-              padding: '0.4rem 0.85rem',
+              background: 'transparent',
+              color: '#CBD5E1',
+              border: '1px solid #334155',
+              padding: '0.35rem 0.75rem',
               borderRadius: '6px',
-              fontSize: '0.75rem',
+              fontSize: '0.78rem',
+              fontWeight: 500,
               cursor: 'pointer',
             }}
           >
-            Keluar (Logout)
+            Keluar
           </button>
         </div>
       </header>
 
       {/* Toast Notification */}
-      {savedSuccessToast && (
+      {toastMessage && (
         <div style={{
           position: 'fixed',
-          top: '70px',
-          right: '20px',
-          background: '#16A34A',
-          color: 'white',
-          padding: '0.75rem 1.25rem',
+          top: '64px',
+          right: '24px',
+          background: '#0F172A',
+          color: '#FFFFFF',
+          padding: '0.65rem 1.1rem',
           borderRadius: '8px',
-          boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
+          boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)',
           fontSize: '0.82rem',
-          fontWeight: 600,
+          fontWeight: 500,
+          border: '1px solid #334155',
           zIndex: 100,
         }}>
-          {toastMessage}
+          ✓ {toastMessage}
         </div>
       )}
 
-      <main style={{ maxWidth: '1080px', margin: '2rem auto 0', padding: '0 1.25rem' }}>
-        {/* Main Navigation Tabs */}
+      {/* Main Container */}
+      <main style={{ maxWidth: '1120px', margin: '2rem auto 0', padding: '0 1.5rem' }}>
+        {/* Navigation Tabs Bar */}
         <div style={{
+          background: '#FFFFFF',
+          borderRadius: '10px',
+          padding: '0.35rem',
           display: 'flex',
-          gap: '0.5rem',
-          marginBottom: '1.5rem',
-          borderBottom: '1px solid rgba(123,28,42,0.1)',
-          paddingBottom: '0.5rem',
-          flexWrap: 'wrap',
+          gap: '0.35rem',
+          marginBottom: '1.75rem',
+          border: '1px solid #E2E8F0',
+          boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.03)',
         }}>
           <button
             onClick={() => setActiveTab('calendar')}
             style={{
-              padding: '0.6rem 1.15rem',
-              borderRadius: '8px',
+              flex: 1,
+              padding: '0.6rem 1rem',
+              borderRadius: '7px',
               border: 'none',
-              background: activeTab === 'calendar' ? 'var(--maroon)' : 'transparent',
-              color: activeTab === 'calendar' ? 'white' : 'var(--charcoal)',
-              fontWeight: 600,
-              fontSize: '0.83rem',
+              background: activeTab === 'calendar' ? '#0F172A' : 'transparent',
+              color: activeTab === 'calendar' ? '#FFFFFF' : '#64748B',
+              fontWeight: activeTab === 'calendar' ? 600 : 500,
+              fontSize: '0.85rem',
               cursor: 'pointer',
+              transition: 'all 0.15s ease',
             }}
           >
-            📅 Kelola Slot Jadwal
+            Jadwal &amp; Slot
           </button>
 
           <button
             onClick={() => setActiveTab('packages')}
             style={{
-              padding: '0.6rem 1.15rem',
-              borderRadius: '8px',
+              flex: 1,
+              padding: '0.6rem 1rem',
+              borderRadius: '7px',
               border: 'none',
-              background: activeTab === 'packages' ? 'var(--maroon)' : 'transparent',
-              color: activeTab === 'packages' ? 'white' : 'var(--charcoal)',
-              fontWeight: 600,
-              fontSize: '0.83rem',
+              background: activeTab === 'packages' ? '#0F172A' : 'transparent',
+              color: activeTab === 'packages' ? '#FFFFFF' : '#64748B',
+              fontWeight: activeTab === 'packages' ? 600 : 500,
+              fontSize: '0.85rem',
               cursor: 'pointer',
+              transition: 'all 0.15s ease',
             }}
           >
-            💰 Kelola Paket &amp; Harga
+            Kelola Paket &amp; Harga
           </button>
 
           <button
             onClick={() => setActiveTab('photos')}
             style={{
-              padding: '0.6rem 1.15rem',
-              borderRadius: '8px',
+              flex: 1,
+              padding: '0.6rem 1rem',
+              borderRadius: '7px',
               border: 'none',
-              background: activeTab === 'photos' ? 'var(--maroon)' : 'transparent',
-              color: activeTab === 'photos' ? 'white' : 'var(--charcoal)',
-              fontWeight: 600,
-              fontSize: '0.83rem',
+              background: activeTab === 'photos' ? '#0F172A' : 'transparent',
+              color: activeTab === 'photos' ? '#FFFFFF' : '#64748B',
+              fontWeight: activeTab === 'photos' ? 600 : 500,
+              fontSize: '0.85rem',
               cursor: 'pointer',
+              transition: 'all 0.15s ease',
             }}
           >
-            🖼️ Kelola Foto Portofolio
+            Foto Portofolio
           </button>
 
           <button
             onClick={() => setActiveTab('reviews')}
             style={{
-              padding: '0.6rem 1.15rem',
-              borderRadius: '8px',
+              flex: 1,
+              padding: '0.6rem 1rem',
+              borderRadius: '7px',
               border: 'none',
-              background: activeTab === 'reviews' ? 'var(--maroon)' : 'transparent',
-              color: activeTab === 'reviews' ? 'white' : 'var(--charcoal)',
-              fontWeight: 600,
-              fontSize: '0.83rem',
+              background: activeTab === 'reviews' ? '#0F172A' : 'transparent',
+              color: activeTab === 'reviews' ? '#FFFFFF' : '#64748B',
+              fontWeight: activeTab === 'reviews' ? 600 : 500,
+              fontSize: '0.85rem',
               cursor: 'pointer',
+              transition: 'all 0.15s ease',
             }}
           >
-            💬 Kelola Testimoni Klien
+            Testimoni Klien
           </button>
         </div>
 
-        {/* ── TAB 1: CALENDAR OVERRIDES ── */}
+        {/* ── TAB 1: CALENDAR & SLOTS ── */}
         {activeTab === 'calendar' && (
-          <div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))', gap: '1.5rem' }}>
+            {/* Calendar Box */}
             <div style={{
-              background: 'white',
-              borderRadius: '14px',
-              padding: '1.25rem',
-              marginBottom: '1.5rem',
-              border: '1px solid rgba(123,28,42,0.1)',
+              background: '#FFFFFF',
+              borderRadius: '12px',
+              padding: '1.5rem',
+              border: '1px solid #E2E8F0',
+              boxShadow: '0 1px 3px 0 rgba(0,0,0,0.02)',
             }}>
-              <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--charcoal)', marginBottom: '0.25rem' }}>
-                Kontrol Slot &amp; Jadwal Real-Time
-              </h2>
-              <p style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>
-                Klik tanggal pada kalender di bawah untuk mematikan jam yang sudah terisi (booked via WA) atau menutup tanggal secara penuh.
-              </p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                <button
+                  onClick={() => setMonthOffset((prev) => Math.max(0, prev - 1))}
+                  disabled={monthOffset === 0}
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '6px',
+                    border: '1px solid #E2E8F0',
+                    background: monthOffset === 0 ? '#F8FAFC' : '#FFFFFF',
+                    color: monthOffset === 0 ? '#94A3B8' : '#0F172A',
+                    cursor: monthOffset === 0 ? 'not-allowed' : 'pointer',
+                    fontWeight: 600,
+                  }}
+                >
+                  &lsaquo;
+                </button>
+
+                <div style={{ fontWeight: 600, fontSize: '1rem', color: '#0F172A' }}>
+                  {MONTH_NAMES[viewMonth]} {viewYear}
+                </div>
+
+                <button
+                  onClick={() => setMonthOffset((prev) => prev + 1)}
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '6px',
+                    border: '1px solid #E2E8F0',
+                    background: '#FFFFFF',
+                    color: '#0F172A',
+                    cursor: 'pointer',
+                    fontWeight: 600,
+                  }}
+                >
+                  &rsaquo;
+                </button>
+              </div>
+
+              {/* Day Labels */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', textAlign: 'center', fontSize: '0.72rem', fontWeight: 600, color: '#94A3B8', marginBottom: '0.5rem' }}>
+                {['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'].map((d) => (
+                  <div key={d}>{d}</div>
+                ))}
+              </div>
+
+              {/* Grid Days */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '6px' }}>
+                {Array.from({ length: firstWeekday }).map((_, i) => (
+                  <div key={`empty-${i}`} />
+                ))}
+
+                {Array.from({ length: daysInMonth }).map((_, i) => {
+                  const dayNum = i + 1;
+                  const m = (viewMonth + 1).toString().padStart(2, '0');
+                  const d = dayNum.toString().padStart(2, '0');
+                  const key = `${viewYear}-${m}-${d}`;
+                  const dayOverride = overrides[key];
+                  const isSelected = selectedDay === dayNum;
+
+                  let bg = '#FFFFFF';
+                  let color = '#0F172A';
+                  let border = '1px solid #E2E8F0';
+
+                  if (dayOverride?.status === 'fully_booked') {
+                    bg = '#FEF2F2';
+                    color = '#991B1B';
+                    border = '1px solid #FCA5A5';
+                  } else if (dayOverride?.status === 'partially_booked') {
+                    bg = '#FFFBEB';
+                    color = '#92400E';
+                    border = '1px solid #FCD34D';
+                  }
+
+                  if (isSelected) {
+                    bg = '#0F172A';
+                    color = '#FFFFFF';
+                    border = '1px solid #0F172A';
+                  }
+
+                  return (
+                    <div
+                      key={dayNum}
+                      onClick={() => setSelectedDay(dayNum)}
+                      style={{
+                        aspectRatio: '1',
+                        borderRadius: '6px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '0.85rem',
+                        fontWeight: isSelected ? 600 : 500,
+                        cursor: 'pointer',
+                        background: bg,
+                        color: color,
+                        border: border,
+                        transition: 'all 0.15s ease',
+                      }}
+                    >
+                      {dayNum}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
+            {/* Day Control Panel */}
             <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))',
-              gap: '1.5rem',
+              background: '#FFFFFF',
+              borderRadius: '12px',
+              padding: '1.5rem',
+              border: '1px solid #E2E8F0',
+              boxShadow: '0 1px 3px 0 rgba(0,0,0,0.02)',
             }}>
-              {/* Calendar Grid Box */}
-              <div style={{
-                background: 'white',
-                borderRadius: '14px',
-                padding: '1.25rem',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
-                border: '1px solid rgba(123,28,42,0.08)',
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-                  <button
-                    onClick={() => setMonthOffset((prev) => Math.max(0, prev - 1))}
-                    disabled={monthOffset === 0}
-                    style={{
-                      width: '32px',
-                      height: '32px',
-                      borderRadius: '50%',
-                      border: '1px solid rgba(123,28,42,0.2)',
-                      background: monthOffset === 0 ? '#F1F5F9' : 'white',
-                      cursor: monthOffset === 0 ? 'not-allowed' : 'pointer',
-                    }}
-                  >
-                    &#8249;
-                  </button>
+              <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#64748B', letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: '0.2rem' }}>
+                Pengaturan Tanggal
+              </div>
+              <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#0F172A', marginBottom: '1.25rem' }}>
+                {selectedDay} {MONTH_NAMES[viewMonth]} {viewYear}
+              </div>
 
-                  <div style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--charcoal)' }}>
-                    {MONTH_NAMES[viewMonth]} {viewYear}
-                  </div>
-
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.5rem' }}>
+                  KETERSEDIAAN HARI
+                </label>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
                   <button
-                    onClick={() => setMonthOffset((prev) => prev + 1)}
+                    onClick={() => setDayStatus('fully_available')}
                     style={{
-                      width: '32px',
-                      height: '32px',
-                      borderRadius: '50%',
-                      border: '1px solid var(--maroon)',
-                      background: 'var(--maroon)',
-                      color: 'white',
+                      flex: 1,
+                      padding: '0.5rem',
+                      borderRadius: '6px',
+                      fontSize: '0.78rem',
+                      fontWeight: 600,
+                      border: '1px solid #CBD5E1',
+                      background: currentOverride.status === 'fully_available' ? '#0F172A' : '#FFFFFF',
+                      color: currentOverride.status === 'fully_available' ? '#FFFFFF' : '#475569',
                       cursor: 'pointer',
                     }}
                   >
-                    &#8250;
+                    Buka Tanggal
                   </button>
-                </div>
 
-                {/* Day Labels */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', textAlign: 'center', fontSize: '0.72rem', fontWeight: 600, marginBottom: '0.5rem' }}>
-                  {['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'].map((d) => (
-                    <div key={d} style={{ color: 'var(--muted)' }}>{d}</div>
-                  ))}
-                </div>
-
-                {/* Days Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '6px' }}>
-                  {Array.from({ length: firstWeekday }).map((_, i) => (
-                    <div key={`empty-${i}`} />
-                  ))}
-
-                  {Array.from({ length: daysInMonth }).map((_, i) => {
-                    const dayNum = i + 1;
-                    const m = (viewMonth + 1).toString().padStart(2, '0');
-                    const d = dayNum.toString().padStart(2, '0');
-                    const key = `${viewYear}-${m}-${d}`;
-                    const dayOverride = overrides[key];
-                    const isSelected = selectedDay === dayNum;
-
-                    let bg = 'white';
-                    let color = 'var(--charcoal)';
-                    let border = '1px solid rgba(0,0,0,0.08)';
-
-                    if (dayOverride?.status === 'fully_booked') {
-                      bg = '#FEE2E2';
-                      color = '#991B1B';
-                      border = '1px solid #F87171';
-                    } else if (dayOverride?.status === 'partially_booked') {
-                      bg = '#FEF3C7';
-                      color = '#92400E';
-                      border = '1px solid #FBBF24';
-                    }
-
-                    if (isSelected) {
-                      bg = 'var(--maroon)';
-                      color = 'white';
-                      border = '2px solid var(--maroon)';
-                    }
-
-                    return (
-                      <div
-                        key={dayNum}
-                        onClick={() => setSelectedDay(dayNum)}
-                        style={{
-                          aspectRatio: '1',
-                          borderRadius: '8px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '0.85rem',
-                          fontWeight: isSelected ? 700 : 500,
-                          cursor: 'pointer',
-                          background: bg,
-                          color: color,
-                          border: border,
-                          transition: 'all 0.2s ease',
-                        }}
-                      >
-                        {dayNum}
-                      </div>
-                    );
-                  })}
+                  <button
+                    onClick={() => setDayStatus('fully_booked')}
+                    style={{
+                      flex: 1,
+                      padding: '0.5rem',
+                      borderRadius: '6px',
+                      fontSize: '0.78rem',
+                      fontWeight: 600,
+                      border: '1px solid #FCA5A5',
+                      background: currentOverride.status === 'fully_booked' ? '#DC2626' : '#FEF2F2',
+                      color: currentOverride.status === 'fully_booked' ? '#FFFFFF' : '#991B1B',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Tutup Full
+                  </button>
                 </div>
               </div>
 
-              {/* Slot Management Control Panel */}
-              <div style={{
-                background: 'white',
-                borderRadius: '14px',
-                padding: '1.25rem',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
-                border: '1px solid rgba(123,28,42,0.08)',
-              }}>
-                <div style={{ fontSize: '0.7rem', letterSpacing: '0.12em', color: 'var(--maroon)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.2rem' }}>
-                  PENGATURAN TANGGAL
-                </div>
-                <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--charcoal)', marginBottom: '1rem' }}>
-                  {selectedDay} {MONTH_NAMES[viewMonth]} {viewYear}
-                </div>
-
-                <div style={{ marginBottom: '1.25rem' }}>
-                  <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, color: 'var(--muted)', marginBottom: '0.5rem' }}>
-                    STATUS KETERSEDIAAN TANGGAL:
-                  </label>
-                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                    <button
-                      onClick={() => setDayStatus('fully_available')}
-                      style={{
-                        padding: '0.45rem 0.75rem',
-                        borderRadius: '6px',
-                        fontSize: '0.75rem',
-                        fontWeight: 600,
-                        border: '1px solid #16A34A',
-                        background: currentOverride.status === 'fully_available' ? '#16A34A' : 'rgba(22,163,74,0.08)',
-                        color: currentOverride.status === 'fully_available' ? 'white' : '#15803D',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      ✓ Tersedia Penuh
-                    </button>
-
-                    <button
-                      onClick={() => setDayStatus('fully_booked')}
-                      style={{
-                        padding: '0.45rem 0.75rem',
-                        borderRadius: '6px',
-                        fontSize: '0.75rem',
-                        fontWeight: 600,
-                        border: '1px solid #DC2626',
-                        background: currentOverride.status === 'fully_booked' ? '#DC2626' : 'rgba(220,38,38,0.08)',
-                        color: currentOverride.status === 'fully_booked' ? 'white' : '#B91C1C',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      ✕ Tutup Penuh (Fully Booked)
-                    </button>
-                  </div>
-                </div>
-
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, color: 'var(--muted)', marginBottom: '0.5rem' }}>
-                    KLIK SLOT JAM UNTUK MEMATIKAN / MENGAKTIFKAN:
-                  </label>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    {allSlotsList.map((slotTime) => {
-                      const isBooked = currentOverride.bookedSlots.includes(slotTime);
-
-                      return (
-                        <div
-                          key={slotTime}
-                          onClick={() => toggleSlotBooked(slotTime)}
-                          style={{
-                            padding: '0.65rem 0.95rem',
-                            borderRadius: '8px',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            cursor: 'pointer',
-                            border: isBooked ? '1.5px solid #DC2626' : '1px solid #16A34A',
-                            background: isBooked ? '#FEE2E2' : '#F0FDF4',
-                            transition: 'all 0.2s ease',
-                          }}
-                        >
-                          <span style={{ fontSize: '0.85rem', fontWeight: 600, color: isBooked ? '#991B1B' : '#166534' }}>
-                            {slotTime}
-                          </span>
-
-                          <span style={{
-                            fontSize: '0.7rem',
-                            fontWeight: 700,
-                            padding: '0.2rem 0.6rem',
-                            borderRadius: '100px',
-                            background: isBooked ? '#DC2626' : '#16A34A',
-                            color: 'white',
-                          }}>
-                            {isBooked ? 'TERISI (BOOKED)' : 'TERSEDIA'}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.5rem' }}>
+                  SLOT JAM INDIVIDUAL
+                </label>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
+                  {allSlotsList.map((slotTime) => {
+                    const isBooked = currentOverride.bookedSlots.includes(slotTime);
+                    return (
+                      <div
+                        key={slotTime}
+                        onClick={() => toggleSlotBooked(slotTime)}
+                        style={{
+                          padding: '0.6rem 0.85rem',
+                          borderRadius: '6px',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          cursor: 'pointer',
+                          border: isBooked ? '1px solid #FCA5A5' : '1px solid #E2E8F0',
+                          background: isBooked ? '#FEF2F2' : '#F8FAFC',
+                          transition: 'all 0.15s ease',
+                        }}
+                      >
+                        <span style={{ fontSize: '0.82rem', fontWeight: 500, color: isBooked ? '#991B1B' : '#334155' }}>
+                          {slotTime}
+                        </span>
+                        <span style={{
+                          fontSize: '0.7rem',
+                          fontWeight: 600,
+                          padding: '0.15rem 0.5rem',
+                          borderRadius: '4px',
+                          background: isBooked ? '#DC2626' : '#10B981',
+                          color: '#FFFFFF',
+                        }}>
+                          {isBooked ? 'Terisi' : 'Tersedia'}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -950,665 +934,606 @@ export default function AdminPage() {
 
         {/* ── TAB 2: PACKAGES & PRICING MANAGER ── */}
         {activeTab === 'packages' && (
-          <div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '1.5rem' }}>
+            {/* Left: Package List */}
             <div style={{
-              background: 'white',
-              borderRadius: '14px',
+              background: '#FFFFFF',
+              borderRadius: '12px',
               padding: '1.25rem',
-              marginBottom: '1.5rem',
-              border: '1px solid rgba(123,28,42,0.1)',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: '1rem',
+              border: '1px solid #E2E8F0',
+              boxShadow: '0 1px 3px 0 rgba(0,0,0,0.02)',
             }}>
-              <div>
-                <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--charcoal)', marginBottom: '0.25rem' }}>
-                  Kelola Paket &amp; Harga (Wisuda &amp; Wedding)
-                </h2>
-                <p style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>
-                  Ubah harga, deskripsi, poin inklusi, atau tambah/hapus paket secara instan tanpa koding.
-                </p>
-              </div>
-
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#475569' }}>
+                  DAFTAR PAKET ({packages.length})
+                </span>
                 <button
                   onClick={handleAddNewPackage}
                   style={{
-                    background: 'var(--maroon)',
-                    color: 'white',
+                    background: '#0F172A',
+                    color: '#FFFFFF',
                     border: 'none',
-                    padding: '0.55rem 1rem',
-                    borderRadius: '8px',
-                    fontSize: '0.8rem',
+                    padding: '0.4rem 0.75rem',
+                    borderRadius: '6px',
+                    fontSize: '0.75rem',
                     fontWeight: 600,
                     cursor: 'pointer',
                   }}
                 >
-                  ➕ Tambah Paket Baru
+                  + Tambah Paket
                 </button>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                {packages.map((pkg) => {
+                  const isSelected = selectedPkgId === pkg.id;
+                  return (
+                    <div
+                      key={pkg.id}
+                      onClick={() => setSelectedPkgId(pkg.id)}
+                      style={{
+                        padding: '0.7rem 0.85rem',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        border: isSelected ? '1.5px solid #0F172A' : '1px solid #E2E8F0',
+                        background: isSelected ? '#F8FAFC' : '#FFFFFF',
+                        transition: 'all 0.15s ease',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <div>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#0F172A' }}>
+                          {pkg.title}
+                        </div>
+                        <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '2px' }}>
+                          {pkg.price} &bull; <span style={{ textTransform: 'capitalize' }}>{pkg.category}</span>
+                        </div>
+                      </div>
+
+                      {pkg.featured && (
+                        <span style={{
+                          fontSize: '0.62rem',
+                          fontWeight: 600,
+                          background: '#F1F5F9',
+                          color: '#334155',
+                          padding: '0.15rem 0.4rem',
+                          borderRadius: '4px',
+                          border: '1px solid #CBD5E1',
+                        }}>
+                          {pkg.badge || 'HOT'}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div style={{ marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid #E2E8F0' }}>
                 <button
                   onClick={handleResetPackages}
                   style={{
-                    background: '#F1F5F9',
-                    color: 'var(--charcoal)',
-                    border: '1px solid #CBD5E1',
-                    padding: '0.55rem 0.85rem',
-                    borderRadius: '8px',
-                    fontSize: '0.78rem',
-                    fontWeight: 600,
+                    width: '100%',
+                    background: 'transparent',
+                    color: '#64748B',
+                    border: '1px dashed #CBD5E1',
+                    padding: '0.5rem',
+                    borderRadius: '6px',
+                    fontSize: '0.75rem',
+                    fontWeight: 500,
                     cursor: 'pointer',
                   }}
                 >
-                  🔄 Reset Default
+                  Reset Seluruh Paket ke Default
                 </button>
               </div>
             </div>
 
+            {/* Right: Package Edit Form */}
             <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
-              gap: '1.5rem',
+              background: '#FFFFFF',
+              borderRadius: '12px',
+              padding: '1.5rem',
+              border: '1px solid #E2E8F0',
+              boxShadow: '0 1px 3px 0 rgba(0,0,0,0.02)',
             }}>
-              {/* Package Selector List */}
-              <div style={{
-                background: 'white',
-                borderRadius: '14px',
-                padding: '1.25rem',
-                border: '1px solid rgba(123,28,42,0.08)',
-              }}>
-                <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--maroon)', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
-                  DAFTAR PAKET AKTIF ({packages.length}):
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  {packages.map((pkg) => {
-                    const isSelected = selectedPkgId === pkg.id;
-                    return (
-                      <div
-                        key={pkg.id}
-                        onClick={() => setSelectedPkgId(pkg.id)}
-                        style={{
-                          padding: '0.75rem 0.95rem',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          border: isSelected ? '2px solid var(--maroon)' : '1px solid rgba(0,0,0,0.08)',
-                          background: isSelected ? 'rgba(123,28,42,0.06)' : 'white',
-                          transition: 'all 0.2s ease',
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <div>
-                          <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--charcoal)' }}>
-                            {pkg.title}
-                          </div>
-                          <div style={{ fontSize: '0.75rem', color: 'var(--maroon)', fontWeight: 600, marginTop: '2px' }}>
-                            {pkg.price} &bull; <span style={{ textTransform: 'capitalize', color: 'var(--muted)', fontWeight: 400 }}>{pkg.category}</span>
-                          </div>
-                        </div>
-
-                        {pkg.featured && (
-                          <span style={{
-                            fontSize: '0.6rem',
-                            fontWeight: 700,
-                            background: 'var(--gold)',
-                            color: '#120305',
-                            padding: '0.15rem 0.4rem',
-                            borderRadius: '4px',
-                            textTransform: 'uppercase',
-                          }}>
-                            {pkg.badge || 'HOT'}
-                          </span>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Package Edit Form */}
-              <div style={{
-                background: 'white',
-                borderRadius: '14px',
-                padding: '1.25rem',
-                border: '1px solid rgba(123,28,42,0.08)',
-              }}>
-                <form onSubmit={handleSavePackage}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--charcoal)' }}>
-                      Edit Detail Paket
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => handleDeletePackage(selectedPkgId)}
-                      style={{
-                        background: '#FEE2E2',
-                        color: '#991B1B',
-                        border: '1px solid #F87171',
-                        padding: '0.35rem 0.65rem',
-                        borderRadius: '6px',
-                        fontSize: '0.72rem',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                      }}
-                    >
-                      🗑️ Hapus Paket Ini
-                    </button>
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '0.85rem' }}>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, color: 'var(--muted)', marginBottom: '0.25rem' }}>
-                        KATEGORI PAKET *
-                      </label>
-                      <select
-                        value={pkgCategoryInput}
-                        onChange={(e) => setPkgCategoryInput(e.target.value as 'wisuda' | 'wedding')}
-                        style={{
-                          width: '100%',
-                          padding: '0.55rem 0.75rem',
-                          fontSize: '0.85rem',
-                          borderRadius: '6px',
-                          border: '1px solid rgba(123,28,42,0.2)',
-                          outline: 'none',
-                          fontFamily: 'Inter, sans-serif',
-                          background: 'white',
-                        }}
-                      >
-                        <option value="wisuda">🎓 Wisuda</option>
-                        <option value="wedding">💍 Wedding / Prewedding</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, color: 'var(--muted)', marginBottom: '0.25rem' }}>
-                        BADGE LABEL (Opsional)
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Contoh: Terfavorit, Promo"
-                        value={pkgBadgeInput}
-                        onChange={(e) => setPkgBadgeInput(e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '0.55rem 0.75rem',
-                          fontSize: '0.85rem',
-                          borderRadius: '6px',
-                          border: '1px solid rgba(123,28,42,0.2)',
-                          outline: 'none',
-                          fontFamily: 'Inter, sans-serif',
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div style={{ marginBottom: '0.85rem' }}>
-                    <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, color: 'var(--muted)', marginBottom: '0.25rem' }}>
-                      NAMA / JUDUL PAKET *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={pkgTitleInput}
-                      onChange={(e) => setPkgTitleInput(e.target.value)}
-                      style={{
-                        width: '100%',
-                        padding: '0.55rem 0.75rem',
-                        fontSize: '0.85rem',
-                        borderRadius: '6px',
-                        border: '1px solid rgba(123,28,42,0.2)',
-                        outline: 'none',
-                        fontFamily: 'Inter, sans-serif',
-                      }}
-                    />
-                  </div>
-
-                  <div style={{ marginBottom: '0.85rem' }}>
-                    <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, color: 'var(--muted)', marginBottom: '0.25rem' }}>
-                      HARGA PAKET * (Contoh: Rp 450.000)
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={pkgPriceInput}
-                      onChange={(e) => setPkgPriceInput(e.target.value)}
-                      style={{
-                        width: '100%',
-                        padding: '0.55rem 0.75rem',
-                        fontSize: '0.85rem',
-                        borderRadius: '6px',
-                        border: '1px solid rgba(123,28,42,0.2)',
-                        outline: 'none',
-                        fontFamily: 'Inter, sans-serif',
-                      }}
-                    />
-                  </div>
-
-                  <div style={{ marginBottom: '0.85rem' }}>
-                    <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, color: 'var(--muted)', marginBottom: '0.25rem' }}>
-                      DESKRIPSI SINGKAT PAKET
-                    </label>
-                    <input
-                      type="text"
-                      value={pkgDescInput}
-                      onChange={(e) => setPkgDescInput(e.target.value)}
-                      style={{
-                        width: '100%',
-                        padding: '0.55rem 0.75rem',
-                        fontSize: '0.85rem',
-                        borderRadius: '6px',
-                        border: '1px solid rgba(123,28,42,0.2)',
-                        outline: 'none',
-                        fontFamily: 'Inter, sans-serif',
-                      }}
-                    />
-                  </div>
-
-                  <div style={{ marginBottom: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <input
-                      type="checkbox"
-                      id="pkgFeatured"
-                      checked={pkgFeaturedInput}
-                      onChange={(e) => setPkgFeaturedInput(e.target.checked)}
-                      style={{ width: '16px', height: '16px', cursor: 'pointer' }}
-                    />
-                    <label htmlFor="pkgFeatured" style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--charcoal)', cursor: 'pointer' }}>
-                      Tandai Sebagai Paket Unggulan (Highlight Border)
-                    </label>
-                  </div>
-
-                  <div style={{ marginBottom: '1.25rem' }}>
-                    <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, color: 'var(--muted)', marginBottom: '0.25rem' }}>
-                      RINCIAN CHECKLIST INKLUSI (1 Poin Per Baris):
-                    </label>
-                    <textarea
-                      rows={5}
-                      value={pkgFeaturesInput}
-                      onChange={(e) => setPkgFeaturesInput(e.target.value)}
-                      placeholder="Contoh:&#10;Durasi 1,5 Jam Photoshoot&#10;ALL File Mentah (Drive H+1)&#10;15 Foto Color Graded Master"
-                      style={{
-                        width: '100%',
-                        padding: '0.6rem 0.75rem',
-                        fontSize: '0.8rem',
-                        borderRadius: '6px',
-                        border: '1px solid rgba(123,28,42,0.2)',
-                        outline: 'none',
-                        fontFamily: 'Inter, sans-serif',
-                        resize: 'vertical',
-                      }}
-                    />
-                  </div>
-
+              <form onSubmit={handleSavePackage}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0F172A', margin: 0 }}>
+                    Edit Detail Paket
+                  </h3>
                   <button
-                    type="submit"
+                    type="button"
+                    onClick={() => handleDeletePackage(selectedPkgId)}
                     style={{
-                      width: '100%',
-                      background: 'var(--maroon)',
-                      color: 'white',
-                      padding: '0.75rem',
+                      background: '#FEF2F2',
+                      color: '#DC2626',
+                      border: '1px solid #FCA5A5',
+                      padding: '0.3rem 0.6rem',
                       borderRadius: '6px',
-                      border: 'none',
+                      fontSize: '0.72rem',
                       fontWeight: 600,
-                      fontSize: '0.85rem',
                       cursor: 'pointer',
                     }}
                   >
-                    💾 Simpan Perubahan Paket Ini &rarr;
+                    Hapus Paket
                   </button>
-                </form>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ── TAB 3: PHOTO PORTFOLIO MANAGER ── */}
-        {activeTab === 'photos' && (
-          <div>
-            <div style={{
-              background: 'white',
-              borderRadius: '14px',
-              padding: '1.25rem',
-              marginBottom: '1.5rem',
-              border: '1px solid rgba(123,28,42,0.1)',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: '1rem',
-            }}>
-              <div>
-                <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--charcoal)', marginBottom: '0.25rem' }}>
-                  Kelola Galeri Foto Portofolio
-                </h2>
-                <p style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>
-                  Tambah foto hasil photoshoot terbaru, ganti URL foto, ubah judul/tag spot, atau hapus foto lama dari galeri web.
-                </p>
-              </div>
-
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <button
-                  onClick={handleAddNewPhoto}
-                  style={{
-                    background: 'var(--maroon)',
-                    color: 'white',
-                    border: 'none',
-                    padding: '0.55rem 1rem',
-                    borderRadius: '8px',
-                    fontSize: '0.8rem',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                  }}
-                >
-                  ➕ Tambah Foto Baru
-                </button>
-                <button
-                  onClick={handleResetPhotos}
-                  style={{
-                    background: '#F1F5F9',
-                    color: 'var(--charcoal)',
-                    border: '1px solid #CBD5E1',
-                    padding: '0.55rem 0.85rem',
-                    borderRadius: '8px',
-                    fontSize: '0.78rem',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                  }}
-                >
-                  🔄 Reset Default
-                </button>
-              </div>
-            </div>
-
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
-              gap: '1.5rem',
-            }}>
-              {/* Photo Selector & Preview List */}
-              <div style={{
-                background: 'white',
-                borderRadius: '14px',
-                padding: '1.25rem',
-                border: '1px solid rgba(123,28,42,0.08)',
-              }}>
-                <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--maroon)', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
-                  DAFTAR FOTO PORTOFOLIO ({photos.length}):
                 </div>
 
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
-                  gap: '0.75rem',
-                  maxHeight: '520px',
-                  overflowY: 'auto',
-                  paddingRight: '0.25rem',
-                }}>
-                  {photos.map((ph) => {
-                    const isSelected = selectedPhotoId === ph.id;
-                    return (
-                      <div
-                        key={ph.id}
-                        onClick={() => setSelectedPhotoId(ph.id)}
-                        style={{
-                          borderRadius: '8px',
-                          overflow: 'hidden',
-                          border: isSelected ? '2.5px solid var(--maroon)' : '1px solid #E2E8F0',
-                          cursor: 'pointer',
-                          background: '#F8FAFC',
-                          boxShadow: isSelected ? '0 4px 12px rgba(123,28,42,0.2)' : 'none',
-                          transition: 'all 0.2s ease',
-                          position: 'relative',
-                        }}
-                      >
-                        <div style={{ height: '90px', position: 'relative', overflow: 'hidden', background: '#2A080E' }}>
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={ph.src}
-                            alt={ph.title}
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                          />
-                          <span style={{
-                            position: 'absolute',
-                            top: '4px',
-                            left: '4px',
-                            fontSize: '0.55rem',
-                            fontWeight: 700,
-                            background: 'rgba(0,0,0,0.7)',
-                            color: 'white',
-                            padding: '0.1rem 0.35rem',
-                            borderRadius: '3px',
-                            textTransform: 'capitalize',
-                          }}>
-                            {ph.category}
-                          </span>
-                        </div>
-                        <div style={{ padding: '0.4rem', fontSize: '0.7rem', fontWeight: 600, color: 'var(--charcoal)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                          {ph.title}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Photo Edit Form */}
-              <div style={{
-                background: 'white',
-                borderRadius: '14px',
-                padding: '1.25rem',
-                border: '1px solid rgba(123,28,42,0.08)',
-              }}>
-                <form onSubmit={handleSavePhoto}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--charcoal)' }}>
-                      Edit Detail Foto
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => handleDeletePhoto(selectedPhotoId)}
-                      style={{
-                        background: '#FEE2E2',
-                        color: '#991B1B',
-                        border: '1px solid #F87171',
-                        padding: '0.35rem 0.65rem',
-                        borderRadius: '6px',
-                        fontSize: '0.72rem',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                      }}
-                    >
-                      🗑️ Hapus Foto Ini
-                    </button>
-                  </div>
-
-                  <div style={{ marginBottom: '0.85rem' }}>
-                    <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, color: 'var(--muted)', marginBottom: '0.25rem' }}>
-                      KATEGORI FOTO *
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>
+                      Kategori
                     </label>
                     <select
-                      value={photoCategoryInput}
-                      onChange={(e) => setPhotoCategoryInput(e.target.value as 'wisuda' | 'wedding')}
+                      value={pkgCategoryInput}
+                      onChange={(e) => setPkgCategoryInput(e.target.value as 'wisuda' | 'wedding')}
                       style={{
                         width: '100%',
-                        padding: '0.55rem 0.75rem',
-                        fontSize: '0.85rem',
+                        padding: '0.5rem 0.65rem',
+                        fontSize: '0.82rem',
                         borderRadius: '6px',
-                        border: '1px solid rgba(123,28,42,0.2)',
+                        border: '1px solid #CBD5E1',
                         outline: 'none',
-                        fontFamily: 'Inter, sans-serif',
-                        background: 'white',
+                        background: '#FFFFFF',
+                        boxSizing: 'border-box',
                       }}
                     >
-                      <option value="wisuda">🎓 Wisuda (Masuk Galeri Wisuda)</option>
-                      <option value="wedding">💍 Wedding (Masuk Galeri Wedding)</option>
+                      <option value="wisuda">Wisuda</option>
+                      <option value="wedding">Wedding / Prewedding</option>
                     </select>
                   </div>
 
-                  <div style={{ marginBottom: '0.85rem' }}>
-                    <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, color: 'var(--muted)', marginBottom: '0.25rem' }}>
-                      URL / PATH GAMBAR (`src`) *
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>
+                      Badge Label (Opsional)
                     </label>
                     <input
                       type="text"
-                      required
-                      placeholder="Contoh: /images/wisuda-1.jpg atau https://..."
-                      value={photoSrcInput}
-                      onChange={(e) => setPhotoSrcInput(e.target.value)}
+                      placeholder="e.g. Terfavorit"
+                      value={pkgBadgeInput}
+                      onChange={(e) => setPkgBadgeInput(e.target.value)}
                       style={{
                         width: '100%',
-                        padding: '0.55rem 0.75rem',
-                        fontSize: '0.85rem',
+                        padding: '0.5rem 0.65rem',
+                        fontSize: '0.82rem',
                         borderRadius: '6px',
-                        border: '1px solid rgba(123,28,42,0.2)',
+                        border: '1px solid #CBD5E1',
                         outline: 'none',
-                        fontFamily: 'Inter, sans-serif',
-                      }}
-                    />
-                    <div style={{ fontSize: '0.7rem', color: 'var(--muted)', marginTop: '3px' }}>
-                      Bisa menggunakan path lokal file di `/images/...` atau URL publik (Unsplash, Cloudinary, dll).
-                    </div>
-                  </div>
-
-                  <div style={{ marginBottom: '0.85rem' }}>
-                    <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, color: 'var(--muted)', marginBottom: '0.25rem' }}>
-                      JUDUL / CAPTION FOTO *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Contoh: UGM Balairung Session"
-                      value={photoTitleInput}
-                      onChange={(e) => setPhotoTitleInput(e.target.value)}
-                      style={{
-                        width: '100%',
-                        padding: '0.55rem 0.75rem',
-                        fontSize: '0.85rem',
-                        borderRadius: '6px',
-                        border: '1px solid rgba(123,28,42,0.2)',
-                        outline: 'none',
-                        fontFamily: 'Inter, sans-serif',
+                        boxSizing: 'border-box',
                       }}
                     />
                   </div>
+                </div>
 
-                  <div style={{ marginBottom: '0.85rem' }}>
-                    <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, color: 'var(--muted)', marginBottom: '0.25rem' }}>
-                      TAG LOKASI / KETERANGAN *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Contoh: Area Jogja & Solo"
-                      value={photoTagInput}
-                      onChange={(e) => setPhotoTagInput(e.target.value)}
-                      style={{
-                        width: '100%',
-                        padding: '0.55rem 0.75rem',
-                        fontSize: '0.85rem',
-                        borderRadius: '6px',
-                        border: '1px solid rgba(123,28,42,0.2)',
-                        outline: 'none',
-                        fontFamily: 'Inter, sans-serif',
-                      }}
-                    />
-                  </div>
-
-                  <div style={{ marginBottom: '1.25rem' }}>
-                    <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, color: 'var(--muted)', marginBottom: '0.25rem' }}>
-                      TEXT ALT DESKRIPSI GAMBAR (Opsional untuk SEO)
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Contoh: Foto wisuda outdoor area kampus Jogja"
-                      value={photoAltInput}
-                      onChange={(e) => setPhotoAltInput(e.target.value)}
-                      style={{
-                        width: '100%',
-                        padding: '0.55rem 0.75rem',
-                        fontSize: '0.85rem',
-                        borderRadius: '6px',
-                        border: '1px solid rgba(123,28,42,0.2)',
-                        outline: 'none',
-                        fontFamily: 'Inter, sans-serif',
-                      }}
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>
+                    Nama Paket *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={pkgTitleInput}
+                    onChange={(e) => setPkgTitleInput(e.target.value)}
                     style={{
                       width: '100%',
-                      background: 'var(--maroon)',
-                      color: 'white',
-                      padding: '0.75rem',
+                      padding: '0.5rem 0.65rem',
+                      fontSize: '0.82rem',
                       borderRadius: '6px',
-                      border: 'none',
-                      fontWeight: 600,
-                      fontSize: '0.85rem',
-                      cursor: 'pointer',
+                      border: '1px solid #CBD5E1',
+                      outline: 'none',
+                      boxSizing: 'border-box',
                     }}
-                  >
-                    💾 Simpan Perubahan Foto Ini &rarr;
-                  </button>
-                </form>
-              </div>
+                  />
+                </div>
+
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>
+                    Harga *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={pkgPriceInput}
+                    onChange={(e) => setPkgPriceInput(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem 0.65rem',
+                      fontSize: '0.82rem',
+                      borderRadius: '6px',
+                      border: '1px solid #CBD5E1',
+                      outline: 'none',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>
+                    Deskripsi Singkat
+                  </label>
+                  <input
+                    type="text"
+                    value={pkgDescInput}
+                    onChange={(e) => setPkgDescInput(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem 0.65rem',
+                      fontSize: '0.82rem',
+                      borderRadius: '6px',
+                      border: '1px solid #CBD5E1',
+                      outline: 'none',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <input
+                    type="checkbox"
+                    id="pkgFeatured"
+                    checked={pkgFeaturedInput}
+                    onChange={(e) => setPkgFeaturedInput(e.target.checked)}
+                    style={{ width: '15px', height: '15px', cursor: 'pointer' }}
+                  />
+                  <label htmlFor="pkgFeatured" style={{ fontSize: '0.78rem', fontWeight: 500, color: '#334155', cursor: 'pointer' }}>
+                    Tampilkan sebagai paket unggulan (Highlighted)
+                  </label>
+                </div>
+
+                <div style={{ marginBottom: '1.25rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>
+                    Fasilitas / Inklusi (1 Per Baris)
+                  </label>
+                  <textarea
+                    rows={5}
+                    value={pkgFeaturesInput}
+                    onChange={(e) => setPkgFeaturesInput(e.target.value)}
+                    placeholder="Contoh:&#10;Durasi 1.5 Jam Photoshoot&#10;ALL File Mentah (Drive)"
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem 0.65rem',
+                      fontSize: '0.8rem',
+                      borderRadius: '6px',
+                      border: '1px solid #CBD5E1',
+                      outline: 'none',
+                      resize: 'vertical',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  style={{
+                    width: '100%',
+                    background: '#0F172A',
+                    color: '#FFFFFF',
+                    padding: '0.7rem',
+                    borderRadius: '6px',
+                    border: 'none',
+                    fontWeight: 600,
+                    fontSize: '0.85rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Simpan Perubahan Paket
+                </button>
+              </form>
             </div>
           </div>
         )}
 
-        {/* ── TAB 4: REVIEWS MANAGEMENT ── */}
-        {activeTab === 'reviews' && (
-          <div>
+        {/* ── TAB 3: PORTFOLIO PHOTO MANAGER ── */}
+        {activeTab === 'photos' && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '1.5rem' }}>
+            {/* Left: Photo Grid List */}
             <div style={{
-              background: 'white',
-              borderRadius: '14px',
+              background: '#FFFFFF',
+              borderRadius: '12px',
               padding: '1.25rem',
-              marginBottom: '1.5rem',
-              border: '1px solid rgba(123,28,42,0.1)',
+              border: '1px solid #E2E8F0',
+              boxShadow: '0 1px 3px 0 rgba(0,0,0,0.02)',
             }}>
-              <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--charcoal)', marginBottom: '0.25rem' }}>
-                Moderasi &amp; Kelola Testimoni Customer
-              </h2>
-              <p style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>
-                Ulasan yang dikirimkan customer dari website akan tersimpan otomatis di sistem local storage web. Anda dapat mereset atau membersihkan ulasan bila diperlukan.
-              </p>
-            </div>
-
-            <div style={{ background: 'white', borderRadius: '14px', padding: '1.25rem', border: '1px solid rgba(123,28,42,0.08)' }}>
-              <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--charcoal)', marginBottom: '1rem' }}>
-                Daftar Ulasan Customer Terbaru
-              </div>
-
-              <div style={{ fontSize: '0.8rem', color: 'var(--muted)', background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
-                ✓ Sistem secara otomatis menampilkan testimoni terbaru dari customer yang sudah terverifikasi di website utama.
-                Untuk menghapus seluruh ulasan simulasi/test, Anda dapat mengklik tombol di bawah ini.
-              </div>
-
-              <div style={{ marginTop: '1.25rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#475569' }}>
+                  PORTOFOLIO FOTO ({photos.length})
+                </span>
                 <button
-                  onClick={() => {
-                    localStorage.removeItem('yeka_user_testimonials');
-                    showToast('Data ulasan tambahan telah dibersihkan.');
-                  }}
+                  onClick={handleAddNewPhoto}
                   style={{
-                    background: '#FEE2E2',
-                    color: '#991B1B',
-                    border: '1px solid #F87171',
-                    padding: '0.55rem 1rem',
+                    background: '#0F172A',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    padding: '0.4rem 0.75rem',
                     borderRadius: '6px',
-                    fontSize: '0.78rem',
+                    fontSize: '0.75rem',
                     fontWeight: 600,
                     cursor: 'pointer',
                   }}
                 >
-                  🗑️ Reset Data Ulasan Customer Tambahan
+                  + Tambah Foto
                 </button>
               </div>
+
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
+                gap: '0.65rem',
+                maxHeight: '480px',
+                overflowY: 'auto',
+                paddingRight: '0.2rem',
+              }}>
+                {photos.map((ph) => {
+                  const isSelected = selectedPhotoId === ph.id;
+                  return (
+                    <div
+                      key={ph.id}
+                      onClick={() => setSelectedPhotoId(ph.id)}
+                      style={{
+                        borderRadius: '6px',
+                        overflow: 'hidden',
+                        border: isSelected ? '2px solid #0F172A' : '1px solid #E2E8F0',
+                        cursor: 'pointer',
+                        background: '#F8FAFC',
+                        transition: 'all 0.15s ease',
+                      }}
+                    >
+                      <div style={{ height: '85px', overflow: 'hidden', background: '#0F172A', position: 'relative' }}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={ph.src}
+                          alt={ph.title}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                        <span style={{
+                          position: 'absolute',
+                          bottom: '3px',
+                          left: '3px',
+                          fontSize: '0.55rem',
+                          fontWeight: 600,
+                          background: 'rgba(15,23,42,0.8)',
+                          color: '#FFFFFF',
+                          padding: '0.1rem 0.3rem',
+                          borderRadius: '3px',
+                          textTransform: 'capitalize',
+                        }}>
+                          {ph.category}
+                        </span>
+                      </div>
+                      <div style={{ padding: '0.35rem', fontSize: '0.7rem', fontWeight: 500, color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {ph.title}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div style={{ marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid #E2E8F0' }}>
+                <button
+                  onClick={handleResetPhotos}
+                  style={{
+                    width: '100%',
+                    background: 'transparent',
+                    color: '#64748B',
+                    border: '1px dashed #CBD5E1',
+                    padding: '0.5rem',
+                    borderRadius: '6px',
+                    fontSize: '0.75rem',
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Reset Galeri Foto ke Default
+                </button>
+              </div>
+            </div>
+
+            {/* Right: Photo Edit Form */}
+            <div style={{
+              background: '#FFFFFF',
+              borderRadius: '12px',
+              padding: '1.5rem',
+              border: '1px solid #E2E8F0',
+              boxShadow: '0 1px 3px 0 rgba(0,0,0,0.02)',
+            }}>
+              <form onSubmit={handleSavePhoto}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0F172A', margin: 0 }}>
+                    Edit Detail Foto
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => handleDeletePhoto(selectedPhotoId)}
+                    style={{
+                      background: '#FEF2F2',
+                      color: '#DC2626',
+                      border: '1px solid #FCA5A5',
+                      padding: '0.3rem 0.6rem',
+                      borderRadius: '6px',
+                      fontSize: '0.72rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Hapus Foto
+                  </button>
+                </div>
+
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>
+                    Kategori Foto
+                  </label>
+                  <select
+                    value={photoCategoryInput}
+                    onChange={(e) => setPhotoCategoryInput(e.target.value as 'wisuda' | 'wedding')}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem 0.65rem',
+                      fontSize: '0.82rem',
+                      borderRadius: '6px',
+                      border: '1px solid #CBD5E1',
+                      outline: 'none',
+                      background: '#FFFFFF',
+                      boxSizing: 'border-box',
+                    }}
+                  >
+                    <option value="wisuda">Wisuda (Tampil di Galeri Wisuda)</option>
+                    <option value="wedding">Wedding (Tampil di Galeri Wedding)</option>
+                  </select>
+                </div>
+
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>
+                    Path / URL Gambar (`src`) *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="/images/wisuda-1.jpg"
+                    value={photoSrcInput}
+                    onChange={(e) => setPhotoSrcInput(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem 0.65rem',
+                      fontSize: '0.82rem',
+                      borderRadius: '6px',
+                      border: '1px solid #CBD5E1',
+                      outline: 'none',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                  <div style={{ fontSize: '0.7rem', color: '#94A3B8', marginTop: '3px' }}>
+                    Menggunakan file lokal `/images/...` atau URL publik (Unsplash, Drive, dll).
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>
+                    Judul Foto / Caption *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. UGM Balairung Session"
+                    value={photoTitleInput}
+                    onChange={(e) => setPhotoTitleInput(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem 0.65rem',
+                      fontSize: '0.82rem',
+                      borderRadius: '6px',
+                      border: '1px solid #CBD5E1',
+                      outline: 'none',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>
+                    Tag Lokasi / Keterangan *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Area Jogja & Solo"
+                    value={photoTagInput}
+                    onChange={(e) => setPhotoTagInput(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem 0.65rem',
+                      fontSize: '0.82rem',
+                      borderRadius: '6px',
+                      border: '1px solid #CBD5E1',
+                      outline: 'none',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '1.25rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>
+                    Text Alt SEO (Opsional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Deskripsi foto untuk SEO Google"
+                    value={photoAltInput}
+                    onChange={(e) => setPhotoAltInput(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem 0.65rem',
+                      fontSize: '0.82rem',
+                      borderRadius: '6px',
+                      border: '1px solid #CBD5E1',
+                      outline: 'none',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  style={{
+                    width: '100%',
+                    background: '#0F172A',
+                    color: '#FFFFFF',
+                    padding: '0.7rem',
+                    borderRadius: '6px',
+                    border: 'none',
+                    fontWeight: 600,
+                    fontSize: '0.85rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Simpan Perubahan Foto
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* ── TAB 4: REVIEWS MODERATION ── */}
+        {activeTab === 'reviews' && (
+          <div style={{
+            background: '#FFFFFF',
+            borderRadius: '12px',
+            padding: '1.5rem',
+            border: '1px solid #E2E8F0',
+            boxShadow: '0 1px 3px 0 rgba(0,0,0,0.02)',
+          }}>
+            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.35rem' }}>
+              Moderasi Ulasan Customer
+            </h3>
+            <p style={{ fontSize: '0.82rem', color: '#64748B', marginBottom: '1.5rem', lineHeight: 1.5 }}>
+              Ulasan baru yang dikirimkan customer dari form website disimpan secara otomatis di database lokal browser.
+            </p>
+
+            <div style={{ background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '0.8rem', color: '#475569' }}>
+              Seluruh ulasan terverifikasi dan testimoni default tampil secara otomatis di website utama. Jika Anda ingin mematikan atau mereset data ulasan tambahan hasil testing, gunakan tombol di bawah ini.
+            </div>
+
+            <div style={{ marginTop: '1.5rem' }}>
+              <button
+                onClick={() => {
+                  localStorage.removeItem('yeka_user_testimonials');
+                  showToast('Data ulasan tambahan berhasil dibersihkan.');
+                }}
+                style={{
+                  background: '#FEF2F2',
+                  color: '#DC2626',
+                  border: '1px solid #FCA5A5',
+                  padding: '0.5rem 1rem',
+                  borderRadius: '6px',
+                  fontSize: '0.78rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                }}
+              >
+                Reset Ulasan Tambahan (Testing Data)
+              </button>
             </div>
           </div>
         )}
