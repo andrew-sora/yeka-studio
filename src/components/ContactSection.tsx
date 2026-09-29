@@ -237,7 +237,7 @@ export default function ContactSection() {
               </a>
             </div>
 
-            {/* Social Channels */}
+            {/* Social Instagram Channels */}
             <div
               className="reveal-contact"
               style={{
@@ -245,7 +245,7 @@ export default function ContactSection() {
                 transform: 'translateY(24px)',
                 transition: 'all 0.7s ease',
                 display: 'flex',
-                gap: '1.25rem',
+                gap: '1rem',
                 flexWrap: 'wrap',
               }}
             >
@@ -255,33 +255,54 @@ export default function ContactSection() {
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
-                  color: 'rgba(255,255,255,0.7)',
+                  color: 'rgba(255,255,255,0.85)',
                   fontSize: '0.8rem',
                   textDecoration: 'none',
                   fontFamily: 'Inter, sans-serif',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '0.35rem',
+                  gap: '0.4rem',
+                  background: 'rgba(255,255,255,0.08)',
+                  padding: '0.45rem 0.85rem',
+                  borderRadius: '6px',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  transition: 'all 0.2s ease',
                 }}
               >
-                @yekastudio.graduation
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C9A94B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                </svg>
+                <span>IG Wisuda: <strong style={{ color: '#C9A94B' }}>@yekastudio.graduation</strong></span>
               </a>
+
               <a
                 href="https://www.instagram.com/yeka.studio"
                 id="link-ig-wedding"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
-                  color: 'rgba(255,255,255,0.7)',
+                  color: 'rgba(255,255,255,0.85)',
                   fontSize: '0.8rem',
                   textDecoration: 'none',
                   fontFamily: 'Inter, sans-serif',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '0.35rem',
+                  gap: '0.4rem',
+                  background: 'rgba(255,255,255,0.08)',
+                  padding: '0.45rem 0.85rem',
+                  borderRadius: '6px',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  transition: 'all 0.2s ease',
                 }}
               >
-                @yeka.studio
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C9A94B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                </svg>
+                <span>IG Wedding: <strong style={{ color: '#C9A94B' }}>@yeka.studio</strong></span>
               </a>
             </div>
 
