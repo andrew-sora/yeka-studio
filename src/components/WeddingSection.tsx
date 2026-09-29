@@ -465,7 +465,7 @@ export default function WeddingSection() {
                   scrollSnapAlign: 'start',
                   background: pkg.featured ? 'linear-gradient(145deg, rgba(123,28,42,0.4) 0%, rgba(201,169,75,0.15) 100%)' : 'rgba(255,255,255,0.05)',
                   backdropFilter: 'blur(8px)',
-                  padding: '1.75rem 1.5rem',
+                  padding: 'clamp(1.15rem, 3.5vw, 1.5rem) clamp(1rem, 3vw, 1.25rem)',
                   borderRadius: '12px',
                   border: pkg.featured ? '1.5px solid #C9A94B' : '1px solid rgba(201,169,75,0.2)',
                   display: 'flex',

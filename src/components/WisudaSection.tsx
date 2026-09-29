@@ -446,7 +446,7 @@ export default function WisudaSection() {
                   minWidth: '270px',
                   scrollSnapAlign: 'start',
                   background: 'white',
-                  padding: '1.75rem 1.5rem',
+                  padding: 'clamp(1.15rem, 3.5vw, 1.5rem) clamp(1rem, 3vw, 1.25rem)',
                   borderRadius: '12px',
                   boxShadow: pkg.featured ? '0 8px 30px rgba(123,28,42,0.15)' : '0 4px 16px rgba(0,0,0,0.05)',
                   border: pkg.featured ? '2px solid var(--maroon)' : '1px solid rgba(123,28,42,0.1)',
