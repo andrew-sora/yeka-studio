@@ -2,7 +2,20 @@
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 
-const TESTIMONIALS = [
+interface Testimonial {
+  id: string | number;
+  name: string;
+  role: string;
+  avatar: string;
+  rating: number;
+  tag: string;
+  date: string;
+  chat: string;
+  highlight: string;
+  isUserAdded?: boolean;
+}
+
+const INITIAL_TESTIMONIALS: Testimonial[] = [
   {
     id: 1,
     name: 'Dhea & Bestie',
@@ -52,7 +65,34 @@ const TESTIMONIALS = [
 export default function TestimonialSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(INITIAL_TESTIMONIALS);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [showForm, setShowForm] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  // Form State
+  const [formData, setFormData] = useState({
+    name: '',
+    role: '',
+    tag: 'Wisuda Campus',
+    rating: 5,
+    chat: '',
+  });
+
+  // Load stored user reviews from localStorage on client side
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('yeka_user_testimonials');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setTestimonials([...parsed, ...INITIAL_TESTIMONIALS]);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -80,7 +120,7 @@ export default function TestimonialSection() {
     const scrollPosition = container.scrollLeft;
     const cardWidth = container.firstElementChild ? (container.firstElementChild as HTMLElement).offsetWidth + 16 : 300;
     const newIndex = Math.round(scrollPosition / cardWidth);
-    setActiveIndex(Math.min(Math.max(newIndex, 0), TESTIMONIALS.length - 1));
+    setActiveIndex(Math.min(Math.max(newIndex, 0), testimonials.length - 1));
   };
 
   const scrollToIndex = (index: number) => {
@@ -93,6 +133,44 @@ export default function TestimonialSection() {
         behavior: 'smooth',
       });
     }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name.trim() || !formData.chat.trim()) return;
+
+    const newTesti: Testimonial = {
+      id: Date.now(),
+      name: formData.name.trim(),
+      role: formData.role.trim() || 'Klien Yeka Studio',
+      avatar: '/images/wisuda-2.jpg',
+      rating: formData.rating,
+      tag: formData.tag,
+      date: 'Baru saja',
+      chat: formData.chat.trim(),
+      highlight: 'Ulasan Terbaru Klien ✨',
+      isUserAdded: true,
+    };
+
+    const updatedList = [newTesti, ...testimonials];
+    setTestimonials(updatedList);
+
+    // Save user added review to localStorage
+    try {
+      const userAdded = updatedList.filter((t) => t.isUserAdded);
+      localStorage.setItem('yeka_user_testimonials', JSON.stringify(userAdded));
+    } catch (err) {
+      console.error(err);
+    }
+
+    setSubmitted(true);
+    setFormData({ name: '', role: '', tag: 'Wisuda Campus', rating: 5, chat: '' });
+
+    setTimeout(() => {
+      setShowForm(false);
+      setSubmitted(false);
+      scrollToIndex(0);
+    }, 1800);
   };
 
   return (
@@ -112,7 +190,7 @@ export default function TestimonialSection() {
           className="reveal-testi"
           style={{
             textAlign: 'center',
-            marginBottom: '2rem',
+            marginBottom: '1.75rem',
             opacity: 0,
             transform: 'translateY(24px)',
             transition: 'all 0.7s ease',
@@ -147,13 +225,216 @@ export default function TestimonialSection() {
             fontSize: '0.92rem',
             color: 'var(--muted)',
             maxWidth: '520px',
-            margin: '0 auto',
+            margin: '0 auto 1.25rem auto',
             lineHeight: 1.65,
             fontFamily: 'Inter, sans-serif',
           }}>
             Tangkapan layar nyata apresiasi dari para wisudawati &amp; pasangan pengantin di Jogja &amp; Solo.
           </p>
+
+          {/* Toggle Write Testimonial Button */}
+          <button
+            onClick={() => setShowForm(!showForm)}
+            style={{
+              background: showForm ? 'rgba(123,28,42,0.1)' : 'var(--maroon)',
+              color: showForm ? 'var(--maroon)' : 'white',
+              border: '1.5px solid var(--maroon)',
+              padding: '0.6rem 1.35rem',
+              borderRadius: '100px',
+              fontFamily: 'Inter, sans-serif',
+              fontSize: '0.8rem',
+              fontWeight: 600,
+              letterSpacing: '0.04em',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              transition: 'all 0.3s ease',
+              boxShadow: showForm ? 'none' : '0 4px 14px rgba(123,28,42,0.2)',
+            }}
+          >
+            <span>{showForm ? '✕ Tutup Form' : '✍️ Tulis Testimoni Anda'}</span>
+          </button>
         </div>
+
+        {/* 📝 Add Testimonial Form Modal/Expander */}
+        {showForm && (
+          <div
+            className="animate-fade-in-up"
+            style={{
+              maxWidth: '540px',
+              margin: '0 auto 2.25rem auto',
+              background: 'white',
+              borderRadius: '14px',
+              padding: '1.35rem 1.25rem',
+              border: '1.5px solid rgba(123,28,42,0.2)',
+              boxShadow: '0 10px 30px rgba(123,28,42,0.12)',
+            }}
+          >
+            {submitted ? (
+              <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
+                <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🎉</div>
+                <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.35rem', color: 'var(--maroon)', fontWeight: 700 }}>
+                  Terima Kasih Atas Ulasan Anda!
+                </h3>
+                <p style={{ fontSize: '0.82rem', color: 'var(--muted)', marginTop: '0.35rem' }}>
+                  Testimoni Anda telah berhasil diterbitkan di galeri di bawah ini.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit}>
+                <div style={{
+                  fontSize: '0.95rem',
+                  fontWeight: 700,
+                  color: 'var(--charcoal)',
+                  fontFamily: 'Cormorant Garamond, serif',
+                  marginBottom: '1rem',
+                  borderBottom: '1px solid rgba(123,28,42,0.1)',
+                  paddingBottom: '0.5rem',
+                }}>
+                  Bagikan Pengalaman Foto Anda di Yeka Studio
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, color: 'var(--charcoal)', marginBottom: '0.25rem' }}>
+                      Nama Anda / Pasangan *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Contoh: Rina &amp; Bestie / Adit"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '0.55rem 0.75rem',
+                        fontSize: '0.8rem',
+                        borderRadius: '6px',
+                        border: '1px solid rgba(123,28,42,0.2)',
+                        outline: 'none',
+                        fontFamily: 'Inter, sans-serif',
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, color: 'var(--charcoal)', marginBottom: '0.25rem' }}>
+                      Kategori Sesi *
+                    </label>
+                    <select
+                      value={formData.tag}
+                      onChange={(e) => setFormData({ ...formData, tag: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '0.55rem 0.75rem',
+                        fontSize: '0.8rem',
+                        borderRadius: '6px',
+                        border: '1px solid rgba(123,28,42,0.2)',
+                        outline: 'none',
+                        fontFamily: 'Inter, sans-serif',
+                        background: 'white',
+                      }}
+                    >
+                      <option value="Wisuda Campus">Wisuda Campus (Outdoor)</option>
+                      <option value="Prewedding &amp; Studio">Prewedding &amp; Studio</option>
+                      <option value="Wedding Session">Wedding Session</option>
+                      <option value="Foto Personal">Foto Personal / Studio</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: '0.75rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, color: 'var(--charcoal)', marginBottom: '0.25rem' }}>
+                    Lokasi / Detail Sesi (Opsional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Contoh: Wisuda UGM Balairung / Studio Jogja"
+                    value={formData.role}
+                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '0.55rem 0.75rem',
+                      fontSize: '0.8rem',
+                      borderRadius: '6px',
+                      border: '1px solid rgba(123,28,42,0.2)',
+                      outline: 'none',
+                      fontFamily: 'Inter, sans-serif',
+                    }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '0.75rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, color: 'var(--charcoal)', marginBottom: '0.25rem' }}>
+                    Rating Pengalaman *
+                  </label>
+                  <div style={{ display: 'flex', gap: '0.3rem' }}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        type="button"
+                        key={star}
+                        onClick={() => setFormData({ ...formData, rating: star })}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          fontSize: '1.25rem',
+                          color: star <= formData.rating ? '#F59E0B' : '#CBD5E1',
+                          cursor: 'pointer',
+                          padding: 0,
+                        }}
+                      >
+                        ★
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, color: 'var(--charcoal)', marginBottom: '0.25rem' }}>
+                    Cerita / Kesan Ulasan Anda *
+                  </label>
+                  <textarea
+                    required
+                    rows={3}
+                    placeholder="Tuliskan pengalaman manis Anda berfoto bersama tim female photographer Yeka Studio..."
+                    value={formData.chat}
+                    onChange={(e) => setFormData({ ...formData, chat: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '0.6rem 0.75rem',
+                      fontSize: '0.8rem',
+                      borderRadius: '6px',
+                      border: '1px solid rgba(123,28,42,0.2)',
+                      outline: 'none',
+                      fontFamily: 'Inter, sans-serif',
+                      resize: 'none',
+                    }}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  style={{
+                    width: '100%',
+                    background: 'var(--maroon)',
+                    color: 'white',
+                    padding: '0.75rem',
+                    borderRadius: '6px',
+                    border: 'none',
+                    fontWeight: 600,
+                    fontSize: '0.82rem',
+                    fontFamily: 'Inter, sans-serif',
+                    cursor: 'pointer',
+                    letterSpacing: '0.05em',
+                  }}
+                >
+                  Kirim &amp; Terbitkan Testimoni
+                </button>
+              </form>
+            )}
+          </div>
+        )}
 
         {/* Carousel / Cards Track */}
         <div
@@ -178,7 +459,7 @@ export default function TestimonialSection() {
               padding: '0.5rem 0.25rem 1.25rem',
             }}
           >
-            {TESTIMONIALS.map((item, i) => (
+            {testimonials.map((item, i) => (
               <div
                 key={i}
                 style={{
@@ -188,11 +469,12 @@ export default function TestimonialSection() {
                   background: 'white',
                   borderRadius: '16px',
                   boxShadow: '0 8px 24px rgba(123,28,42,0.08)',
-                  border: '1px solid rgba(123,28,42,0.1)',
+                  border: item.isUserAdded ? '2px solid var(--maroon)' : '1px solid rgba(123,28,42,0.1)',
                   overflow: 'hidden',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
+                  position: 'relative',
                 }}
               >
                 {/* WA Chat Card Header */}
@@ -255,7 +537,7 @@ export default function TestimonialSection() {
                     textTransform: 'uppercase',
                     letterSpacing: '0.05em',
                   }}>
-                    Verified
+                    {item.isUserAdded ? 'Baru' : 'Verified'}
                   </div>
                 </div>
 
@@ -275,7 +557,9 @@ export default function TestimonialSection() {
                     gap: '0.3rem',
                     marginBottom: '0.75rem',
                   }}>
-                    <div style={{ color: '#F59E0B', fontSize: '0.85rem' }}>★★★★★</div>
+                    <div style={{ color: '#F59E0B', fontSize: '0.85rem' }}>
+                      {'★'.repeat(item.rating)}{'☆'.repeat(5 - item.rating)}
+                    </div>
                     <span style={{
                       fontSize: '0.68rem',
                       background: 'rgba(123,28,42,0.1)',
@@ -345,7 +629,7 @@ export default function TestimonialSection() {
             gap: '0.4rem',
             marginTop: '0.5rem',
           }}>
-            {TESTIMONIALS.map((_, i) => (
+            {testimonials.map((_, i) => (
               <button
                 key={i}
                 onClick={() => scrollToIndex(i)}
