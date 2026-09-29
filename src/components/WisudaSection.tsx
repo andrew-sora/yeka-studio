@@ -11,10 +11,19 @@ const WISUDA_PHOTOS = [
   { src: '/images/wisuda-6.jpg', alt: 'Wisuda outdoor botanical garden', title: 'Botanical Session', tag: 'Garden Aesthetic' },
 ];
 
+const WISUDA_PACKAGES = [
+  { id: 'wisuda-outdoor', title: 'Wisuda Outdoor', price: 'Rp 450.000', desc: 'Sesi candid outdoor area kampus Jogja/Solo', featured: true, badge: 'Terfavorit' },
+  { id: 'wisuda-indoor', title: 'Wisuda Indoor', price: 'Rp 550.000', desc: 'Sesi indoor spot, hall kampus &amp; cafe', featured: false },
+  { id: 'wisuda-studio', title: 'Wisuda Studio', price: 'Rp 650.000', desc: 'Studio setup lighting eksklusif Yeka', featured: false },
+  { id: 'wisuda-all', title: 'Wisuda All-In', price: 'Rp 950.000', desc: 'Kombinasi Studio + Outdoor Campus Shoot', featured: false },
+];
+
 export default function WisudaSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const pkgCarouselRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [activePkgIndex, setActivePkgIndex] = useState(0);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -58,6 +67,37 @@ export default function WisudaSection() {
   const scrollToIndex = (index: number) => {
     if (!carouselRef.current) return;
     const container = carouselRef.current;
+    const card = container.children[index] as HTMLElement;
+    if (card) {
+      container.scrollTo({
+        left: card.offsetLeft - container.offsetLeft,
+        behavior: 'smooth',
+      });
+    }
+  };
+
+  const handlePkgScroll = () => {
+    if (!pkgCarouselRef.current) return;
+    const container = pkgCarouselRef.current;
+    const scrollPosition = container.scrollLeft;
+    const cardWidth = container.firstElementChild ? (container.firstElementChild as HTMLElement).offsetWidth + 20 : 280;
+    const newIndex = Math.round(scrollPosition / cardWidth);
+    setActivePkgIndex(Math.min(Math.max(newIndex, 0), WISUDA_PACKAGES.length - 1));
+  };
+
+  const scrollPkg = (direction: 'left' | 'right') => {
+    if (!pkgCarouselRef.current) return;
+    const container = pkgCarouselRef.current;
+    const scrollAmount = container.clientWidth * 0.75;
+    container.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth',
+    });
+  };
+
+  const scrollToPkgIndex = (index: number) => {
+    if (!pkgCarouselRef.current) return;
+    const container = pkgCarouselRef.current;
     const card = container.children[index] as HTMLElement;
     if (card) {
       container.scrollTo({
@@ -304,42 +344,118 @@ export default function WisudaSection() {
         </div>
 
         {/* Theme & Price List Cards */}
-        <div className="reveal-item" style={{ marginBottom: '3rem' }}>
+        <div className="reveal-item" style={{ marginBottom: '3rem', position: 'relative' }}>
+          {/* Header & Controls */}
           <div style={{
-            textAlign: 'center',
-            fontSize: '0.75rem',
-            letterSpacing: '0.15em',
-            textTransform: 'uppercase',
-            color: 'var(--maroon)',
-            fontFamily: 'Inter, sans-serif',
-            fontWeight: 600,
-            marginBottom: '1.5rem',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '1rem',
+            padding: '0 0.5rem',
+            flexWrap: 'wrap',
+            gap: '0.5rem',
           }}>
-            Pilihan Paket Wisuda &amp; Pricelist Transparan
+            <div style={{
+              fontSize: '0.75rem',
+              letterSpacing: '0.15em',
+              textTransform: 'uppercase',
+              color: 'var(--maroon)',
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: 600,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+            }}>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--maroon)' }} />
+              Pilihan Paket Wisuda &amp; Pricelist Transparan
+            </div>
+
+            {/* Navigation Buttons */}
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button
+                onClick={() => scrollPkg('left')}
+                aria-label="Previous package"
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  border: '1px solid rgba(123,28,42,0.2)',
+                  background: 'white',
+                  color: 'var(--maroon)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  fontSize: '1rem',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                &#8249;
+              </button>
+              <button
+                onClick={() => scrollPkg('right')}
+                aria-label="Next package"
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  border: '1px solid rgba(123,28,42,0.2)',
+                  background: 'var(--maroon)',
+                  color: 'white',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  fontSize: '1rem',
+                  boxShadow: '0 2px 8px rgba(123,28,42,0.25)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                &#8250;
+              </button>
+            </div>
           </div>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
-            gap: '1.25rem',
-            alignItems: 'stretch',
-          }}>
-            {[
-              { id: 'wisuda-outdoor', title: 'Wisuda Outdoor', price: 'Rp 450.000', desc: 'Sesi candid outdoor area kampus Jogja/Solo', featured: true, badge: 'Terfavorit' },
-              { id: 'wisuda-indoor', title: 'Wisuda Indoor', price: 'Rp 550.000', desc: 'Sesi indoor spot, hall kampus &amp; cafe', featured: false },
-              { id: 'wisuda-studio', title: 'Wisuda Studio', price: 'Rp 650.000', desc: 'Studio setup lighting eksklusif Yeka', featured: false },
-              { id: 'wisuda-all', title: 'Wisuda All-In', price: 'Rp 950.000', desc: 'Kombinasi Studio + Outdoor Campus Shoot', featured: false },
-            ].map((pkg, i) => (
-              <div key={i} style={{
-                background: 'white',
-                padding: '1.75rem 1.5rem',
-                borderRadius: '8px',
-                boxShadow: pkg.featured ? '0 8px 30px rgba(123,28,42,0.15)' : '0 4px 16px rgba(0,0,0,0.05)',
-                border: pkg.featured ? '2px solid var(--maroon)' : '1px solid rgba(123,28,42,0.1)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                position: 'relative',
-              }}>
+
+          {/* Scroll Track Container */}
+          <div
+            ref={pkgCarouselRef}
+            onScroll={handlePkgScroll}
+            className="no-scrollbar"
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              flexWrap: 'nowrap',
+              gap: '1.25rem',
+              overflowX: 'auto',
+              WebkitOverflowScrolling: 'touch',
+              scrollSnapType: 'x mandatory',
+              scrollBehavior: 'smooth',
+              paddingTop: '1rem',
+              paddingBottom: '1rem',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+            }}
+          >
+            {WISUDA_PACKAGES.map((pkg, i) => (
+              <div
+                key={i}
+                style={{
+                  flex: '0 0 auto',
+                  width: 'clamp(270px, 82vw, 320px)',
+                  minWidth: '270px',
+                  scrollSnapAlign: 'start',
+                  background: 'white',
+                  padding: '1.75rem 1.5rem',
+                  borderRadius: '12px',
+                  boxShadow: pkg.featured ? '0 8px 30px rgba(123,28,42,0.15)' : '0 4px 16px rgba(0,0,0,0.05)',
+                  border: pkg.featured ? '2px solid var(--maroon)' : '1px solid rgba(123,28,42,0.1)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  position: 'relative',
+                }}
+              >
                 {pkg.featured && (
                   <div style={{
                     position: 'absolute',
@@ -403,7 +519,7 @@ export default function WisudaSection() {
                     color: pkg.featured ? 'white' : 'var(--maroon)',
                     border: '1px solid var(--maroon)',
                     padding: '0.75rem 1rem',
-                    borderRadius: '4px',
+                    borderRadius: '6px',
                     fontFamily: 'Inter, sans-serif',
                     fontSize: '0.8rem',
                     fontWeight: 600,
@@ -415,6 +531,31 @@ export default function WisudaSection() {
                   Pilih Paket ini &rarr;
                 </a>
               </div>
+            ))}
+          </div>
+
+          {/* Dots Navigation Tracker */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '0.4rem',
+            marginTop: '0.75rem',
+          }}>
+            {WISUDA_PACKAGES.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => scrollToPkgIndex(i)}
+                aria-label={`Go to package ${i + 1}`}
+                style={{
+                  width: activePkgIndex === i ? '24px' : '8px',
+                  height: '8px',
+                  borderRadius: '100px',
+                  background: activePkgIndex === i ? 'var(--maroon)' : 'rgba(123,28,42,0.2)',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                }}
+              />
             ))}
           </div>
         </div>

@@ -9,10 +9,18 @@ const WEDDING_PHOTOS = [
   { src: '/images/wedding-4.jpg', alt: 'Portrait pengantin kebaya putih gold', title: 'Kebaya Modern', tag: 'Editorial Look' },
 ];
 
+const WEDDING_PACKAGES = [
+  { title: 'Prewedding Studio Adat Jawa', price: 'Rp 1.850.000', desc: 'Studio tirai merah, busana &amp; makeup adat Jawa lengkap', featured: false },
+  { title: 'Prewedding Outdoor Scenic', price: 'Rp 2.250.000', desc: 'Lokasi outdoor Jogja/Solo + dokumentasi video reel', featured: true, badge: 'Paling Populer' },
+  { title: 'Intimate Wedding Coverage', price: 'Rp 4.500.000', desc: 'Full-day coverage akad &amp; resepsi + album cetak eksklusif', featured: false },
+];
+
 export default function WeddingSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const pkgCarouselRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [activePkgIndex, setActivePkgIndex] = useState(0);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -56,6 +64,37 @@ export default function WeddingSection() {
   const scrollToIndex = (index: number) => {
     if (!carouselRef.current) return;
     const container = carouselRef.current;
+    const card = container.children[index] as HTMLElement;
+    if (card) {
+      container.scrollTo({
+        left: card.offsetLeft - container.offsetLeft,
+        behavior: 'smooth',
+      });
+    }
+  };
+
+  const handlePkgScroll = () => {
+    if (!pkgCarouselRef.current) return;
+    const container = pkgCarouselRef.current;
+    const scrollPosition = container.scrollLeft;
+    const cardWidth = container.firstElementChild ? (container.firstElementChild as HTMLElement).offsetWidth + 20 : 280;
+    const newIndex = Math.round(scrollPosition / cardWidth);
+    setActivePkgIndex(Math.min(Math.max(newIndex, 0), WEDDING_PACKAGES.length - 1));
+  };
+
+  const scrollPkg = (direction: 'left' | 'right') => {
+    if (!pkgCarouselRef.current) return;
+    const container = pkgCarouselRef.current;
+    const scrollAmount = container.clientWidth * 0.75;
+    container.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth',
+    });
+  };
+
+  const scrollToPkgIndex = (index: number) => {
+    if (!pkgCarouselRef.current) return;
+    const container = pkgCarouselRef.current;
     const card = container.children[index] as HTMLElement;
     if (card) {
       container.scrollTo({
@@ -323,42 +362,119 @@ export default function WeddingSection() {
         </div>
 
         {/* Theme & Price List Cards */}
-        <div className="reveal-wedding" style={{ marginBottom: '3rem' }}>
+        <div className="reveal-wedding" style={{ marginBottom: '3rem', position: 'relative' }}>
+          {/* Header & Controls */}
           <div style={{
-            textAlign: 'center',
-            fontSize: '0.75rem',
-            letterSpacing: '0.15em',
-            textTransform: 'uppercase',
-            color: '#C9A94B',
-            fontFamily: 'Inter, sans-serif',
-            fontWeight: 600,
-            marginBottom: '1.5rem',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '1rem',
+            padding: '0 0.5rem',
+            flexWrap: 'wrap',
+            gap: '0.5rem',
           }}>
-            Pilihan Paket Wedding &amp; Prewedding Transparan
+            <div style={{
+              fontSize: '0.75rem',
+              letterSpacing: '0.15em',
+              textTransform: 'uppercase',
+              color: '#C9A94B',
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: 600,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+            }}>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#C9A94B' }} />
+              Pilihan Paket Wedding &amp; Prewedding Transparan
+            </div>
+
+            {/* Navigation Buttons */}
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button
+                onClick={() => scrollPkg('left')}
+                aria-label="Previous package"
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  border: '1px solid rgba(201,169,75,0.3)',
+                  background: 'rgba(255,255,255,0.08)',
+                  color: '#C9A94B',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  fontSize: '1rem',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                &#8249;
+              </button>
+              <button
+                onClick={() => scrollPkg('right')}
+                aria-label="Next package"
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  border: '1px solid #C9A94B',
+                  background: '#C9A94B',
+                  color: '#1a0508',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  fontSize: '1rem',
+                  boxShadow: '0 2px 8px rgba(201,169,75,0.25)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                &#8250;
+              </button>
+            </div>
           </div>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-            gap: '1.25rem',
-            alignItems: 'stretch',
-          }}>
-            {[
-              { title: 'Prewedding Studio Adat Jawa', price: 'Rp 1.850.000', desc: 'Studio tirai merah, busana &amp; makeup adat Jawa lengkap', featured: false },
-              { title: 'Prewedding Outdoor Scenic', price: 'Rp 2.250.000', desc: 'Lokasi outdoor Jogja/Solo + dokumentasi video reel', featured: true, badge: 'Paling Populer' },
-              { title: 'Intimate Wedding Coverage', price: 'Rp 4.500.000', desc: 'Full-day coverage akad &amp; resepsi + album cetak eksklusif', featured: false },
-            ].map((pkg, i) => (
-              <div key={i} style={{
-                background: pkg.featured ? 'linear-gradient(145deg, rgba(123,28,42,0.4) 0%, rgba(201,169,75,0.15) 100%)' : 'rgba(255,255,255,0.05)',
-                backdropFilter: 'blur(8px)',
-                padding: '1.75rem 1.5rem',
-                borderRadius: '8px',
-                border: pkg.featured ? '1.5px solid #C9A94B' : '1px solid rgba(201,169,75,0.2)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                position: 'relative',
-                boxShadow: pkg.featured ? '0 12px 36px rgba(201,169,75,0.2)' : 'none',
-              }}>
+
+          {/* Scroll Track Container */}
+          <div
+            ref={pkgCarouselRef}
+            onScroll={handlePkgScroll}
+            className="no-scrollbar"
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              flexWrap: 'nowrap',
+              gap: '1.25rem',
+              overflowX: 'auto',
+              WebkitOverflowScrolling: 'touch',
+              scrollSnapType: 'x mandatory',
+              scrollBehavior: 'smooth',
+              paddingTop: '1rem',
+              paddingBottom: '1rem',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+            }}
+          >
+            {WEDDING_PACKAGES.map((pkg, i) => (
+              <div
+                key={i}
+                style={{
+                  flex: '0 0 auto',
+                  width: 'clamp(270px, 82vw, 320px)',
+                  minWidth: '270px',
+                  scrollSnapAlign: 'start',
+                  background: pkg.featured ? 'linear-gradient(145deg, rgba(123,28,42,0.4) 0%, rgba(201,169,75,0.15) 100%)' : 'rgba(255,255,255,0.05)',
+                  backdropFilter: 'blur(8px)',
+                  padding: '1.75rem 1.5rem',
+                  borderRadius: '12px',
+                  border: pkg.featured ? '1.5px solid #C9A94B' : '1px solid rgba(201,169,75,0.2)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  position: 'relative',
+                  boxShadow: pkg.featured ? '0 12px 36px rgba(201,169,75,0.2)' : 'none',
+                }}
+              >
                 {pkg.featured && (
                   <div style={{
                     position: 'absolute',
@@ -422,7 +538,7 @@ export default function WeddingSection() {
                     color: pkg.featured ? '#1a0508' : '#C9A94B',
                     border: '1px solid #C9A94B',
                     padding: '0.75rem 1rem',
-                    borderRadius: '4px',
+                    borderRadius: '6px',
                     fontFamily: 'Inter, sans-serif',
                     fontSize: '0.8rem',
                     fontWeight: 600,
@@ -434,6 +550,31 @@ export default function WeddingSection() {
                   Pilih Paket ini &rarr;
                 </a>
               </div>
+            ))}
+          </div>
+
+          {/* Dots Navigation Tracker */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '0.4rem',
+            marginTop: '0.75rem',
+          }}>
+            {WEDDING_PACKAGES.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => scrollToPkgIndex(i)}
+                aria-label={`Go to package ${i + 1}`}
+                style={{
+                  width: activePkgIndex === i ? '24px' : '8px',
+                  height: '8px',
+                  borderRadius: '100px',
+                  background: activePkgIndex === i ? '#C9A94B' : 'rgba(201,169,75,0.25)',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                }}
+              />
             ))}
           </div>
         </div>
