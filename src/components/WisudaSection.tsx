@@ -12,10 +12,59 @@ const WISUDA_PHOTOS = [
 ];
 
 const WISUDA_PACKAGES = [
-  { id: 'wisuda-outdoor', title: 'Wisuda Outdoor', price: 'Rp 450.000', desc: 'Sesi candid outdoor area kampus Jogja/Solo', featured: true, badge: 'Terfavorit' },
-  { id: 'wisuda-indoor', title: 'Wisuda Indoor', price: 'Rp 550.000', desc: 'Sesi indoor spot, hall kampus &amp; cafe', featured: false },
-  { id: 'wisuda-studio', title: 'Wisuda Studio', price: 'Rp 650.000', desc: 'Studio setup lighting eksklusif Yeka', featured: false },
-  { id: 'wisuda-all', title: 'Wisuda All-In', price: 'Rp 950.000', desc: 'Kombinasi Studio + Outdoor Campus Shoot', featured: false },
+  {
+    id: 'wisuda-outdoor',
+    title: 'Wisuda Outdoor',
+    price: 'Rp 450.000',
+    desc: 'Sesi candid outdoor area kampus Jogja/Solo',
+    featured: true,
+    badge: 'Terfavorit',
+    features: [
+      'Durasi 1,5 Jam Photoshoot',
+      'ALL File Mentah (Drive H+1)',
+      '15 Foto Color Graded Master',
+      'Bebas Bawa s/d 5 Orang (Ortu/Bestie)',
+    ],
+  },
+  {
+    id: 'wisuda-indoor',
+    title: 'Wisuda Indoor',
+    price: 'Rp 550.000',
+    desc: 'Sesi indoor spot, hall kampus &amp; cafe',
+    featured: false,
+    features: [
+      'Durasi 1,5 Jam Photoshoot',
+      'ALL File Mentah (Drive H+1)',
+      '20 Foto Color Graded Master',
+      'Spot Hall Kampus, Cafe &amp; Indoor',
+    ],
+  },
+  {
+    id: 'wisuda-studio',
+    title: 'Wisuda Studio',
+    price: 'Rp 650.000',
+    desc: 'Studio setup lighting eksklusif Yeka',
+    featured: false,
+    features: [
+      'Durasi 2 Jam Studio Session',
+      'ALL File Mentah (Drive H+1)',
+      '25 Foto Color Graded Master',
+      'Cetak 1 Foto 10R + Frame Kayu',
+    ],
+  },
+  {
+    id: 'wisuda-all',
+    title: 'Wisuda All-In',
+    price: 'Rp 950.000',
+    desc: 'Kombinasi Studio + Outdoor Campus Shoot',
+    featured: false,
+    features: [
+      'Durasi 3 Jam (Studio + Outdoor)',
+      'ALL File Mentah (Drive H+1)',
+      '40 Foto Color Graded Master',
+      'Cetak 2 Foto 10R + Frame Kayu',
+    ],
+  },
 ];
 
 export default function WisudaSection() {
@@ -536,8 +585,36 @@ export default function WisudaSection() {
                     color: 'var(--muted)',
                     fontFamily: 'Inter, sans-serif',
                     lineHeight: 1.6,
-                    marginBottom: '1.5rem',
+                    marginBottom: '0.85rem',
                   }} dangerouslySetInnerHTML={{ __html: pkg.desc }} />
+
+                  {pkg.features && (
+                    <ul style={{
+                      listStyle: 'none',
+                      padding: 0,
+                      margin: '0 0 1.25rem 0',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.45rem',
+                      borderTop: '1px dashed rgba(123,28,42,0.15)',
+                      paddingTop: '0.75rem',
+                    }}>
+                      {pkg.features.map((feat, fIdx) => (
+                        <li key={fIdx} style={{
+                          fontSize: '0.76rem',
+                          color: 'var(--charcoal)',
+                          fontFamily: 'Inter, sans-serif',
+                          display: 'flex',
+                          alignItems: 'flex-start',
+                          gap: '0.4rem',
+                          lineHeight: 1.35,
+                        }}>
+                          <span style={{ color: '#16A34A', fontWeight: 700, fontSize: '0.82rem', flexShrink: 0 }}>✓</span>
+                          <span>{feat}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
                 <a
                   href={`#jadwal?paket=${encodeURIComponent(pkg.title)}`}

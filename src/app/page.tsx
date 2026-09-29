@@ -1,9 +1,9 @@
 import HeroSection from '@/components/HeroSection';
 import TrustBar from '@/components/TrustBar';
-import AvailabilitySection from '@/components/AvailabilitySection';
 import WisudaSection from '@/components/WisudaSection';
 import WeddingSection from '@/components/WeddingSection';
 import AboutSection from '@/components/AboutSection';
+import AvailabilitySection from '@/components/AvailabilitySection';
 import TestimonialSection from '@/components/TestimonialSection';
 import FaqSection from '@/components/FaqSection';
 import ContactSection from '@/components/ContactSection';
@@ -15,10 +15,10 @@ export default function Home() {
     <main>
       <HeroSection />
       <TrustBar />
-      <AvailabilitySection />
       <WisudaSection />
       <WeddingSection />
       <AboutSection />
+      <AvailabilitySection />
       <TestimonialSection />
       <FaqSection />
       <ContactSection />

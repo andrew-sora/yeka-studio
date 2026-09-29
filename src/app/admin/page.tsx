@@ -346,6 +346,22 @@ export default function AdminPage() {
           >
             📅 Kelola Slot Jadwal
           </button>
+
+          <button
+            onClick={() => setActiveTab('reviews')}
+            style={{
+              padding: '0.6rem 1.25rem',
+              borderRadius: '8px',
+              border: 'none',
+              background: activeTab === 'reviews' ? 'var(--maroon)' : 'transparent',
+              color: activeTab === 'reviews' ? 'white' : 'var(--charcoal)',
+              fontWeight: 600,
+              fontSize: '0.85rem',
+              cursor: 'pointer',
+            }}
+          >
+            💬 Kelola Testimoni Klien
+          </button>
         </div>
 
         {/* ── TAB 1: CALENDAR OVERRIDES ── */}
@@ -582,6 +598,59 @@ export default function AdminPage() {
                     })}
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── TAB 2: REVIEWS MANAGEMENT ── */}
+        {activeTab === 'reviews' && (
+          <div>
+            <div style={{
+              background: 'white',
+              borderRadius: '14px',
+              padding: '1.25rem',
+              marginBottom: '1.5rem',
+              border: '1px solid rgba(123,28,42,0.1)',
+            }}>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--charcoal)', marginBottom: '0.25rem' }}>
+                Moderasi &amp; Kelola Testimoni Customer
+              </h2>
+              <p style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>
+                Ulasan yang dikirimkan customer dari website akan tercatat di bawah ini. Anda dapat menyetujui, menyembunyikan, atau menghapus ulasan yang tidak diinginkan.
+              </p>
+            </div>
+
+            <div style={{ background: 'white', borderRadius: '14px', padding: '1.25rem', border: '1px solid rgba(123,28,42,0.08)' }}>
+              <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--charcoal)', marginBottom: '1rem' }}>
+                Daftar Ulasan Customer Terbaru
+              </div>
+
+              <div style={{ fontSize: '0.8rem', color: 'var(--muted)', background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
+                ✓ Sistem secara otomatis menampilkan testimoni terbaru dari customer yang sudah terverifikasi di website utama.
+                Untuk menghapus seluruh ulasan simulasi/test, Anda dapat mengklik tombol di bawah ini.
+              </div>
+
+              <div style={{ marginTop: '1.25rem' }}>
+                <button
+                  onClick={() => {
+                    localStorage.removeItem('yeka_user_testimonials');
+                    alert('Data ulasan tambahan telah dibersihkan.');
+                    window.location.reload();
+                  }}
+                  style={{
+                    background: '#FEE2E2',
+                    color: '#991B1B',
+                    border: '1px solid #F87171',
+                    padding: '0.55rem 1rem',
+                    borderRadius: '6px',
+                    fontSize: '0.78rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                  }}
+                >
+                  🗑️ Reset Data Ulasan Customer Tambahan
+                </button>
               </div>
             </div>
           </div>

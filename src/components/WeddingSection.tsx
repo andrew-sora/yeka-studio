@@ -10,9 +10,48 @@ const WEDDING_PHOTOS = [
 ];
 
 const WEDDING_PACKAGES = [
-  { title: 'Prewedding Studio Adat Jawa', price: 'Rp 1.850.000', desc: 'Studio tirai merah, busana &amp; makeup adat Jawa lengkap', featured: false },
-  { title: 'Prewedding Outdoor Scenic', price: 'Rp 2.250.000', desc: 'Lokasi outdoor Jogja/Solo + dokumentasi video reel', featured: true, badge: 'Paling Populer' },
-  { title: 'Intimate Wedding Coverage', price: 'Rp 4.500.000', desc: 'Full-day coverage akad &amp; resepsi + album cetak eksklusif', featured: false },
+  {
+    title: 'Prewedding Studio Adat Jawa',
+    price: 'Rp 1.850.000',
+    desc: 'Studio tirai merah, busana &amp; makeup adat Jawa lengkap',
+    featured: false,
+    features: [
+      'Include Busana &amp; Makeup Adat Jawa',
+      'Private Studio Tirai Merah Classical',
+      'ALL File Mentah (Drive H+1)',
+      '25 Foto Master Retouched &amp; Edit',
+      '1 Cetak Canvas Frame 40x60cm',
+    ],
+  },
+  {
+    title: 'Prewedding Outdoor Scenic',
+    price: 'Rp 2.250.000',
+    desc: 'Lokasi outdoor Jogja/Solo + dokumentasi video reel',
+    featured: true,
+    badge: 'Paling Populer',
+    features: [
+      '2 Lokasi Outdoor Scenic (Jogja/Solo)',
+      'ALL File Mentah (Drive H+1)',
+      '35 Foto Master Retouched &amp; Edit',
+      'Video Cinematic Reel Full HD 60d',
+      '1 Cetak Canvas Frame 40x60cm',
+    ],
+  },
+  {
+    title: 'Intimate Wedding Coverage',
+    price: 'Rp 4.500.000',
+    desc: 'Full-day coverage akad &amp; resepsi + album cetak eksklusif',
+    featured: false,
+    badge: 'Lengkap &amp; All-In',
+    features: [
+      'Full-Day Coverage Akad &amp; Resepsi',
+      'ALL File Mentah Flashdisk Box Kayu Yeka',
+      '50 Foto Master Color Graded',
+      '📘 Album Photobook Hardcover Kulit 20 Hal',
+      '🖼️ 1 Cetak Canvas 50x70cm + Frame Premium',
+      '🎥 Video Cinematic Highlight Wedding 1-3 m',
+    ],
+  },
 ];
 
 export default function WeddingSection() {
@@ -552,11 +591,39 @@ export default function WeddingSection() {
                   </div>
                   <p style={{
                     fontSize: '0.82rem',
-                    color: 'rgba(255,255,255,0.75)',
+                    color: '#F1F5F9',
                     fontFamily: 'Inter, sans-serif',
                     lineHeight: 1.6,
-                    marginBottom: '1.5rem',
+                    marginBottom: '0.85rem',
                   }} dangerouslySetInnerHTML={{ __html: pkg.desc }} />
+
+                  {pkg.features && (
+                    <ul style={{
+                      listStyle: 'none',
+                      padding: 0,
+                      margin: '0 0 1.25rem 0',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.45rem',
+                      borderTop: '1px dashed rgba(201,169,75,0.3)',
+                      paddingTop: '0.75rem',
+                    }}>
+                      {pkg.features.map((feat, fIdx) => (
+                        <li key={fIdx} style={{
+                          fontSize: '0.76rem',
+                          color: '#E2E8F0',
+                          fontFamily: 'Inter, sans-serif',
+                          display: 'flex',
+                          alignItems: 'flex-start',
+                          gap: '0.4rem',
+                          lineHeight: 1.35,
+                        }}>
+                          <span style={{ color: '#C9A94B', fontWeight: 700, fontSize: '0.82rem', flexShrink: 0 }}>✓</span>
+                          <span dangerouslySetInnerHTML={{ __html: feat }} />
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
                 <a
                   href={`#jadwal?paket=${encodeURIComponent(pkg.title)}`}
