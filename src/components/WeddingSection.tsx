@@ -62,6 +62,37 @@ export default function WeddingSection() {
   const [activePkgIndex, setActivePkgIndex] = useState(0);
   const [canScrollPhotos, setCanScrollPhotos] = useState(false);
   const [canScrollPkgs, setCanScrollPkgs] = useState(false);
+  const [weddingPackages, setWeddingPackages] = useState(WEDDING_PACKAGES);
+  const [weddingPhotos, setWeddingPhotos] = useState(WEDDING_PHOTOS);
+
+  // Load package and photo overrides from localStorage if saved by Owner via Admin
+  useEffect(() => {
+    try {
+      const storedPkgs = localStorage.getItem('yeka_package_overrides');
+      if (storedPkgs) {
+        const parsed = JSON.parse(storedPkgs);
+        if (Array.isArray(parsed)) {
+          const overrides = parsed.filter((p: any) => p.category === 'wedding' || p.id?.startsWith('wedding'));
+          if (overrides.length > 0) {
+            setWeddingPackages(overrides);
+          }
+        }
+      }
+
+      const storedPhotos = localStorage.getItem('yeka_photo_overrides');
+      if (storedPhotos) {
+        const parsed = JSON.parse(storedPhotos);
+        if (Array.isArray(parsed)) {
+          const overrides = parsed.filter((p: any) => p.category === 'wedding' || p.id?.startsWith('wedding'));
+          if (overrides.length > 0) {
+            setWeddingPhotos(overrides);
+          }
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
 
   useEffect(() => {
     const checkOverflow = () => {
@@ -107,10 +138,10 @@ export default function WeddingSection() {
     }
     const scrollPosition = container.scrollLeft;
     if (scrollPosition >= maxScroll - 8) {
-      setActiveIndex(WEDDING_PHOTOS.length - 1);
+      setActiveIndex(weddingPhotos.length - 1);
     } else {
       const progress = Math.max(0, Math.min(1, scrollPosition / maxScroll));
-      const newIndex = Math.round(progress * (WEDDING_PHOTOS.length - 1));
+      const newIndex = Math.round(progress * (weddingPhotos.length - 1));
       setActiveIndex(newIndex);
     }
   };
@@ -130,7 +161,7 @@ export default function WeddingSection() {
     const container = carouselRef.current;
     const maxScroll = container.scrollWidth - container.clientWidth;
     if (maxScroll <= 0) return;
-    const targetScroll = (maxScroll / (WEDDING_PHOTOS.length - 1)) * index;
+    const targetScroll = (maxScroll / (weddingPhotos.length - 1)) * index;
     container.scrollTo({
       left: targetScroll,
       behavior: 'smooth',
@@ -147,10 +178,10 @@ export default function WeddingSection() {
     }
     const scrollPosition = container.scrollLeft;
     if (scrollPosition >= maxScroll - 8) {
-      setActivePkgIndex(WEDDING_PACKAGES.length - 1);
+      setActivePkgIndex(weddingPackages.length - 1);
     } else {
       const progress = Math.max(0, Math.min(1, scrollPosition / maxScroll));
-      const newIndex = Math.round(progress * (WEDDING_PACKAGES.length - 1));
+      const newIndex = Math.round(progress * (weddingPackages.length - 1));
       setActivePkgIndex(newIndex);
     }
   };
@@ -170,7 +201,7 @@ export default function WeddingSection() {
     const container = pkgCarouselRef.current;
     const maxScroll = container.scrollWidth - container.clientWidth;
     if (maxScroll <= 0) return;
-    const targetScroll = (maxScroll / (WEDDING_PACKAGES.length - 1)) * index;
+    const targetScroll = (maxScroll / (weddingPackages.length - 1)) * index;
     container.scrollTo({
       left: targetScroll,
       behavior: 'smooth',
@@ -347,7 +378,7 @@ export default function WeddingSection() {
             }}
             className="no-scrollbar"
           >
-            {WEDDING_PHOTOS.map((photo, i) => (
+            {weddingPhotos.map((photo, i) => (
               <div
                 key={i}
                 className="img-zoom"
@@ -365,7 +396,7 @@ export default function WeddingSection() {
               >
                 <Image
                   src={photo.src}
-                  alt={photo.alt}
+                  alt={photo.alt || photo.title}
                   fill
                   style={{ objectFit: 'cover' }}
                   sizes="(max-width: 768px) 70vw, 30vw"
@@ -415,7 +446,7 @@ export default function WeddingSection() {
             gap: '0.4rem',
             marginTop: '0.75rem',
           }}>
-            {WEDDING_PHOTOS.map((_, i) => (
+            {weddingPhotos.map((_, i) => (
               <button
                 key={i}
                 onClick={() => scrollToIndex(i)}
@@ -529,7 +560,7 @@ export default function WeddingSection() {
               msOverflowStyle: 'none',
             }}
           >
-            {WEDDING_PACKAGES.map((pkg, i) => (
+            {weddingPackages.map((pkg, i) => (
               <div
                 key={i}
                 style={{
@@ -566,7 +597,7 @@ export default function WeddingSection() {
                     fontFamily: 'Inter, sans-serif',
                     whiteSpace: 'nowrap',
                   }}>
-                    {pkg.badge}
+                    {pkg.badge || 'Paling Populer'}
                   </div>
                 )}
                 <div>
@@ -662,7 +693,7 @@ export default function WeddingSection() {
             gap: '0.4rem',
             marginTop: '0.75rem',
           }}>
-            {WEDDING_PACKAGES.map((_, i) => (
+            {weddingPackages.map((_, i) => (
               <button
                 key={i}
                 onClick={() => scrollToPkgIndex(i)}

@@ -75,6 +75,37 @@ export default function WisudaSection() {
   const [activePkgIndex, setActivePkgIndex] = useState(0);
   const [canScrollPhotos, setCanScrollPhotos] = useState(false);
   const [canScrollPkgs, setCanScrollPkgs] = useState(false);
+  const [wisudaPackages, setWisudaPackages] = useState(WISUDA_PACKAGES);
+  const [wisudaPhotos, setWisudaPhotos] = useState(WISUDA_PHOTOS);
+
+  // Load package and photo overrides from localStorage if saved by Owner via Admin
+  useEffect(() => {
+    try {
+      const storedPkgs = localStorage.getItem('yeka_package_overrides');
+      if (storedPkgs) {
+        const parsed = JSON.parse(storedPkgs);
+        if (Array.isArray(parsed)) {
+          const overrides = parsed.filter((p: any) => p.category === 'wisuda' || p.id?.startsWith('wisuda'));
+          if (overrides.length > 0) {
+            setWisudaPackages(overrides);
+          }
+        }
+      }
+
+      const storedPhotos = localStorage.getItem('yeka_photo_overrides');
+      if (storedPhotos) {
+        const parsed = JSON.parse(storedPhotos);
+        if (Array.isArray(parsed)) {
+          const overrides = parsed.filter((p: any) => p.category === 'wisuda' || p.id?.startsWith('wisuda'));
+          if (overrides.length > 0) {
+            setWisudaPhotos(overrides);
+          }
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
 
   useEffect(() => {
     const checkOverflow = () => {
@@ -120,10 +151,10 @@ export default function WisudaSection() {
     }
     const scrollPosition = container.scrollLeft;
     if (scrollPosition >= maxScroll - 8) {
-      setActiveIndex(WISUDA_PHOTOS.length - 1);
+      setActiveIndex(wisudaPhotos.length - 1);
     } else {
       const progress = Math.max(0, Math.min(1, scrollPosition / maxScroll));
-      const newIndex = Math.round(progress * (WISUDA_PHOTOS.length - 1));
+      const newIndex = Math.round(progress * (wisudaPhotos.length - 1));
       setActiveIndex(newIndex);
     }
   };
@@ -143,7 +174,7 @@ export default function WisudaSection() {
     const container = carouselRef.current;
     const maxScroll = container.scrollWidth - container.clientWidth;
     if (maxScroll <= 0) return;
-    const targetScroll = (maxScroll / (WISUDA_PHOTOS.length - 1)) * index;
+    const targetScroll = (maxScroll / (wisudaPhotos.length - 1)) * index;
     container.scrollTo({
       left: targetScroll,
       behavior: 'smooth',
@@ -160,10 +191,10 @@ export default function WisudaSection() {
     }
     const scrollPosition = container.scrollLeft;
     if (scrollPosition >= maxScroll - 8) {
-      setActivePkgIndex(WISUDA_PACKAGES.length - 1);
+      setActivePkgIndex(wisudaPackages.length - 1);
     } else {
       const progress = Math.max(0, Math.min(1, scrollPosition / maxScroll));
-      const newIndex = Math.round(progress * (WISUDA_PACKAGES.length - 1));
+      const newIndex = Math.round(progress * (wisudaPackages.length - 1));
       setActivePkgIndex(newIndex);
     }
   };
@@ -183,7 +214,7 @@ export default function WisudaSection() {
     const container = pkgCarouselRef.current;
     const maxScroll = container.scrollWidth - container.clientWidth;
     if (maxScroll <= 0) return;
-    const targetScroll = (maxScroll / (WISUDA_PACKAGES.length - 1)) * index;
+    const targetScroll = (maxScroll / (wisudaPackages.length - 1)) * index;
     container.scrollTo({
       left: targetScroll,
       behavior: 'smooth',
@@ -339,7 +370,7 @@ export default function WisudaSection() {
             }}
             className="no-scrollbar"
           >
-            {WISUDA_PHOTOS.map((photo, i) => (
+            {wisudaPhotos.map((photo, i) => (
               <div
                 key={i}
                 className="img-zoom"
@@ -357,7 +388,7 @@ export default function WisudaSection() {
               >
                 <Image
                   src={photo.src}
-                  alt={photo.alt}
+                  alt={photo.alt || photo.title}
                   fill
                   style={{ objectFit: 'cover' }}
                   sizes="(max-width: 768px) 70vw, 30vw"
@@ -407,7 +438,7 @@ export default function WisudaSection() {
             gap: '0.4rem',
             marginTop: '0.75rem',
           }}>
-            {WISUDA_PHOTOS.map((_, i) => (
+            {wisudaPhotos.map((_, i) => (
               <button
                 key={i}
                 onClick={() => scrollToIndex(i)}
@@ -521,7 +552,7 @@ export default function WisudaSection() {
               msOverflowStyle: 'none',
             }}
           >
-            {WISUDA_PACKAGES.map((pkg, i) => (
+            {wisudaPackages.map((pkg, i) => (
               <div
                 key={i}
                 style={{
@@ -653,7 +684,7 @@ export default function WisudaSection() {
             gap: '0.4rem',
             marginTop: '0.75rem',
           }}>
-            {WISUDA_PACKAGES.map((_, i) => (
+            {wisudaPackages.map((_, i) => (
               <button
                 key={i}
                 onClick={() => scrollToPkgIndex(i)}
