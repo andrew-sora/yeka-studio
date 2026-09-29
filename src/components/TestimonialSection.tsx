@@ -246,41 +246,18 @@ export default function TestimonialSection() {
             fontSize: '0.92rem',
             color: 'var(--muted)',
             maxWidth: '520px',
-            margin: '0 auto 1.25rem auto',
+            margin: '0 auto',
             lineHeight: 1.65,
             fontFamily: 'Inter, sans-serif',
           }}>
             Tangkapan layar nyata apresiasi dari para wisudawati &amp; pasangan pengantin di Jogja &amp; Solo.
           </p>
-
-          {/* Toggle Write Testimonial Button */}
-          <button
-            onClick={() => setShowForm(!showForm)}
-            style={{
-              background: showForm ? 'rgba(123,28,42,0.1)' : 'var(--maroon)',
-              color: showForm ? 'var(--maroon)' : 'white',
-              border: '1.5px solid var(--maroon)',
-              padding: '0.6rem 1.35rem',
-              borderRadius: '100px',
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '0.8rem',
-              fontWeight: 600,
-              letterSpacing: '0.04em',
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              transition: 'all 0.3s ease',
-              boxShadow: showForm ? 'none' : '0 4px 14px rgba(123,28,42,0.2)',
-            }}
-          >
-            <span>{showForm ? '✕ Tutup Form' : '✍️ Tulis Testimoni Anda'}</span>
-          </button>
         </div>
 
         {/* 📝 Add Testimonial Form Modal/Expander */}
         {showForm && (
           <div
+            id="form-tulis-testimoni"
             className="animate-fade-in-up"
             style={{
               maxWidth: '540px',
@@ -667,6 +644,87 @@ export default function TestimonialSection() {
                 }}
               />
             ))}
+          </div>
+
+          {/* Prominent High-Contrast Call-To-Action Banner at Bottom */}
+          <div style={{
+            maxWidth: '680px',
+            margin: '2.5rem auto 0 auto',
+            background: 'linear-gradient(135deg, #FFFFFF 0%, #FAF6F0 100%)',
+            borderRadius: '16px',
+            padding: '1.75rem 1.5rem',
+            border: '1.5px solid rgba(123, 28, 42, 0.15)',
+            boxShadow: '0 8px 30px rgba(123, 28, 42, 0.08)',
+            textAlign: 'center',
+            position: 'relative',
+            overflow: 'hidden',
+          }}>
+            <div style={{
+              fontSize: '0.7rem',
+              fontWeight: 700,
+              letterSpacing: '0.15em',
+              textTransform: 'uppercase',
+              color: 'var(--maroon)',
+              fontFamily: 'Inter, sans-serif',
+              marginBottom: '0.35rem',
+            }}>
+              BAGIKAN PENGALAMAN BAHAGIA ANDA
+            </div>
+
+            <h3 style={{
+              fontFamily: 'Cormorant Garamond, serif',
+              fontSize: 'clamp(1.25rem, 3.5vw, 1.6rem)',
+              fontWeight: 700,
+              color: 'var(--charcoal)',
+              marginBottom: '0.5rem',
+              lineHeight: 1.25,
+            }}>
+              Pernah Sesi Photoshoot bersama Yeka Studio?
+            </h3>
+
+            <p style={{
+              fontSize: '0.83rem',
+              color: 'var(--muted)',
+              fontFamily: 'Inter, sans-serif',
+              maxWidth: '480px',
+              margin: '0 auto 1.25rem auto',
+              lineHeight: 1.5,
+            }}>
+              Ulasan dan kesan jujur Anda sangat berharga untuk calon wisudawati &amp; pasangan pengantin lainnya di Jogja &amp; Solo.
+            </p>
+
+            <button
+              id="btn-tulis-testimoni"
+              onClick={() => {
+                const nextState = !showForm;
+                setShowForm(nextState);
+                if (nextState) {
+                  setTimeout(() => {
+                    const formEl = document.getElementById('form-tulis-testimoni');
+                    if (formEl) formEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }, 100);
+                }
+              }}
+              style={{
+                background: 'var(--maroon)',
+                color: 'white',
+                border: 'none',
+                padding: '0.75rem 1.75rem',
+                borderRadius: '100px',
+                fontFamily: 'Inter, sans-serif',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                letterSpacing: '0.04em',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                boxShadow: '0 6px 20px rgba(123,28,42,0.25)',
+                transition: 'all 0.25s ease',
+              }}
+            >
+              <span>{showForm ? '✕ Tutup Form Ulasan' : '✍️ Tulis Testimoni Anda'}</span>
+            </button>
           </div>
         </div>
       </div>
