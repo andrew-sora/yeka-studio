@@ -183,6 +183,7 @@ export default function AdminPage() {
   // Package Management State
   const [packages, setPackages] = useState<PackageData[]>(DEFAULT_PACKAGES);
   const [selectedPkgId, setSelectedPkgId] = useState<string>('wisuda-outdoor');
+  const [isCreatingPkg, setIsCreatingPkg] = useState(false);
   const [pkgFilterCategory, setPkgFilterCategory] = useState<'all' | 'wisuda' | 'wedding'>('all');
   const [pkgSearchQuery, setPkgSearchQuery] = useState('');
 
@@ -234,8 +235,9 @@ export default function AdminPage() {
     }
   }, []);
 
-  // Update Package Edit Form when selection changes
+  // Update Package Edit Form when selection changes (only if not in create mode)
   useEffect(() => {
+    if (isCreatingPkg) return;
     const currentPkg = packages.find((p) => p.id === selectedPkgId) || packages[0];
     if (currentPkg) {
       setPkgCategoryInput(currentPkg.category);
@@ -246,7 +248,7 @@ export default function AdminPage() {
       setPkgFeaturedInput(currentPkg.featured || false);
       setPkgFeaturesInput(currentPkg.features ? currentPkg.features.join('\n') : '');
     }
-  }, [selectedPkgId, packages]);
+  }, [selectedPkgId, packages, isCreatingPkg]);
 
   // Update Photo Edit Form when selection changes
   useEffect(() => {
@@ -378,24 +380,24 @@ export default function AdminPage() {
     });
   }, [photos, photoFilterCategory, photoSearchQuery]);
 
-  // Package Handlers
-  const handleAddNewPackage = () => {
-    const newId = `pkg-${Date.now()}`;
-    const newPkg: PackageData = {
-      id: newId,
-      category: 'wisuda',
-      title: 'Paket Baru',
-      price: 'Rp 500.000',
-      desc: 'Deskripsi singkat paket baru',
-      featured: false,
-      badge: '',
-      features: ['Durasi 1.5 Jam Photoshoot', 'ALL File Mentah (Drive)'],
-    };
-    const updated = [newPkg, ...packages];
-    setPackages(updated);
-    setSelectedPkgId(newId);
-    localStorage.setItem('yeka_package_overrides', JSON.stringify(updated));
-    showToast('Paket baru berhasil ditambahkan.');
+  // Clean Package Handlers (Form Mode Switch)
+  const handleStartCreatePackage = () => {
+    setIsCreatingPkg(true);
+    setSelectedPkgId('');
+    setPkgCategoryInput('wisuda');
+    setPkgTitleInput('');
+    setPkgPriceInput('Rp ');
+    setPkgDescInput('');
+    setPkgBadgeInput('');
+    setPkgFeaturedInput(false);
+    setPkgFeaturesInput('Durasi 1,5 Jam Photoshoot\nALL File Mentah (Drive H+1)\n15 Foto Color Graded Master');
+  };
+
+  const handleCancelCreatePackage = () => {
+    setIsCreatingPkg(false);
+    if (packages.length > 0) {
+      setSelectedPkgId(packages[0].id);
+    }
   };
 
   const handleDeletePackage = (idToDelete: string) => {
@@ -404,37 +406,63 @@ export default function AdminPage() {
     const updated = packages.filter((p) => p.id !== idToDelete);
     setPackages(updated);
     setSelectedPkgId(updated[0].id);
+    setIsCreatingPkg(false);
     localStorage.setItem('yeka_package_overrides', JSON.stringify(updated));
     showToast('Paket berhasil dihapus.');
   };
 
   const handleSavePackage = (e: React.FormEvent) => {
     e.preventDefault();
-    const updatedPkgs = packages.map((pkg) => {
-      if (pkg.id === selectedPkgId) {
-        return {
-          ...pkg,
-          category: pkgCategoryInput,
-          title: pkgTitleInput.trim(),
-          price: pkgPriceInput.trim(),
-          desc: pkgDescInput.trim(),
-          badge: pkgBadgeInput.trim(),
-          featured: pkgFeaturedInput,
-          features: pkgFeaturesInput.split('\n').map((f) => f.trim()).filter((f) => f.length > 0),
-        };
-      }
-      return pkg;
-    });
 
-    setPackages(updatedPkgs);
-    localStorage.setItem('yeka_package_overrides', JSON.stringify(updatedPkgs));
-    showToast('Detail paket berhasil disimpan.');
+    if (isCreatingPkg) {
+      // Create new package only when form is submitted
+      const newId = `pkg-${Date.now()}`;
+      const newPkg: PackageData = {
+        id: newId,
+        category: pkgCategoryInput,
+        title: pkgTitleInput.trim() || 'Paket Baru',
+        price: pkgPriceInput.trim() || 'Rp 0',
+        desc: pkgDescInput.trim() || 'Deskripsi singkat paket',
+        badge: pkgBadgeInput.trim(),
+        featured: pkgFeaturedInput,
+        features: pkgFeaturesInput.split('\n').map((f) => f.trim()).filter((f) => f.length > 0),
+      };
+
+      const updated = [newPkg, ...packages];
+      setPackages(updated);
+      setSelectedPkgId(newId);
+      setIsCreatingPkg(false);
+      localStorage.setItem('yeka_package_overrides', JSON.stringify(updated));
+      showToast('✓ Paket baru berhasil dibuat & dipublikasikan!');
+    } else {
+      // Update existing package
+      const updatedPkgs = packages.map((pkg) => {
+        if (pkg.id === selectedPkgId) {
+          return {
+            ...pkg,
+            category: pkgCategoryInput,
+            title: pkgTitleInput.trim(),
+            price: pkgPriceInput.trim(),
+            desc: pkgDescInput.trim(),
+            badge: pkgBadgeInput.trim(),
+            featured: pkgFeaturedInput,
+            features: pkgFeaturesInput.split('\n').map((f) => f.trim()).filter((f) => f.length > 0),
+          };
+        }
+        return pkg;
+      });
+
+      setPackages(updatedPkgs);
+      localStorage.setItem('yeka_package_overrides', JSON.stringify(updatedPkgs));
+      showToast('✓ Detail paket berhasil diperbarui.');
+    }
   };
 
   const handleResetPackages = () => {
     if (confirm('Kembalikan seluruh paket ke pengaturan awal?')) {
       setPackages(DEFAULT_PACKAGES);
       setSelectedPkgId(DEFAULT_PACKAGES[0].id);
+      setIsCreatingPkg(false);
       localStorage.removeItem('yeka_package_overrides');
       showToast('Paket berhasil di-reset.');
     }
@@ -1083,7 +1111,7 @@ export default function AdminPage() {
                   DAFTAR PAKET ({filteredPackages.length})
                 </span>
                 <button
-                  onClick={handleAddNewPackage}
+                  onClick={handleStartCreatePackage}
                   style={{
                     background: '#0F172A',
                     color: '#FFFFFF',
@@ -1144,11 +1172,14 @@ export default function AdminPage() {
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', maxHeight: '420px', overflowY: 'auto' }}>
                 {filteredPackages.map((pkg) => {
-                  const isSelected = selectedPkgId === pkg.id;
+                  const isSelected = !isCreatingPkg && selectedPkgId === pkg.id;
                   return (
                     <div
                       key={pkg.id}
-                      onClick={() => setSelectedPkgId(pkg.id)}
+                      onClick={() => {
+                        setIsCreatingPkg(false);
+                        setSelectedPkgId(pkg.id);
+                      }}
                       style={{
                         padding: '0.7rem 0.85rem',
                         borderRadius: '8px',
@@ -1219,24 +1250,27 @@ export default function AdminPage() {
               <form onSubmit={handleSavePackage}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
                   <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0F172A', margin: 0 }}>
-                    Edit Detail Paket
+                    {isCreatingPkg ? '✨ Buat Paket Baru' : 'Edit Detail Paket'}
                   </h3>
-                  <button
-                    type="button"
-                    onClick={() => handleDeletePackage(selectedPkgId)}
-                    style={{
-                      background: '#FEF2F2',
-                      color: '#DC2626',
-                      border: '1px solid #FCA5A5',
-                      padding: '0.3rem 0.6rem',
-                      borderRadius: '6px',
-                      fontSize: '0.72rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                    }}
-                  >
-                    Hapus Paket
-                  </button>
+
+                  {!isCreatingPkg && (
+                    <button
+                      type="button"
+                      onClick={() => handleDeletePackage(selectedPkgId)}
+                      style={{
+                        background: '#FEF2F2',
+                        color: '#DC2626',
+                        border: '1px solid #FCA5A5',
+                        padding: '0.3rem 0.6rem',
+                        borderRadius: '6px',
+                        fontSize: '0.72rem',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Hapus Paket
+                    </button>
+                  )}
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
@@ -1292,6 +1326,7 @@ export default function AdminPage() {
                   <input
                     type="text"
                     required
+                    placeholder="e.g. Wisuda Silver"
                     value={pkgTitleInput}
                     onChange={(e) => setPkgTitleInput(e.target.value)}
                     style={{
@@ -1313,6 +1348,7 @@ export default function AdminPage() {
                   <input
                     type="text"
                     required
+                    placeholder="e.g. Rp 450.000"
                     value={pkgPriceInput}
                     onChange={(e) => setPkgPriceInput(e.target.value)}
                     style={{
@@ -1333,6 +1369,7 @@ export default function AdminPage() {
                   </label>
                   <input
                     type="text"
+                    placeholder="e.g. Sesi outdoor area kampus Jogja"
                     value={pkgDescInput}
                     onChange={(e) => setPkgDescInput(e.target.value)}
                     style={{
@@ -1411,22 +1448,43 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                <button
-                  type="submit"
-                  style={{
-                    width: '100%',
-                    background: '#0F172A',
-                    color: '#FFFFFF',
-                    padding: '0.7rem',
-                    borderRadius: '6px',
-                    border: 'none',
-                    fontWeight: 600,
-                    fontSize: '0.85rem',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Simpan Perubahan Paket
-                </button>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <button
+                    type="submit"
+                    style={{
+                      flex: 1,
+                      background: '#0F172A',
+                      color: '#FFFFFF',
+                      padding: '0.7rem',
+                      borderRadius: '6px',
+                      border: 'none',
+                      fontWeight: 600,
+                      fontSize: '0.85rem',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {isCreatingPkg ? '➕ Simpan & Publis Paket Baru' : '💾 Simpan Perubahan Paket'}
+                  </button>
+
+                  {isCreatingPkg && (
+                    <button
+                      type="button"
+                      onClick={handleCancelCreatePackage}
+                      style={{
+                        background: '#FFFFFF',
+                        color: '#64748B',
+                        border: '1px solid #CBD5E1',
+                        padding: '0.7rem 1rem',
+                        borderRadius: '6px',
+                        fontWeight: 500,
+                        fontSize: '0.85rem',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Batal
+                    </button>
+                  )}
+                </div>
               </form>
             </div>
           </div>
