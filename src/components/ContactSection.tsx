@@ -186,7 +186,8 @@ export default function ContactSection() {
                   borderRadius: '100px',
                 }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C9A94B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
                   </svg>
                   <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.9)', fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                     Respons WA &lt; 5 Menit
