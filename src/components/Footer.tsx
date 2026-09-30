@@ -16,19 +16,25 @@ export default function Footer() {
       background: '#0a0204',
       borderTop: '1px solid rgba(201,169,75,0.15)',
     }}>
-      {/* Mini Instagram Photo Reel Grid (Full-bleed Edge-to-Edge) */}
+      {/* Mini Instagram Photo Reel Grid */}
       <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(6, 1fr)',
-        gap: '2px',
-        background: '#120305',
+        maxWidth: '1200px',
         width: '100%',
+        margin: '0 auto',
       }}>
-        {FOOTER_REEL.map((src, i) => (
-          <div key={i} style={{ position: 'relative', aspectRatio: '1', overflow: 'hidden' }}>
-            <Image src={src} alt="Portfolio Yeka Studio" fill style={{ objectFit: 'cover' }} sizes="(max-width: 768px) 33vw, 17vw" />
-          </div>
-        ))}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(6, 1fr)',
+          gap: '2px',
+          background: '#120305',
+          width: '100%',
+        }}>
+          {FOOTER_REEL.map((src, i) => (
+            <div key={i} style={{ position: 'relative', aspectRatio: '1', overflow: 'hidden' }}>
+              <Image src={src} alt="Portfolio Yeka Studio" fill style={{ objectFit: 'cover' }} sizes="(max-width: 768px) 33vw, 17vw" />
+            </div>
+          ))}
+        </div>
       </div>
 
       <div style={{
