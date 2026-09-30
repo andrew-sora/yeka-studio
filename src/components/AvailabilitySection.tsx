@@ -221,7 +221,7 @@ export default function AvailabilitySection() {
   // Reset slot when date changes
   useEffect(() => {
     setSelectedSlot(null);
-    if (validationError) setValidationError(null);
+    setValidationError(null);
   }, [selectedDate]);
 
   // Reveal animation
