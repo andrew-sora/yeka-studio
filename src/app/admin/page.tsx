@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import Link from 'next/link';
 
 // Default PIN for Yeka Studio Owner/Admin
@@ -211,6 +211,73 @@ export default function AdminPage() {
   const [photoTagInput, setPhotoTagInput] = useState('');
   const [photoAltInput, setPhotoAltInput] = useState('');
 
+  // Testimonials State
+  const [userTestimonials, setUserTestimonials] = useState<any[]>([]);
+  const [newTestiName, setNewTestiName] = useState('');
+  const [newTestiRole, setNewTestiRole] = useState('');
+  const [newTestiTag, setNewTestiTag] = useState('Wisuda Campus');
+  const [newTestiRating, setNewTestiRating] = useState<number>(5);
+  const [newTestiChat, setNewTestiChat] = useState('');
+
+  const loadUserTestimonials = useCallback(() => {
+    try {
+      const stored = localStorage.getItem('yeka_user_testimonials');
+      if (stored) {
+        setUserTestimonials(JSON.parse(stored));
+      } else {
+        setUserTestimonials([]);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadUserTestimonials();
+  }, [loadUserTestimonials, activeTab]);
+
+  const handleDeleteTestimonial = (id: string | number) => {
+    if (!confirm('Apakah Anda yakin ingin menghapus ulasan ini?')) return;
+    const updated = userTestimonials.filter((t) => t.id !== id);
+    setUserTestimonials(updated);
+    localStorage.setItem('yeka_user_testimonials', JSON.stringify(updated));
+    showToast('Ulasan berhasil dihapus.');
+  };
+
+  const handleResetTestimonials = () => {
+    if (!confirm('Apakah Anda yakin ingin menghapus semua ulasan tambahan?')) return;
+    localStorage.removeItem('yeka_user_testimonials');
+    setUserTestimonials([]);
+    showToast('Seluruh data ulasan tambahan berhasil dibersihkan.');
+  };
+
+  const handleAddAdminTestimonial = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTestiName.trim() || !newTestiChat.trim()) {
+      alert('Nama dan isi ulasan wajib diisi.');
+      return;
+    }
+    const newTesti = {
+      id: Date.now(),
+      name: newTestiName.trim(),
+      role: newTestiRole.trim() || 'Klien Yeka Studio',
+      avatar: '/images/wisuda-2.jpg',
+      rating: newTestiRating,
+      tag: newTestiTag,
+      date: 'Baru saja (Admin)',
+      chat: newTestiChat.trim(),
+      highlight: 'Ulasan Terverifikasi ✨',
+      isUserAdded: true,
+    };
+    const updated = [newTesti, ...userTestimonials];
+    setUserTestimonials(updated);
+    localStorage.setItem('yeka_user_testimonials', JSON.stringify(updated));
+    setNewTestiName('');
+    setNewTestiRole('');
+    setNewTestiChat('');
+    showToast('Testimoni baru berhasil ditambahkan!');
+  };
+
   useEffect(() => {
     if (sessionStorage.getItem('yeka_admin_auth') === 'true') {
       setIsAuthenticated(true);
@@ -230,10 +297,12 @@ export default function AdminPage() {
 
       const storedPhotos = localStorage.getItem('yeka_photo_overrides');
       if (storedPhotos) setPhotos(JSON.parse(storedPhotos));
+
+      loadUserTestimonials();
     } catch (e) {
       console.error(e);
     }
-  }, []);
+  }, [loadUserTestimonials]);
 
   // Update Package Edit Form when selection changes (only if not in create mode)
   useEffect(() => {
@@ -1906,43 +1975,312 @@ export default function AdminPage() {
 
         {/* ── TAB 4: REVIEWS MODERATION ── */}
         {activeTab === 'reviews' && (
-          <div style={{
-            background: '#FFFFFF',
-            borderRadius: '12px',
-            padding: '1.5rem',
-            border: '1px solid #E2E8F0',
-            boxShadow: '0 1px 3px 0 rgba(0,0,0,0.02)',
-          }}>
-            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.35rem' }}>
-              Moderasi Ulasan Customer
-            </h3>
-            <p style={{ fontSize: '0.82rem', color: '#64748B', marginBottom: '1.5rem', lineHeight: 1.5 }}>
-              Ulasan baru yang dikirimkan customer dari form website disimpan secara otomatis di database lokal browser.
-            </p>
-
-            <div style={{ background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '0.8rem', color: '#475569' }}>
-              Seluruh ulasan terverifikasi dan testimoni default tampil secara otomatis di website utama. Jika Anda ingin mematikan atau mereset data ulasan tambahan hasil testing, gunakan tombol di bawah ini.
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div style={{
+              background: '#FFFFFF',
+              borderRadius: '12px',
+              padding: '1.25rem 1.5rem',
+              border: '1px solid #E2E8F0',
+              boxShadow: '0 1px 3px 0 rgba(0,0,0,0.02)',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '1rem',
+            }}>
+              <div>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.2rem' }}>
+                  Moderasi Ulasan Customer
+                </h3>
+                <p style={{ fontSize: '0.82rem', color: '#64748B' }}>
+                  Ulasan yang dikirimkan pengunjung website via form testimoni otomatis tersimpan & tampil di website.
+                </p>
+              </div>
+              <div style={{
+                background: 'rgba(123,28,42,0.08)',
+                color: '#7B1C2A',
+                padding: '0.4rem 0.85rem',
+                borderRadius: '20px',
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                fontFamily: 'Inter, sans-serif',
+              }}>
+                {userTestimonials.length} Ulasan Masuk
+              </div>
             </div>
 
-            <div style={{ marginTop: '1.5rem' }}>
-              <button
-                onClick={() => {
-                  localStorage.removeItem('yeka_user_testimonials');
-                  showToast('Data ulasan tambahan berhasil dibersihkan.');
-                }}
-                style={{
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+              gap: '1.25rem',
+              alignItems: 'start',
+            }}>
+
+              {/* Left Column: List of Submitted Reviews */}
+              <div style={{
+                background: '#FFFFFF',
+                borderRadius: '12px',
+                padding: '1.25rem',
+                border: '1px solid #E2E8F0',
+                boxShadow: '0 1px 3px 0 rgba(0,0,0,0.02)',
+              }}>
+                <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0F172A', marginBottom: '1rem' }}>
+                  Daftar Ulasan Masuk ({userTestimonials.length})
+                </h4>
+
+                {userTestimonials.length === 0 ? (
+                  <div style={{
+                    padding: '2.5rem 1rem',
+                    textAlign: 'center',
+                    background: '#F8FAFC',
+                    borderRadius: '8px',
+                    border: '1.5px dashed #CBD5E1',
+                    color: '#64748B',
+                  }}>
+                    <div style={{ fontSize: '1.8rem', marginBottom: '0.5rem' }}>💬</div>
+                    <div style={{ fontSize: '0.88rem', fontWeight: 600, color: '#334155' }}>Belum ada ulasan baru</div>
+                    <div style={{ fontSize: '0.78rem', marginTop: '0.25rem' }}>
+                      Ulasan yang dikirimkan customer dari form website akan otomatis muncul di sini.
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                    {userTestimonials.map((item) => (
+                      <div
+                        key={item.id}
+                        style={{
+                          background: '#F8FAFC',
+                          borderRadius: '8px',
+                          padding: '1rem',
+                          border: '1px solid #E2E8F0',
+                        }}
+                      >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.4rem' }}>
+                          <div>
+                            <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#0F172A' }}>
+                              {item.name}
+                            </div>
+                            <div style={{ fontSize: '0.72rem', color: '#64748B' }}>
+                              {item.role || 'Klien Yeka Studio'} &bull; <span style={{ color: '#7B1C2A', fontWeight: 600 }}>{item.tag}</span>
+                            </div>
+                          </div>
+                          <div style={{ fontSize: '0.75rem', color: '#F59E0B' }}>
+                            {'★'.repeat(item.rating || 5)}
+                          </div>
+                        </div>
+
+                        <div style={{
+                          fontSize: '0.8rem',
+                          color: '#334155',
+                          background: '#FFFFFF',
+                          padding: '0.65rem 0.75rem',
+                          borderRadius: '6px',
+                          border: '1px solid #E2E8F0',
+                          lineHeight: 1.5,
+                          marginBottom: '0.75rem',
+                          fontStyle: 'italic',
+                        }}>
+                          &ldquo;{item.chat}&rdquo;
+                        </div>
+
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ fontSize: '0.68rem', color: '#94A3B8' }}>
+                            {item.date || 'Terkirim'}
+                          </span>
+                          <button
+                            onClick={() => handleDeleteTestimonial(item.id)}
+                            style={{
+                              background: '#FEF2F2',
+                              color: '#DC2626',
+                              border: '1px solid #FCA5A5',
+                              padding: '0.3rem 0.65rem',
+                              borderRadius: '4px',
+                              fontSize: '0.72rem',
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                            }}
+                          >
+                            🗑️ Hapus Ulasan
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Right Column: Form Add Testimonial & Reset */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <div style={{
+                  background: '#FFFFFF',
+                  borderRadius: '12px',
+                  padding: '1.25rem',
+                  border: '1px solid #E2E8F0',
+                  boxShadow: '0 1px 3px 0 rgba(0,0,0,0.02)',
+                }}>
+                  <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.85rem' }}>
+                    + Tambah Testimoni Manual
+                  </h4>
+
+                  <form onSubmit={handleAddAdminTestimonial} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.25rem' }}>
+                        Nama Klien *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Contoh: Rina & Sahabat"
+                        value={newTestiName}
+                        onChange={(e) => setNewTestiName(e.target.value)}
+                        required
+                        style={{
+                          width: '100%',
+                          padding: '0.5rem 0.75rem',
+                          borderRadius: '6px',
+                          border: '1px solid #CBD5E1',
+                          fontSize: '0.8rem',
+                        }}
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.25rem' }}>
+                        Role / Lokasi (Opsional)
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Contoh: Wisuda UGM / Prewedding Studio"
+                        value={newTestiRole}
+                        onChange={(e) => setNewTestiRole(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '0.5rem 0.75rem',
+                          borderRadius: '6px',
+                          border: '1px solid #CBD5E1',
+                          fontSize: '0.8rem',
+                        }}
+                      />
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.25rem' }}>
+                          Kategori Tag
+                        </label>
+                        <select
+                          value={newTestiTag}
+                          onChange={(e) => setNewTestiTag(e.target.value)}
+                          style={{
+                            width: '100%',
+                            padding: '0.5rem 0.75rem',
+                            borderRadius: '6px',
+                            border: '1px solid #CBD5E1',
+                            fontSize: '0.8rem',
+                            background: 'white',
+                          }}
+                        >
+                          <option value="Wisuda Campus">Wisuda Campus</option>
+                          <option value="Wisuda Outdoor">Wisuda Outdoor</option>
+                          <option value="Prewedding & Studio">Prewedding & Studio</option>
+                          <option value="Wedding Session">Wedding Session</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.25rem' }}>
+                          Rating
+                        </label>
+                        <select
+                          value={newTestiRating}
+                          onChange={(e) => setNewTestiRating(Number(e.target.value))}
+                          style={{
+                            width: '100%',
+                            padding: '0.5rem 0.75rem',
+                            borderRadius: '6px',
+                            border: '1px solid #CBD5E1',
+                            fontSize: '0.8rem',
+                            background: 'white',
+                          }}
+                        >
+                          <option value={5}>5 Bintang (★★★★★)</option>
+                          <option value={4}>4 Bintang (★★★★☆)</option>
+                          <option value={3}>3 Bintang (★★★☆☆)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.25rem' }}>
+                        Isi Ulasan / Testimoni *
+                      </label>
+                      <textarea
+                        rows={3}
+                        placeholder="Tuliskan ulasan klien di sini..."
+                        value={newTestiChat}
+                        onChange={(e) => setNewTestiChat(e.target.value)}
+                        required
+                        style={{
+                          width: '100%',
+                          padding: '0.5rem 0.75rem',
+                          borderRadius: '6px',
+                          border: '1px solid #CBD5E1',
+                          fontSize: '0.8rem',
+                          resize: 'vertical',
+                        }}
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      style={{
+                        background: '#0F172A',
+                        color: 'white',
+                        padding: '0.65rem',
+                        borderRadius: '6px',
+                        border: 'none',
+                        fontSize: '0.8rem',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        marginTop: '0.25rem',
+                      }}
+                    >
+                      Simpan Testimoni Baru
+                    </button>
+                  </form>
+                </div>
+
+                {/* Reset Section */}
+                <div style={{
                   background: '#FEF2F2',
-                  color: '#DC2626',
+                  borderRadius: '12px',
+                  padding: '1.25rem',
                   border: '1px solid #FCA5A5',
-                  padding: '0.5rem 1rem',
-                  borderRadius: '6px',
-                  fontSize: '0.78rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
-              >
-                Reset Ulasan Tambahan (Testing Data)
-              </button>
+                }}>
+                  <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#991B1B', marginBottom: '0.25rem' }}>
+                    Reset Data Ulasan Testing
+                  </div>
+                  <p style={{ fontSize: '0.75rem', color: '#B91C1C', marginBottom: '0.85rem', lineHeight: 1.4 }}>
+                    Gunakan tombol ini jika Anda ingin menghapus seluruh ulasan tambahan hasil testing browser.
+                  </p>
+                  <button
+                    onClick={handleResetTestimonials}
+                    style={{
+                      background: '#DC2626',
+                      color: '#FFFFFF',
+                      border: 'none',
+                      padding: '0.5rem 1rem',
+                      borderRadius: '6px',
+                      fontSize: '0.78rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      width: '100%',
+                    }}
+                  >
+                    Reset Semua Ulasan Tambahan
+                  </button>
+                </div>
+              </div>
+
             </div>
           </div>
         )}
