@@ -140,8 +140,10 @@ export default function AvailabilitySection() {
   // Set default selected date to today or null when changing month
   const [selectedDate, setSelectedDate] = useState<number | null>(() => monthOffset === 0 ? today.getDate() : null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
-  const [selectedPackage, setSelectedPackage] = useState<string>('Wisuda Outdoor');
+  const [selectedPackage, setSelectedPackage] = useState<string>('');
   const [guestName, setGuestName] = useState<string>('');
+  const [submittedAttempt, setSubmittedAttempt] = useState<boolean>(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   const sectionRef = useRef<HTMLDivElement>(null);
   const slotPanelRef = useRef<HTMLDivElement>(null);
@@ -155,6 +157,7 @@ export default function AvailabilitySection() {
     setMonthOffset(newOffset);
     setSelectedDate(newOffset === 0 ? today.getDate() : null);
     setSelectedSlot(null);
+    setValidationError(null);
   };
 
   // Listen to selectPackage custom event from pricing cards
@@ -163,15 +166,17 @@ export default function AvailabilitySection() {
       const customEvent = e as CustomEvent<string>;
       if (customEvent.detail) {
         setSelectedPackage(customEvent.detail);
+        if (validationError) setValidationError(null);
       }
     };
     window.addEventListener('selectPackage', handleSelectPackage);
     return () => window.removeEventListener('selectPackage', handleSelectPackage);
-  }, []);
+  }, [validationError]);
 
   // Reset slot when date changes
   useEffect(() => {
     setSelectedSlot(null);
+    if (validationError) setValidationError(null);
   }, [selectedDate]);
 
   // Reveal animation
@@ -195,15 +200,27 @@ export default function AvailabilitySection() {
     return () => observer.disconnect();
   }, []);
 
-  // Format WA pre-filled message
-  const waPrefilledLink = useMemo(() => {
-    if (!selectedDate) return null;
+  const handleBookingSubmit = () => {
+    setSubmittedAttempt(true);
+
+    const missing: string[] = [];
+    if (!selectedSlot) missing.push('Slot Jam');
+    if (!guestName.trim()) missing.push('Nama Pemesan');
+    if (!selectedPackage.trim()) missing.push('Paket Foto');
+
+    if (missing.length > 0) {
+      setValidationError(`Mohon lengkapi opsi wajib berikut: ${missing.join(', ')}.`);
+      return;
+    }
+
+    setValidationError(null);
+
     const dateStr = `${selectedDate} ${MONTH_ID[viewMonth]} ${viewYear}`;
-    const nameStr = guestName.trim() || '[Nama Klien]';
-    const slotStr = selectedSlot ? `jam ${selectedSlot} WIB` : 'sesi foto';
-    const msg = `Halo, saya ${nameStr}, mau booking paket ${selectedPackage} tanggal ${dateStr} ${slotStr}`;
-    return `https://wa.me/6285952879644?text=${encodeURIComponent(msg)}`;
-  }, [selectedDate, selectedSlot, selectedPackage, guestName, viewMonth, viewYear]);
+    const nameStr = guestName.trim();
+    const msg = `Halo, saya ${nameStr}, mau booking paket ${selectedPackage} untuk tanggal ${dateStr} jam ${selectedSlot} WIB.`;
+    const waUrl = `https://wa.me/6285952879644?text=${encodeURIComponent(msg)}`;
+    window.open(waUrl, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <section
@@ -594,12 +611,20 @@ export default function AvailabilitySection() {
                     fontSize: '0.68rem',
                     letterSpacing: '0.1em',
                     textTransform: 'uppercase',
-                    color: 'var(--muted)',
+                    color: submittedAttempt && !selectedSlot ? '#DC2626' : 'var(--muted)',
                     fontFamily: 'Inter, sans-serif',
                     fontWeight: 600,
                     marginBottom: '0.75rem',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
                   }}>
-                    SLOT JAM
+                    <span>SLOT JAM <span style={{ color: '#DC2626' }}>*</span></span>
+                    {submittedAttempt && !selectedSlot && (
+                      <span style={{ color: '#DC2626', textTransform: 'none', fontSize: '0.65rem' }}>
+                        (Wajib Dipilih)
+                      </span>
+                    )}
                   </div>
 
                   <div style={{
@@ -607,6 +632,10 @@ export default function AvailabilitySection() {
                     flexDirection: 'column',
                     gap: '0.5rem',
                     marginBottom: '1.25rem',
+                    padding: submittedAttempt && !selectedSlot ? '0.35rem' : '0',
+                    borderRadius: '10px',
+                    border: submittedAttempt && !selectedSlot ? '1.5px dashed #FCA5A5' : 'none',
+                    background: submittedAttempt && !selectedSlot ? '#FEF2F2' : 'transparent',
                   }}>
                     {selectedDayData.slots.map((slotItem) => {
                       const isAvailable = slotItem.status === 'available';
@@ -615,7 +644,10 @@ export default function AvailabilitySection() {
                       return (
                         <div
                           key={slotItem.time}
-                          onClick={isAvailable ? () => setSelectedSlot(prev => prev === slotItem.time ? null : slotItem.time) : undefined}
+                          onClick={isAvailable ? () => {
+                            setSelectedSlot(prev => prev === slotItem.time ? null : slotItem.time);
+                            if (validationError) setValidationError(null);
+                          } : undefined}
                           style={{
                             display: 'flex',
                             alignItems: 'center',
@@ -681,26 +713,30 @@ export default function AvailabilitySection() {
                       display: 'block',
                       fontSize: '0.7rem',
                       fontFamily: 'Inter, sans-serif',
-                      color: 'var(--muted)',
+                      color: submittedAttempt && !guestName.trim() ? '#DC2626' : 'var(--muted)',
                       marginBottom: '0.25rem',
-                      fontWeight: 500,
+                      fontWeight: 600,
                     }}>
-                      Nama Pemesan:
+                      Nama Pemesan <span style={{ color: '#DC2626' }}>*</span>
                     </label>
                     <input
                       type="text"
-                      placeholder="Nama Anda..."
+                      placeholder="Nama Anda (Wajib)..."
                       value={guestName}
-                      onChange={(e) => setGuestName(e.target.value)}
+                      onChange={(e) => {
+                        setGuestName(e.target.value);
+                        if (validationError) setValidationError(null);
+                      }}
                       style={{
                         width: '100%',
                         padding: '0.5rem 0.75rem',
                         borderRadius: '6px',
-                        border: '1px solid rgba(123,28,42,0.2)',
+                        border: submittedAttempt && !guestName.trim() ? '1.5px solid #DC2626' : '1px solid rgba(123,28,42,0.2)',
                         fontFamily: 'Inter, sans-serif',
                         fontSize: '0.8rem',
                         color: 'var(--charcoal)',
                         outline: 'none',
+                        background: submittedAttempt && !guestName.trim() ? '#FEF2F2' : 'white',
                       }}
                     />
                   </div>
@@ -710,27 +746,31 @@ export default function AvailabilitySection() {
                       display: 'block',
                       fontSize: '0.7rem',
                       fontFamily: 'Inter, sans-serif',
-                      color: 'var(--muted)',
+                      color: submittedAttempt && !selectedPackage.trim() ? '#DC2626' : 'var(--muted)',
                       marginBottom: '0.25rem',
-                      fontWeight: 500,
+                      fontWeight: 600,
                     }}>
-                      Paket Foto Terpilih:
+                      Paket Foto Terpilih <span style={{ color: '#DC2626' }}>*</span>
                     </label>
                     <select
                       value={selectedPackage}
-                      onChange={(e) => setSelectedPackage(e.target.value)}
+                      onChange={(e) => {
+                        setSelectedPackage(e.target.value);
+                        if (validationError) setValidationError(null);
+                      }}
                       style={{
                         width: '100%',
                         padding: '0.5rem 0.75rem',
                         borderRadius: '6px',
-                        border: '1px solid rgba(123,28,42,0.2)',
+                        border: submittedAttempt && !selectedPackage.trim() ? '1.5px solid #DC2626' : '1px solid rgba(123,28,42,0.2)',
                         fontFamily: 'Inter, sans-serif',
                         fontSize: '0.8rem',
-                        color: 'var(--charcoal)',
-                        background: 'white',
+                        color: selectedPackage ? 'var(--charcoal)' : 'rgba(44,40,40,0.5)',
+                        background: submittedAttempt && !selectedPackage.trim() ? '#FEF2F2' : 'white',
                         outline: 'none',
                       }}
                     >
+                      <option value="" disabled>-- Pilih Paket Foto (Wajib) --</option>
                       <option value="Wisuda Outdoor">Wisuda Outdoor (Rp 450.000)</option>
                       <option value="Wisuda Indoor">Wisuda Indoor (Rp 550.000)</option>
                       <option value="Wisuda Studio">Wisuda Studio (Rp 650.000)</option>
@@ -742,39 +782,57 @@ export default function AvailabilitySection() {
                   </div>
                 </div>
 
-                {waPrefilledLink && (
-                  <a
-                    href={waPrefilledLink}
-                    id="cta-booking-slot-wa"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      display: 'block',
-                      textAlign: 'center',
-                      background: 'var(--maroon)',
-                      color: 'white',
-                      padding: '0.85rem 1.25rem',
-                      borderRadius: '8px',
-                      fontFamily: 'Inter, sans-serif',
-                      fontSize: '0.85rem',
-                      fontWeight: 600,
-                      textDecoration: 'none',
-                      boxShadow: '0 4px 16px rgba(123,28,42,0.25)',
-                      transition: 'all 0.25s ease',
-                      width: '100%',
-                    }}
-                    onMouseEnter={e => {
-                      (e.currentTarget as HTMLElement).style.background = 'var(--maroon-dark)';
-                      (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
-                    }}
-                    onMouseLeave={e => {
-                      (e.currentTarget as HTMLElement).style.background = 'var(--maroon)';
-                      (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-                    }}
-                  >
-                    Booking Tanggal Ini &rarr;
-                  </a>
+                {validationError && (
+                  <div style={{
+                    background: '#FEF2F2',
+                    border: '1px solid #FCA5A5',
+                    color: '#991B1B',
+                    padding: '0.5rem 0.75rem',
+                    borderRadius: '6px',
+                    fontSize: '0.75rem',
+                    fontFamily: 'Inter, sans-serif',
+                    marginBottom: '0.75rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                    fontWeight: 500,
+                  }}>
+                    <span>⚠️</span>
+                    <span>{validationError}</span>
+                  </div>
                 )}
+
+                <button
+                  type="button"
+                  onClick={handleBookingSubmit}
+                  id="cta-booking-slot-wa"
+                  style={{
+                    display: 'block',
+                    textAlign: 'center',
+                    background: 'var(--maroon)',
+                    color: 'white',
+                    padding: '0.85rem 1.25rem',
+                    borderRadius: '8px',
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    border: 'none',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 16px rgba(123,28,42,0.25)',
+                    transition: 'all 0.25s ease',
+                    width: '100%',
+                  }}
+                  onMouseEnter={e => {
+                    (e.currentTarget as HTMLElement).style.background = 'var(--maroon-dark)';
+                    (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
+                  }}
+                  onMouseLeave={e => {
+                    (e.currentTarget as HTMLElement).style.background = 'var(--maroon)';
+                    (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+                  }}
+                >
+                  Booking Tanggal Ini &rarr;
+                </button>
               </div>
             )}
           </div>
