@@ -22,6 +22,14 @@ const MONTH_ID = [
 ];
 const DAY_SHORT = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
 
+function formatRupiah(input: string): string {
+  if (!input) return '';
+  const rawNumbers = input.replace(/[^0-9]/g, '');
+  if (!rawNumbers) return '';
+  const formattedNumber = new Intl.NumberFormat('id-ID').format(parseInt(rawNumbers, 10));
+  return `Rp ${formattedNumber}`;
+}
+
 // Generate slot data for any requested month and year
 function buildMonthCalendar(targetYear: number, targetMonth: number, overrides: Record<string, any> = {}): CalendarDay[] {
   const today = new Date();
@@ -144,6 +152,43 @@ export default function AvailabilitySection() {
   const [guestName, setGuestName] = useState<string>('');
   const [submittedAttempt, setSubmittedAttempt] = useState<boolean>(false);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [availablePackages, setAvailablePackages] = useState<{ title: string; price: string }[]>([
+    { title: 'Wisuda Outdoor', price: 'Rp 450.000' },
+    { title: 'Wisuda Indoor', price: 'Rp 550.000' },
+    { title: 'Wisuda Studio', price: 'Rp 650.000' },
+    { title: 'Wisuda All-In', price: 'Rp 950.000' },
+    { title: 'Prewedding Studio Adat Jawa', price: 'Rp 1.850.000' },
+    { title: 'Prewedding Outdoor Scenic', price: 'Rp 2.250.000' },
+    { title: 'Intimate Wedding Coverage', price: 'Rp 4.500.000' },
+  ]);
+
+  useEffect(() => {
+    const loadPkgs = () => {
+      try {
+        const stored = localStorage.getItem('yeka_package_overrides');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const formatted = parsed.map((p: any) => ({
+              title: p.title,
+              price: formatRupiah(p.price),
+            }));
+            setAvailablePackages(formatted);
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    loadPkgs();
+    window.addEventListener('storage', loadPkgs);
+    window.addEventListener('yekaPackageUpdated', loadPkgs);
+    return () => {
+      window.removeEventListener('storage', loadPkgs);
+      window.removeEventListener('yekaPackageUpdated', loadPkgs);
+    };
+  }, []);
 
   const sectionRef = useRef<HTMLDivElement>(null);
   const slotPanelRef = useRef<HTMLDivElement>(null);
@@ -771,13 +816,11 @@ export default function AvailabilitySection() {
                       }}
                     >
                       <option value="" disabled>-- Pilih Paket Foto (Wajib) --</option>
-                      <option value="Wisuda Outdoor">Wisuda Outdoor (Rp 450.000)</option>
-                      <option value="Wisuda Indoor">Wisuda Indoor (Rp 550.000)</option>
-                      <option value="Wisuda Studio">Wisuda Studio (Rp 650.000)</option>
-                      <option value="Wisuda All-In">Wisuda All-In (Rp 950.000)</option>
-                      <option value="Prewedding Studio Adat Jawa">Prewedding Studio Adat Jawa (Rp 1.850.000)</option>
-                      <option value="Prewedding Outdoor Scenic">Prewedding Outdoor Scenic (Rp 2.250.000)</option>
-                      <option value="Intimate Wedding Coverage">Intimate Wedding Coverage (Rp 4.500.000)</option>
+                      {availablePackages.map((pkg, idx) => (
+                        <option key={idx} value={pkg.title}>
+                          {pkg.title} ({formatRupiah(pkg.price)})
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>

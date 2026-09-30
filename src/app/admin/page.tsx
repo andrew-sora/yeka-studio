@@ -309,6 +309,7 @@ export default function AdminPage() {
             price: formatRupiah(p.price),
           }));
           setPackages(formatted);
+          localStorage.setItem('yeka_package_overrides', JSON.stringify(formatted));
         }
       }
 
@@ -328,7 +329,7 @@ export default function AdminPage() {
     if (currentPkg) {
       setPkgCategoryInput(currentPkg.category);
       setPkgTitleInput(currentPkg.title);
-      setPkgPriceInput(currentPkg.price);
+      setPkgPriceInput(formatRupiah(currentPkg.price));
       setPkgDescInput(currentPkg.desc);
       setPkgBadgeInput(currentPkg.badge || '');
       setPkgFeaturedInput(currentPkg.featured || false);
@@ -494,6 +495,7 @@ export default function AdminPage() {
     setSelectedPkgId(updated[0].id);
     setIsCreatingPkg(false);
     localStorage.setItem('yeka_package_overrides', JSON.stringify(updated));
+    window.dispatchEvent(new Event('yekaPackageUpdated'));
     showToast('Paket berhasil dihapus.');
   };
 
@@ -521,6 +523,7 @@ export default function AdminPage() {
       setSelectedPkgId(newId);
       setIsCreatingPkg(false);
       localStorage.setItem('yeka_package_overrides', JSON.stringify(updated));
+      window.dispatchEvent(new Event('yekaPackageUpdated'));
       showToast('✓ Paket baru berhasil dibuat & dipublikasikan!');
     } else {
       // Update existing package
@@ -542,6 +545,7 @@ export default function AdminPage() {
 
       setPackages(updatedPkgs);
       localStorage.setItem('yeka_package_overrides', JSON.stringify(updatedPkgs));
+      window.dispatchEvent(new Event('yekaPackageUpdated'));
       showToast('✓ Detail paket berhasil diperbarui.');
     }
   };
@@ -552,6 +556,7 @@ export default function AdminPage() {
       setSelectedPkgId(DEFAULT_PACKAGES[0].id);
       setIsCreatingPkg(false);
       localStorage.removeItem('yeka_package_overrides');
+      window.dispatchEvent(new Event('yekaPackageUpdated'));
       showToast('Paket berhasil di-reset.');
     }
   };
@@ -1285,7 +1290,7 @@ export default function AdminPage() {
                           {pkg.title}
                         </div>
                         <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '2px' }}>
-                          {pkg.price} &bull; <span style={{ textTransform: 'capitalize' }}>{pkg.category}</span>
+                          {formatRupiah(pkg.price)} &bull; <span style={{ textTransform: 'capitalize' }}>{pkg.category}</span>
                         </div>
                       </div>
 
