@@ -123,16 +123,24 @@ function formatRupiah(input: string): string {
   useEffect(() => {
     const checkOverflow = () => {
       if (carouselRef.current) {
-        setCanScrollPhotos(carouselRef.current.scrollWidth > carouselRef.current.clientWidth + 10);
+        setCanScrollPhotos(carouselRef.current.scrollWidth > carouselRef.current.clientWidth + 5);
       }
       if (pkgCarouselRef.current) {
-        setCanScrollPkgs(pkgCarouselRef.current.scrollWidth > pkgCarouselRef.current.clientWidth + 10);
+        setCanScrollPkgs(pkgCarouselRef.current.scrollWidth > pkgCarouselRef.current.clientWidth + 5);
       }
     };
+
     checkOverflow();
+    const t1 = setTimeout(checkOverflow, 50);
+    const t2 = setTimeout(checkOverflow, 250);
+
     window.addEventListener('resize', checkOverflow);
-    return () => window.removeEventListener('resize', checkOverflow);
-  }, []);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      window.removeEventListener('resize', checkOverflow);
+    };
+  }, [wisudaPackages, wisudaPhotos]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -553,7 +561,7 @@ function formatRupiah(input: string): string {
               display: 'flex',
               flexDirection: 'row',
               flexWrap: 'nowrap',
-              justifyContent: canScrollPkgs ? 'flex-start' : 'center',
+              justifyContent: (canScrollPkgs || wisudaPackages.length > 3) ? 'flex-start' : 'center',
               gap: '1.25rem',
               overflowX: 'auto',
               WebkitOverflowScrolling: 'touch',
