@@ -10,6 +10,14 @@ const MONTH_NAMES = [
   'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember',
 ];
 
+function formatRupiah(input: string): string {
+  if (!input) return '';
+  const rawNumbers = input.replace(/[^0-9]/g, '');
+  if (!rawNumbers) return '';
+  const formattedNumber = new Intl.NumberFormat('id-ID').format(parseInt(rawNumbers, 10));
+  return `Rp ${formattedNumber}`;
+}
+
 interface SlotOverride {
   dateKey: string; // YYYY-MM-DD
   status: 'fully_available' | 'partially_booked' | 'fully_booked';
@@ -293,7 +301,16 @@ export default function AdminPage() {
       if (storedSlots) setOverrides(JSON.parse(storedSlots));
 
       const storedPkgs = localStorage.getItem('yeka_package_overrides');
-      if (storedPkgs) setPackages(JSON.parse(storedPkgs));
+      if (storedPkgs) {
+        const parsed = JSON.parse(storedPkgs);
+        if (Array.isArray(parsed)) {
+          const formatted = parsed.map((p: any) => ({
+            ...p,
+            price: formatRupiah(p.price),
+          }));
+          setPackages(formatted);
+        }
+      }
 
       const storedPhotos = localStorage.getItem('yeka_photo_overrides');
       if (storedPhotos) setPhotos(JSON.parse(storedPhotos));
@@ -483,6 +500,8 @@ export default function AdminPage() {
   const handleSavePackage = (e: React.FormEvent) => {
     e.preventDefault();
 
+    const formattedPrice = formatRupiah(pkgPriceInput) || 'Rp 0';
+
     if (isCreatingPkg) {
       // Create new package only when form is submitted
       const newId = `pkg-${Date.now()}`;
@@ -490,7 +509,7 @@ export default function AdminPage() {
         id: newId,
         category: pkgCategoryInput,
         title: pkgTitleInput.trim() || 'Paket Baru',
-        price: pkgPriceInput.trim() || 'Rp 0',
+        price: formattedPrice,
         desc: pkgDescInput.trim() || 'Deskripsi singkat paket',
         badge: pkgBadgeInput.trim(),
         featured: pkgFeaturedInput,
@@ -511,7 +530,7 @@ export default function AdminPage() {
             ...pkg,
             category: pkgCategoryInput,
             title: pkgTitleInput.trim(),
-            price: pkgPriceInput.trim(),
+            price: formattedPrice,
             desc: pkgDescInput.trim(),
             badge: pkgBadgeInput.trim(),
             featured: pkgFeaturedInput,
@@ -1417,9 +1436,9 @@ export default function AdminPage() {
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Rp 450.000"
+                    placeholder="e.g. 450000"
                     value={pkgPriceInput}
-                    onChange={(e) => setPkgPriceInput(e.target.value)}
+                    onChange={(e) => setPkgPriceInput(formatRupiah(e.target.value))}
                     style={{
                       width: '100%',
                       padding: '0.5rem 0.65rem',

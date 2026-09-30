@@ -78,6 +78,14 @@ export default function WisudaSection() {
   const [wisudaPackages, setWisudaPackages] = useState(WISUDA_PACKAGES);
   const [wisudaPhotos, setWisudaPhotos] = useState(WISUDA_PHOTOS);
 
+function formatRupiah(input: string): string {
+  if (!input) return '';
+  const rawNumbers = input.replace(/[^0-9]/g, '');
+  if (!rawNumbers) return '';
+  const formattedNumber = new Intl.NumberFormat('id-ID').format(parseInt(rawNumbers, 10));
+  return `Rp ${formattedNumber}`;
+}
+
   // Load package and photo overrides from localStorage if saved by Owner via Admin
   useEffect(() => {
     try {
@@ -85,7 +93,12 @@ export default function WisudaSection() {
       if (storedPkgs) {
         const parsed = JSON.parse(storedPkgs);
         if (Array.isArray(parsed)) {
-          const overrides = parsed.filter((p: any) => p.category === 'wisuda' || p.id?.startsWith('wisuda'));
+          const overrides = parsed
+            .filter((p: any) => p.category === 'wisuda' || p.id?.startsWith('wisuda'))
+            .map((p: any) => ({
+              ...p,
+              price: formatRupiah(p.price),
+            }));
           if (overrides.length > 0) {
             setWisudaPackages(overrides);
           }
