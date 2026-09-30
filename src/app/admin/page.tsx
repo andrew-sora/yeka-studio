@@ -274,7 +274,7 @@ export default function AdminPage() {
       tag: newTestiTag,
       date: 'Baru saja (Admin)',
       chat: newTestiChat.trim(),
-      highlight: 'Ulasan Terverifikasi ✨',
+      highlight: 'Ulasan Terverifikasi',
       isUserAdded: true,
     };
     const updated = [newTesti, ...userTestimonials];
@@ -1343,7 +1343,7 @@ export default function AdminPage() {
               <form onSubmit={handleSavePackage}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
                   <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0F172A', margin: 0 }}>
-                    {isCreatingPkg ? '✨ Buat Paket Baru' : 'Edit Detail Paket'}
+                    {isCreatingPkg ? 'Buat Paket Baru' : 'Edit Detail Paket'}
                   </h3>
 
                   {!isCreatingPkg && (
@@ -1556,7 +1556,7 @@ export default function AdminPage() {
                       cursor: 'pointer',
                     }}
                   >
-                    {isCreatingPkg ? '➕ Simpan & Publis Paket Baru' : '💾 Simpan Perubahan Paket'}
+                    {isCreatingPkg ? 'Simpan & Publis Paket Baru' : 'Simpan Perubahan Paket'}
                   </button>
 
                   {isCreatingPkg && (
@@ -1618,7 +1618,7 @@ export default function AdminPage() {
                       gap: '0.35rem',
                     }}
                   >
-                    📷 + Tambah Foto
+                    + Tambah Foto
                   </button>
 
                   <button
@@ -1813,7 +1813,7 @@ export default function AdminPage() {
                 {/* Replace Image Button for selected photo */}
                 <div style={{ marginBottom: '1rem', background: '#F8FAFC', padding: '0.85rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
                   <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#0F172A', marginBottom: '0.4rem' }}>
-                    📷 Ganti File Gambar Foto Ini
+                    Ganti File Gambar Foto Ini
                   </label>
                   
                   <input
@@ -1843,7 +1843,7 @@ export default function AdminPage() {
                       gap: '0.4rem',
                     }}
                   >
-                    📁 Pilih Gambar Baru dari Galeri HP / PC
+                    Pilih Gambar Baru dari Galeri HP / PC
                   </button>
                 </div>
 
@@ -2061,7 +2061,9 @@ export default function AdminPage() {
                     border: '1.5px dashed #CBD5E1',
                     color: '#64748B',
                   }}>
-                    <div style={{ fontSize: '1.8rem', marginBottom: '0.5rem' }}>💬</div>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '50%', background: '#F1F5F9', color: '#64748B', marginBottom: '0.5rem' }}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    </div>
                     <div style={{ fontSize: '0.88rem', fontWeight: 600, color: '#334155' }}>Belum ada ulasan baru</div>
                     <div style={{ fontSize: '0.78rem', marginTop: '0.25rem' }}>
                       Ulasan yang dikirimkan customer dari form website akan otomatis muncul di sini.
@@ -2124,7 +2126,7 @@ export default function AdminPage() {
                               cursor: 'pointer',
                             }}
                           >
-                            🗑️ Hapus Ulasan
+                            Hapus Ulasan
                           </button>
                         </div>
                       </div>
