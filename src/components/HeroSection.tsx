@@ -164,7 +164,7 @@ export default function HeroSection() {
 
           {/* Main Headline with High-Impact Value Proposition */}
           <h1 className="animate-on-enter opacity-0-init font-display" style={{
-            fontSize: 'clamp(1.5rem, 4.2vw, 3.4rem)',
+            fontSize: 'clamp(1.6rem, 4.2vw, 3.4rem)',
             fontWeight: 600,
             color: 'white',
             lineHeight: 1.18,
@@ -173,10 +173,12 @@ export default function HeroSection() {
             wordBreak: 'break-word',
           }}>
             Abadikan Momen<br />
-            <span className="font-script" style={{
+            <span style={{
               color: '#C9A94B',
-              fontSize: '1.05em',
-              fontWeight: 400,
+              fontFamily: 'Cormorant Garamond, serif',
+              fontStyle: 'italic',
+              fontSize: '1.08em',
+              fontWeight: 500,
               display: 'inline-block',
             }}>
               Paling Berharga
@@ -231,13 +233,27 @@ export default function HeroSection() {
             <a
               href="#wisuda"
               id="cta-wisuda-hero"
-              className="btn-primary"
               style={{
-                background: 'var(--maroon)',
-                borderColor: 'var(--maroon)',
-                padding: '0.65rem 1.25rem',
-                fontSize: '0.78rem',
-                boxShadow: '0 4px 16px rgba(123,28,42,0.3)',
+                background: 'linear-gradient(135deg, #7B1C2A 0%, #4C101B 100%)',
+                color: 'white',
+                border: '1px solid rgba(201,169,75,0.4)',
+                padding: '0.7rem 1.35rem',
+                borderRadius: '8px',
+                fontFamily: 'Inter, sans-serif',
+                fontSize: '0.82rem',
+                fontWeight: 600,
+                letterSpacing: '0.04em',
+                textDecoration: 'none',
+                boxShadow: '0 6px 20px rgba(123, 28, 42, 0.4), inset 0 1px 0 rgba(255,255,255,0.15)',
+                transition: 'all 0.3s ease',
+              }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
+                (e.currentTarget as HTMLElement).style.borderColor = '#C9A94B';
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+                (e.currentTarget as HTMLElement).style.borderColor = 'rgba(201,169,75,0.4)';
               }}
             >
               Lihat Paket Wisuda
@@ -245,10 +261,27 @@ export default function HeroSection() {
             <a
               href="#wedding"
               id="cta-wedding-hero"
-              className="btn-outline"
               style={{
-                padding: '0.65rem 1.25rem',
-                fontSize: '0.78rem',
+                background: 'rgba(255,255,255,0.06)',
+                color: 'rgba(255,255,255,0.9)',
+                border: '1px solid rgba(255,255,255,0.2)',
+                padding: '0.7rem 1.35rem',
+                borderRadius: '8px',
+                fontFamily: 'Inter, sans-serif',
+                fontSize: '0.82rem',
+                fontWeight: 500,
+                letterSpacing: '0.02em',
+                textDecoration: 'none',
+                backdropFilter: 'blur(8px)',
+                transition: 'all 0.3s ease',
+              }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.12)';
+                (e.currentTarget as HTMLElement).style.borderColor = 'rgba(201,169,75,0.4)';
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)';
+                (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.2)';
               }}
             >
               Wedding &amp; Prewedding
@@ -257,7 +290,7 @@ export default function HeroSection() {
 
         </div>
 
-        {/* ── RIGHT COLUMN: Editorial Photo Frame Collage (Konsep D integration) ── */}
+        {/* ── RIGHT COLUMN: Editorial Photo Frame Collage ── */}
         <div className="animate-on-enter opacity-0-init" style={{ position: 'relative' }}>
 
           <div style={{
@@ -265,15 +298,15 @@ export default function HeroSection() {
             maxWidth: '100%',
             width: '100%',
             margin: '0 auto',
-            paddingBottom: '1rem',
+            paddingBottom: '0.5rem',
           }}>
 
             {/* Main Editorial Frame Photo */}
             <div style={{
               position: 'relative',
-              width: '82%',
+              width: '80%',
               aspectRatio: '3/4',
-              borderRadius: '12px',
+              borderRadius: '14px',
               overflow: 'hidden',
               boxShadow: '0 20px 50px rgba(0,0,0,0.6)',
               border: '1px solid rgba(201, 169, 75, 0.3)',
@@ -332,17 +365,17 @@ export default function HeroSection() {
               </div>
             </div>
 
-            {/* Secondary Overlapping Staggered Photo Card (Editorial Collage effect) */}
+            {/* Secondary Overlapping Staggered Photo Card */}
             <div style={{
               position: 'absolute',
               right: '0',
-              bottom: '2.5rem',
-              width: '52%',
+              bottom: '2rem',
+              width: '48%',
               aspectRatio: '1/1',
-              borderRadius: '10px',
+              borderRadius: '12px',
               overflow: 'hidden',
               boxShadow: '0 16px 40px rgba(0,0,0,0.7)',
-              border: '2px solid rgba(201, 169, 75, 0.4)',
+              border: '2px solid rgba(201, 169, 75, 0.35)',
               background: '#1a0508',
             }}>
               <Image
@@ -359,29 +392,8 @@ export default function HeroSection() {
               <div style={{
                 position: 'absolute',
                 inset: 0,
-                background: 'linear-gradient(to top, rgba(18,3,5,0.6) 0%, transparent 60%)',
+                background: 'linear-gradient(to top, rgba(18,3,5,0.5) 0%, transparent 60%)',
               }} />
-            </div>
-
-            {/* Handwritten Script Accent Overlay Badge */}
-            <div style={{
-              position: 'absolute',
-              top: '-1rem',
-              right: '1rem',
-              background: 'rgba(18, 3, 5, 0.85)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(201, 169, 75, 0.4)',
-              borderRadius: '100px',
-              padding: '0.4rem 1.1rem',
-              boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
-            }}>
-              <span className="font-script" style={{
-                fontSize: '0.95rem',
-                color: '#C9A94B',
-                letterSpacing: '0.05em',
-              }}>
-                Female Photographers
-              </span>
             </div>
 
             {/* Slide Navigation Dots */}
