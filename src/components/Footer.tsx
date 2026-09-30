@@ -13,21 +13,24 @@ export default function Footer() {
   const year = new Date().getFullYear();
   return (
     <footer style={{
-      background: '#0a0204',
+      background: '#0F0305',
       borderTop: '1px solid rgba(201,169,75,0.15)',
+      paddingTop: '1.5rem',
     }}>
-      {/* Mini Instagram Photo Reel Grid */}
+      {/* Mini Instagram Photo Reel Grid (Aligned to 1080px) */}
       <div style={{
-        maxWidth: '1200px',
-        width: '100%',
+        maxWidth: '1080px',
         margin: '0 auto',
+        padding: '0 1.25rem',
       }}>
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(6, 1fr)',
-          gap: '2px',
-          background: '#120305',
-          width: '100%',
+          gap: '3px',
+          borderRadius: '12px',
+          overflow: 'hidden',
+          border: '1px solid rgba(201,169,75,0.2)',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
         }}>
           {FOOTER_REEL.map((src, i) => (
             <div key={i} style={{ position: 'relative', aspectRatio: '1', overflow: 'hidden' }}>
@@ -38,13 +41,13 @@ export default function Footer() {
       </div>
 
       <div style={{
-        maxWidth: '1100px',
+        maxWidth: '1080px',
         margin: '0 auto',
-        padding: '2.5rem 1.5rem clamp(5.5rem, 9vh, 7.5rem) 1.5rem',
+        padding: '2rem 1.25rem clamp(5rem, 8vh, 6.5rem) 1.25rem',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: '0.75rem',
+        gap: '0.65rem',
         textAlign: 'center',
       }}>
         <div className="font-script" style={{

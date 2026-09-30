@@ -120,7 +120,7 @@ export default function HeroSection() {
         style={{
           position: 'relative',
           zIndex: 10,
-          maxWidth: '1200px',
+          maxWidth: '1080px',
           width: '100%',
           margin: '0 auto',
           display: 'grid',
