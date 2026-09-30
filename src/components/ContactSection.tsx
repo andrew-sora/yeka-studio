@@ -150,7 +150,7 @@ export default function ContactSection() {
                 <span style={{ color: '#C9A94B', fontStyle: 'italic' }}>Layak Diabadikan Sempurna</span>
               </h2>
 
-              {/* Clean Benefit Chips instead of dense text block */}
+              {/* Clean Benefit Chips with SVG icons */}
               <div style={{
                 display: 'flex',
                 flexWrap: 'wrap',
@@ -161,13 +161,16 @@ export default function ContactSection() {
                 <div style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '0.4rem',
+                  gap: '0.45rem',
                   background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(201,169,75,0.25)',
+                  border: '1px solid rgba(201,169,75,0.3)',
                   padding: '0.4rem 0.75rem',
                   borderRadius: '100px',
                 }}>
-                  <span style={{ fontSize: '0.85rem' }}>📸</span>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C9A94B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                    <circle cx="12" cy="13" r="4"/>
+                  </svg>
                   <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.9)', fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                     Tim Fotografer Wanita
                   </span>
@@ -176,13 +179,15 @@ export default function ContactSection() {
                 <div style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '0.4rem',
+                  gap: '0.45rem',
                   background: 'rgba(255,255,255,0.05)',
                   border: '1px solid rgba(255,255,255,0.12)',
                   padding: '0.4rem 0.75rem',
                   borderRadius: '100px',
                 }}>
-                  <span style={{ fontSize: '0.85rem' }}>⚡</span>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C9A94B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                  </svg>
                   <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.9)', fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                     Respons WA &lt; 5 Menit
                   </span>
@@ -191,13 +196,16 @@ export default function ContactSection() {
                 <div style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '0.4rem',
+                  gap: '0.45rem',
                   background: 'rgba(255,255,255,0.05)',
                   border: '1px solid rgba(255,255,255,0.12)',
                   padding: '0.4rem 0.75rem',
                   borderRadius: '100px',
                 }}>
-                  <span style={{ fontSize: '0.85rem' }}>✨</span>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C9A94B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                  </svg>
                   <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.9)', fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                     Diskusi Konsep Gratis
                   </span>

@@ -47,9 +47,9 @@ const WEDDING_PACKAGES = [
       'Full-Day Coverage Akad &amp; Resepsi',
       'ALL File Mentah Flashdisk Box Kayu Yeka',
       '50 Foto Master Color Graded',
-      '📘 Album Photobook Hardcover Kulit 20 Hal',
-      '🖼️ 1 Cetak Canvas 50x70cm + Frame Premium',
-      '🎥 Video Cinematic Highlight Wedding 1-3 m',
+      'Album Photobook Hardcover Kulit 20 Hal',
+      '1 Cetak Canvas 50x70cm + Frame Premium',
+      'Video Cinematic Highlight Wedding 1-3 m',
     ],
   },
 ];
