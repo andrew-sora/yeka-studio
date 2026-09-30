@@ -69,12 +69,12 @@ export default function HeroSection() {
     <section
       id="hero"
       style={{
-        minHeight: '100svh',
+        minHeight: 'clamp(520px, 85vh, 780px)',
         background: 'linear-gradient(135deg, #120305 0%, #29080F 35%, #4C101B 70%, #7B1C2A 100%)',
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
-        padding: 'clamp(3.25rem, 6vw, 5.5rem) 1rem clamp(1.75rem, 4vw, 3rem)',
+        padding: 'clamp(2.5rem, 4vw, 4.5rem) 1rem clamp(2rem, 3.5vw, 3.5rem)',
         overflow: 'hidden',
       }}
     >
