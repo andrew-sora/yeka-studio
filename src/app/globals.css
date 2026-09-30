@@ -103,7 +103,8 @@ body {
   font-family: 'Cormorant Garamond', serif;
 }
 .font-script {
-  font-family: 'Dancing Script', cursive;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
 }
 
 /* Animations */
