@@ -513,7 +513,7 @@ function formatRupiah(input: string): string {
                 style={{
                   width: '40px',
                   height: '40px',
-                  borderRadius: '50%',
+                  borderRadius: '8px',
                   border: '1.5px solid rgba(123,28,42,0.2)',
                   background: 'white',
                   color: 'var(--maroon)',
@@ -534,7 +534,7 @@ function formatRupiah(input: string): string {
                 style={{
                   width: '40px',
                   height: '40px',
-                  borderRadius: '50%',
+                  borderRadius: '8px',
                   border: '1.5px solid rgba(123,28,42,0.2)',
                   background: 'var(--maroon)',
                   color: 'white',
@@ -569,8 +569,8 @@ function formatRupiah(input: string): string {
                 key={`pill-${pkg.id || i}`}
                 onClick={() => scrollToPkgIndex(i)}
                 style={{
-                  padding: '0.4rem 0.85rem',
-                  borderRadius: '100px',
+                  padding: '0.45rem 0.85rem',
+                  borderRadius: '6px',
                   fontSize: '0.74rem',
                   fontFamily: 'Inter, sans-serif',
                   fontWeight: 600,
