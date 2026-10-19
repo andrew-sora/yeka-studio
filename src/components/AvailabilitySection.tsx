@@ -345,19 +345,19 @@ export default function AvailabilitySection() {
         >
           {[
             {
-              step: '1. Tanggal',
+              step: 'Tanggal',
               desc: selectedDate ? `${selectedDate} ${MONTH_ID[viewMonth].slice(0, 3)}` : 'Pilih Hari',
               active: true,
               done: !!selectedDate,
             },
             {
-              step: '2. Jam',
+              step: 'Jam',
               desc: selectedSlot ? `${selectedSlot.split(' - ')[0]}` : selectedDate ? 'Pilih Jam' : 'Menunggu',
               active: !!selectedDate,
               done: !!selectedSlot,
             },
             {
-              step: '3. Booking',
+              step: 'Booking',
               desc: selectedSlot ? 'Siap Kirim' : 'Kirim WA',
               active: !!selectedSlot,
               done: false,
@@ -369,8 +369,8 @@ export default function AvailabilitySection() {
               style={{
                 background: 'white',
                 border: s.done ? '1.5px solid #16A34A' : s.active ? '1.5px solid var(--maroon)' : '1px solid rgba(123,28,42,0.1)',
-                padding: '0.65rem 0.85rem',
-                borderRadius: '8px',
+                padding: '0.6rem 0.85rem',
+                borderRadius: '6px',
                 display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'center',
