@@ -101,7 +101,7 @@ export default function AboutSection() {
                 transform: 'translateX(-50%)',
                 background: 'white',
                 padding: '0.55rem 1.15rem',
-                borderRadius: '100px',
+                borderRadius: '6px',
                 boxShadow: '0 6px 20px rgba(123,28,42,0.12)',
                 border: '1px solid rgba(123,28,42,0.12)',
                 display: 'flex',
