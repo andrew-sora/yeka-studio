@@ -153,6 +153,8 @@ export default function AvailabilitySection() {
   const [guestName, setGuestName] = useState<string>('');
   const [submittedAttempt, setSubmittedAttempt] = useState<boolean>(false);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [availablePackages, setAvailablePackages] = useState<{ title: string; price: string }[]>([
     { title: 'Wisuda Outdoor', price: 'Rp 450.000' },
     { title: 'Wisuda Indoor', price: 'Rp 550.000' },
@@ -162,6 +164,47 @@ export default function AvailabilitySection() {
     { title: 'Prewedding Outdoor Scenic', price: 'Rp 2.250.000' },
     { title: 'Intimate Wedding Coverage', price: 'Rp 4.500.000' },
   ]);
+
+  // Group packages for luxury organized dropdown menu
+  const groupedPackages = useMemo(() => {
+    const groups: { [cat: string]: { title: string; price: string }[] } = {};
+    availablePackages.forEach((pkg) => {
+      const lower = pkg.title.toLowerCase();
+      let cat = 'Koleksi Studio';
+      if (lower.includes('wisuda')) {
+        cat = 'Wisuda & Graduation';
+      } else if (lower.includes('wedding') || lower.includes('prewed')) {
+        cat = 'Prewedding & Wedding';
+      }
+      if (!groups[cat]) groups[cat] = [];
+      groups[cat].push(pkg);
+    });
+    return groups;
+  }, [availablePackages]);
+
+  // Close custom package dropdown on click outside or Escape key
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsDropdownOpen(false);
+      }
+    };
+    if (isDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isDropdownOpen]);
 
   useEffect(() => {
     const loadPkgs = () => {
@@ -906,81 +949,294 @@ export default function AvailabilitySection() {
                 paddingTop: '1rem',
                 marginTop: '0.5rem',
               }}>
+                <style>{`
+                  .yeka-dropdown-item:hover {
+                    background: rgba(123, 28, 42, 0.06) !important;
+                  }
+                  .yeka-custom-input:focus {
+                    border-color: var(--maroon) !important;
+                    box-shadow: 0 0 0 3px rgba(123, 28, 42, 0.08) !important;
+                  }
+                `}</style>
+
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-                  gap: '0.65rem',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                  gap: '0.85rem',
                   marginBottom: '1rem',
+                  position: 'relative',
                 }}>
-                  <div>
+                  {/* Nama Pemesan */}
+                  <div style={{ position: 'relative', zIndex: 1 }}>
                     <label style={{
-                      display: 'block',
-                      fontSize: '0.7rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      fontSize: '0.72rem',
                       fontFamily: 'Inter, sans-serif',
-                      color: submittedAttempt && !guestName.trim() ? '#DC2626' : 'var(--muted)',
-                      marginBottom: '0.25rem',
+                      color: submittedAttempt && !guestName.trim() ? '#DC2626' : 'var(--charcoal)',
+                      marginBottom: '0.35rem',
                       fontWeight: 600,
+                      letterSpacing: '0.01em',
                     }}>
-                      Nama Pemesan <span style={{ color: '#DC2626' }}>*</span>
+                      <span>Nama Pemesan <span style={{ color: '#DC2626' }}>*</span></span>
+                      {guestName.trim() && (
+                        <span style={{ fontSize: '0.64rem', color: 'var(--maroon)', fontWeight: 500 }}>
+                          Terisi
+                        </span>
+                      )}
                     </label>
                     <input
                       type="text"
-                      placeholder="Nama Anda (Wajib)..."
+                      placeholder="Nama lengkap Anda..."
                       value={guestName}
                       onChange={(e) => {
                         setGuestName(e.target.value);
                         if (validationError) setValidationError(null);
                       }}
+                      className="yeka-custom-input"
                       style={{
                         width: '100%',
-                        padding: '0.5rem 0.75rem',
-                        borderRadius: '6px',
-                        border: submittedAttempt && !guestName.trim() ? '1.5px solid #DC2626' : '1px solid rgba(123,28,42,0.2)',
+                        height: '44px',
+                        padding: '0.55rem 0.85rem',
+                        borderRadius: '8px',
+                        border: submittedAttempt && !guestName.trim() ? '1.5px solid #DC2626' : '1.5px solid rgba(123,28,42,0.2)',
                         fontFamily: 'Inter, sans-serif',
-                        fontSize: '0.8rem',
+                        fontSize: '0.82rem',
                         color: 'var(--charcoal)',
                         outline: 'none',
                         background: submittedAttempt && !guestName.trim() ? '#FEF2F2' : 'white',
+                        boxSizing: 'border-box',
+                        transition: 'all 0.2s ease',
                       }}
                     />
                   </div>
 
-                  <div>
+                  {/* Paket Foto Terpilih (Custom Luxury Dropdown) */}
+                  <div style={{ position: 'relative', zIndex: isDropdownOpen ? 40 : 2 }} ref={dropdownRef}>
                     <label style={{
-                      display: 'block',
-                      fontSize: '0.7rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      fontSize: '0.72rem',
                       fontFamily: 'Inter, sans-serif',
-                      color: submittedAttempt && !selectedPackage.trim() ? '#DC2626' : 'var(--muted)',
-                      marginBottom: '0.25rem',
+                      color: submittedAttempt && !selectedPackage.trim() ? '#DC2626' : 'var(--charcoal)',
+                      marginBottom: '0.35rem',
                       fontWeight: 600,
+                      letterSpacing: '0.01em',
                     }}>
-                      Paket Foto Terpilih <span style={{ color: '#DC2626' }}>*</span>
+                      <span>Paket Foto Terpilih <span style={{ color: '#DC2626' }}>*</span></span>
+                      {selectedPackage.trim() && (
+                        <span style={{ fontSize: '0.64rem', color: 'var(--maroon)', fontWeight: 500 }}>
+                          Terpilih
+                        </span>
+                      )}
                     </label>
-                    <select
-                      value={selectedPackage}
-                      onChange={(e) => {
-                        setSelectedPackage(e.target.value);
-                        if (validationError) setValidationError(null);
-                      }}
+
+                    {/* Trigger Button */}
+                    <button
+                      type="button"
+                      onClick={() => setIsDropdownOpen(prev => !prev)}
+                      aria-haspopup="listbox"
+                      aria-expanded={isDropdownOpen}
                       style={{
                         width: '100%',
-                        padding: '0.5rem 0.75rem',
-                        borderRadius: '6px',
-                        border: submittedAttempt && !selectedPackage.trim() ? '1.5px solid #DC2626' : '1px solid rgba(123,28,42,0.2)',
-                        fontFamily: 'Inter, sans-serif',
-                        fontSize: '0.8rem',
-                        color: selectedPackage ? 'var(--charcoal)' : 'rgba(44,40,40,0.5)',
-                        background: submittedAttempt && !selectedPackage.trim() ? '#FEF2F2' : 'white',
+                        height: '44px',
+                        padding: '0.55rem 0.85rem',
+                        borderRadius: '8px',
+                        border: submittedAttempt && !selectedPackage.trim()
+                          ? '1.5px solid #DC2626'
+                          : isDropdownOpen
+                          ? '1.5px solid var(--maroon)'
+                          : '1.5px solid rgba(123,28,42,0.2)',
+                        background: submittedAttempt && !selectedPackage.trim()
+                          ? '#FEF2F2'
+                          : isDropdownOpen
+                          ? '#FFFDFB'
+                          : 'white',
+                        boxShadow: isDropdownOpen
+                          ? '0 0 0 3px rgba(123, 28, 42, 0.08)'
+                          : 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '0.5rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        textAlign: 'left',
                         outline: 'none',
+                        boxSizing: 'border-box',
                       }}
                     >
-                      <option value="" disabled>-- Pilih Paket Foto (Wajib) --</option>
-                      {availablePackages.map((pkg, idx) => (
-                        <option key={idx} value={pkg.title}>
-                          {pkg.title} ({formatRupiah(pkg.price)})
-                        </option>
-                      ))}
-                    </select>
+                      {selectedPackage ? (
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', minWidth: 0, gap: '0.5rem' }}>
+                          <span style={{
+                            fontSize: '0.82rem',
+                            fontFamily: 'Inter, sans-serif',
+                            fontWeight: 600,
+                            color: 'var(--charcoal)',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}>
+                            {selectedPackage}
+                          </span>
+                          {(() => {
+                            const pkg = availablePackages.find(p => p.title === selectedPackage);
+                            if (!pkg) return null;
+                            const priceDisplay = pkg.price.startsWith('Rp') ? pkg.price : formatRupiah(pkg.price);
+                            return (
+                              <span style={{
+                                fontSize: '0.72rem',
+                                fontWeight: 700,
+                                fontFamily: 'Inter, sans-serif',
+                                color: 'var(--maroon)',
+                                background: 'rgba(123, 28, 42, 0.08)',
+                                padding: '2px 7px',
+                                borderRadius: '4px',
+                                whiteSpace: 'nowrap',
+                                flexShrink: 0,
+                              }}>
+                                {priceDisplay}
+                              </span>
+                            );
+                          })()}
+                        </div>
+                      ) : (
+                        <span style={{
+                          fontSize: '0.8rem',
+                          fontFamily: 'Inter, sans-serif',
+                          color: 'rgba(44,40,40,0.45)',
+                        }}>
+                          Pilih Paket Foto...
+                        </span>
+                      )}
+
+                      <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        style={{
+                          color: 'var(--maroon)',
+                          flexShrink: 0,
+                          transform: isDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                          transition: 'transform 0.2s ease',
+                        }}
+                      >
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </button>
+
+                    {/* Luxury Custom Dropdown Listbox */}
+                    {isDropdownOpen && (
+                      <div
+                        role="listbox"
+                        style={{
+                          position: 'absolute',
+                          top: 'calc(100% + 5px)',
+                          left: 0,
+                          right: 0,
+                          zIndex: 9999,
+                          background: 'white',
+                          borderRadius: '10px',
+                          border: '1px solid rgba(123, 28, 42, 0.16)',
+                          boxShadow: '0 16px 36px -6px rgba(44, 40, 40, 0.16), 0 4px 14px rgba(0, 0, 0, 0.06)',
+                          maxHeight: '280px',
+                          overflowY: 'auto',
+                          padding: '0.4rem 0',
+                          boxSizing: 'border-box',
+                        }}
+                      >
+                        {Object.entries(groupedPackages).map(([category, pkgs]) => (
+                          <div key={category}>
+                            {/* Category Header */}
+                            <div style={{
+                              padding: '0.45rem 0.85rem 0.25rem',
+                              fontSize: '0.62rem',
+                              fontWeight: 700,
+                              letterSpacing: '0.08em',
+                              textTransform: 'uppercase',
+                              color: 'var(--maroon)',
+                              fontFamily: 'Inter, sans-serif',
+                              borderTop: category !== Object.keys(groupedPackages)[0] ? '1px solid rgba(123, 28, 42, 0.06)' : 'none',
+                              marginTop: category !== Object.keys(groupedPackages)[0] ? '0.3rem' : 0,
+                            }}>
+                              {category}
+                            </div>
+
+                            {/* Option items */}
+                            {pkgs.map((pkg, idx) => {
+                              const isSelected = selectedPackage === pkg.title;
+                              const priceDisplay = pkg.price.startsWith('Rp') ? pkg.price : formatRupiah(pkg.price);
+                              return (
+                                <div
+                                  key={idx}
+                                  role="option"
+                                  aria-selected={isSelected}
+                                  onClick={() => {
+                                    setSelectedPackage(pkg.title);
+                                    setIsDropdownOpen(false);
+                                    if (validationError) setValidationError(null);
+                                  }}
+                                  className="yeka-dropdown-item"
+                                  style={{
+                                    padding: '0.55rem 0.85rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    cursor: 'pointer',
+                                    background: isSelected ? 'rgba(123, 28, 42, 0.07)' : 'transparent',
+                                    borderLeft: isSelected ? '3px solid var(--maroon)' : '3px solid transparent',
+                                    transition: 'all 0.15s ease',
+                                    gap: '0.5rem',
+                                  }}
+                                >
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', minWidth: 0, flex: 1 }}>
+                                    {isSelected ? (
+                                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--maroon)', flexShrink: 0 }}>
+                                        <polyline points="20 6 9 17 4 12" />
+                                      </svg>
+                                    ) : (
+                                      <span style={{ width: '13px', flexShrink: 0 }} />
+                                    )}
+                                    <span style={{
+                                      fontSize: '0.8rem',
+                                      fontFamily: 'Inter, sans-serif',
+                                      fontWeight: isSelected ? 600 : 500,
+                                      color: isSelected ? 'var(--maroon)' : 'var(--charcoal)',
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                      whiteSpace: 'nowrap',
+                                    }}>
+                                      {pkg.title}
+                                    </span>
+                                  </div>
+
+                                  <span style={{
+                                    fontSize: '0.72rem',
+                                    fontWeight: 600,
+                                    fontFamily: 'Inter, sans-serif',
+                                    color: isSelected ? 'var(--maroon)' : 'rgba(44, 40, 40, 0.7)',
+                                    background: isSelected ? 'rgba(123, 28, 42, 0.08)' : 'rgba(44, 40, 40, 0.04)',
+                                    padding: '2px 7px',
+                                    borderRadius: '4px',
+                                    whiteSpace: 'nowrap',
+                                    flexShrink: 0,
+                                  }}>
+                                    {priceDisplay}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
 
