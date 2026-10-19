@@ -38,8 +38,8 @@ export default function AboutSection() {
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: 'clamp(1.5rem, 4vw, 3rem)',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+          gap: 'clamp(2rem, 5vw, 3.5rem)',
           alignItems: 'center',
         }}>
 
@@ -53,16 +53,16 @@ export default function AboutSection() {
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(2, 1fr)',
-              gap: '8px',
+              gap: '12px',
               position: 'relative',
             }}>
               {/* Main Photo 1 */}
               <div style={{
                 position: 'relative',
-                aspectRatio: '1/1',
-                borderRadius: '6px',
+                aspectRatio: '4/5',
+                borderRadius: '8px',
                 overflow: 'hidden',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
               }}>
                 <Image
                   src="/images/wisuda-5.jpg"
@@ -76,11 +76,11 @@ export default function AboutSection() {
               {/* Main Photo 2 */}
               <div style={{
                 position: 'relative',
-                aspectRatio: '1/1',
-                borderRadius: '6px',
+                aspectRatio: '4/5',
+                borderRadius: '8px',
                 overflow: 'hidden',
-                marginTop: '1rem',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                marginTop: '2.5rem',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
               }}>
                 <Image
                   src="/images/wedding-4.jpg"
@@ -195,13 +195,13 @@ export default function AboutSection() {
               Dengan pendekatan yang sabar, hangat, dan komunikatif, sesi photoshoot berlangsung mengalir tanpa rasa canggung, baik saat perayaan kelulusan kampus bersama sahabat maupun momen sakral pernikahan adat.
             </p>
 
-            {/* Core Working Values & Customer Benefits */}
+            {/* Core Working Values & Customer Benefits (Symmetrical 2x2 Grid) */}
             <div
               className="reveal-about"
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-                gap: '1rem',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                gap: '0.85rem',
                 opacity: 0,
                 transform: 'translateY(24px)',
                 transition: 'all 0.7s ease',
@@ -211,13 +211,17 @@ export default function AboutSection() {
                 { title: 'Bebas Canggung', desc: 'Arahan pose natural & nyaman untuk mahasiswi & calon pengantin' },
                 { title: 'Estetika Editorial', desc: 'Tone warna hangat & framing elegan khas film vintage' },
                 { title: 'File Cepat H+1', desc: 'Seluruh file mentah langsung terkirim via Google Drive dalam 24 jam' },
+                { title: 'Konsultasi Konsep', desc: 'Diskusi moodboard, referensi outfit & rundown sebelum hari H' },
               ].map((val, i) => (
                 <div key={i} style={{
-                  padding: '1.25rem 1rem',
+                  padding: '1.15rem 1rem',
                   background: 'white',
                   borderRadius: '10px',
                   boxShadow: '0 4px 18px rgba(0,0,0,0.04)',
                   border: '1px solid rgba(123,28,42,0.1)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-start',
                 }}>
                   <div style={{
                     fontSize: '0.88rem',

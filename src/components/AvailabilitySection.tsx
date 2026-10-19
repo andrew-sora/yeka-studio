@@ -442,11 +442,14 @@ export default function AvailabilitySection() {
             style={{
               background: 'white',
               borderRadius: '16px',
-              padding: 'clamp(0.75rem, 2.5vw, 1.5rem)',
+              padding: 'clamp(1rem, 2.5vw, 1.5rem)',
               boxShadow: '0 8px 30px rgba(0,0,0,0.04)',
               border: '1px solid rgba(123,28,42,0.08)',
               width: '100%',
               boxSizing: 'border-box',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
             }}
           >
             {/* Header: Month Title with Navigation Arrows & Legend */}
@@ -702,10 +705,11 @@ export default function AvailabilitySection() {
             style={{
               background: 'white',
               borderRadius: '16px',
-              padding: 'clamp(1.25rem, 3vw, 1.75rem)',
+              padding: 'clamp(1rem, 2.5vw, 1.5rem)',
               boxShadow: '0 8px 30px rgba(0,0,0,0.04)',
               border: '1px solid rgba(123,28,42,0.08)',
-              minHeight: '100%',
+              width: '100%',
+              boxSizing: 'border-box',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
@@ -758,13 +762,32 @@ export default function AvailabilitySection() {
                   </>
                 ) : (
                   <div style={{
-                    fontSize: '0.9rem',
-                    color: 'var(--muted)',
-                    fontFamily: 'Inter, sans-serif',
-                    fontStyle: 'italic',
-                    marginTop: '0.2rem',
+                    padding: '2.5rem 1.25rem',
+                    textAlign: 'center',
+                    background: 'rgba(123,28,42,0.02)',
+                    borderRadius: '12px',
+                    border: '1px dashed rgba(123,28,42,0.15)',
+                    marginTop: '0.75rem',
                   }}>
-                    Silakan klik salah satu tanggal pada kalender.
+                    <div style={{
+                      fontSize: '1.05rem',
+                      fontWeight: 600,
+                      color: 'var(--maroon)',
+                      fontFamily: 'Inter, sans-serif',
+                      marginBottom: '0.35rem',
+                    }}>
+                      Pilih Tanggal Sesi
+                    </div>
+                    <div style={{
+                      fontSize: '0.82rem',
+                      color: 'var(--muted)',
+                      fontFamily: 'Inter, sans-serif',
+                      lineHeight: 1.5,
+                      maxWidth: '280px',
+                      margin: '0 auto',
+                    }}>
+                      Klik salah satu tanggal berwarna hijau atau kuning pada kalender untuk melihat slot jam yang tersedia.
+                    </div>
                   </div>
                 )}
               </div>
