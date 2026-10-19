@@ -59,10 +59,10 @@ export default function AboutSection() {
               {/* Main Photo 1: Wisuda Candid */}
               <div style={{
                 position: 'relative',
-                aspectRatio: '3/4',
+                aspectRatio: '2/3',
                 borderRadius: '10px',
                 overflow: 'hidden',
-                boxShadow: '0 10px 28px rgba(0,0,0,0.1)',
+                boxShadow: '0 12px 32px rgba(0,0,0,0.12)',
               }}>
                 <Image
                   src="/images/wisuda-5.jpg"
@@ -76,11 +76,11 @@ export default function AboutSection() {
               {/* Main Photo 2: Wedding Elegance */}
               <div style={{
                 position: 'relative',
-                aspectRatio: '3/4',
+                aspectRatio: '2/3',
                 borderRadius: '10px',
                 overflow: 'hidden',
-                marginTop: '2.5rem',
-                boxShadow: '0 10px 28px rgba(0,0,0,0.1)',
+                marginTop: '3.5rem',
+                boxShadow: '0 12px 32px rgba(0,0,0,0.12)',
               }}>
                 <Image
                   src="/images/wedding-4.jpg"
@@ -126,17 +126,18 @@ export default function AboutSection() {
               </div>
             </div>
 
-            {/* Editorial Studio Quote underneath photos */}
+            {/* Editorial Studio Quote + Trust Stat Signals */}
             <div style={{
-              marginTop: '2.5rem',
-              padding: '1.25rem 1.5rem',
-              background: 'rgba(255,255,255,0.7)',
-              borderRadius: '10px',
-              border: '1px solid rgba(123,28,42,0.08)',
+              marginTop: '2.75rem',
+              padding: '1.35rem',
+              background: 'white',
+              borderRadius: '12px',
+              border: '1px solid rgba(123,28,42,0.1)',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
               textAlign: 'center',
             }}>
               <p className="font-display" style={{
-                fontSize: '1.05rem',
+                fontSize: '1rem',
                 fontStyle: 'italic',
                 color: 'var(--charcoal)',
                 lineHeight: 1.5,
@@ -145,15 +146,49 @@ export default function AboutSection() {
                 &ldquo;Setiap momen berharga layak diabadikan dengan kelembutan, rasa nyaman, dan estetika yang abadi.&rdquo;
               </p>
               <div style={{
-                fontSize: '0.72rem',
-                letterSpacing: '0.12em',
+                fontSize: '0.68rem',
+                letterSpacing: '0.14em',
                 textTransform: 'uppercase',
                 color: 'var(--maroon)',
                 fontFamily: 'Inter, sans-serif',
                 fontWeight: 600,
-                marginTop: '0.5rem',
+                margin: '0.4rem 0 1rem',
               }}>
                 Yeka Creative Studio
+              </div>
+
+              {/* 3 Trust Signals */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: '0.5rem',
+                paddingTop: '0.85rem',
+                borderTop: '1px solid rgba(123,28,42,0.08)',
+              }}>
+                <div>
+                  <div className="font-display" style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--maroon)', lineHeight: 1.1 }}>
+                    2.500+
+                  </div>
+                  <div style={{ fontSize: '0.65rem', color: 'var(--muted)', marginTop: '0.2rem', fontFamily: 'Inter, sans-serif' }}>
+                    Klien Wisuda &amp; Wedding
+                  </div>
+                </div>
+                <div>
+                  <div className="font-display" style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--maroon)', lineHeight: 1.1 }}>
+                    100%
+                  </div>
+                  <div style={{ fontSize: '0.65rem', color: 'var(--muted)', marginTop: '0.2rem', fontFamily: 'Inter, sans-serif' }}>
+                    Kru Perempuan
+                  </div>
+                </div>
+                <div>
+                  <div className="font-display" style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--maroon)', lineHeight: 1.1 }}>
+                    7+
+                  </div>
+                  <div style={{ fontSize: '0.65rem', color: 'var(--muted)', marginTop: '0.2rem', fontFamily: 'Inter, sans-serif' }}>
+                    Kampus Jogja &amp; Solo
+                  </div>
+                </div>
               </div>
             </div>
           </div>

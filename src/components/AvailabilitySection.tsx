@@ -369,59 +369,56 @@ export default function AvailabilitySection() {
               style={{
                 background: 'white',
                 border: s.done ? '1.5px solid #16A34A' : s.active ? '1.5px solid var(--maroon)' : '1px solid rgba(123,28,42,0.1)',
-                padding: '0.45rem 0.3rem',
+                padding: '0.65rem 0.85rem',
                 borderRadius: '8px',
                 display: 'flex',
-                flexDirection: 'column',
+                flexDirection: 'row',
                 alignItems: 'center',
-                textAlign: 'center',
-                gap: '0.2rem',
+                justifyContent: 'center',
+                gap: '0.45rem',
                 boxShadow: s.active ? '0 2px 8px rgba(123,28,42,0.06)' : 'none',
               }}
             >
+              <div
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  background: s.done ? '#16A34A' : s.active ? 'var(--maroon)' : 'rgba(123,28,42,0.1)',
+                  color: s.active || s.done ? 'white' : 'var(--muted)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '0.65rem',
+                  fontWeight: 700,
+                  flexShrink: 0,
+                }}
+              >
+                {s.done ? '✓' : i + 1}
+              </div>
+
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.25rem',
-                justifyContent: 'center',
+                gap: '0.35rem',
+                whiteSpace: 'nowrap',
               }}>
-                <div
-                  style={{
-                    width: '18px',
-                    height: '18px',
-                    borderRadius: '50%',
-                    background: s.done ? '#16A34A' : s.active ? 'var(--maroon)' : 'rgba(123,28,42,0.1)',
-                    color: s.active || s.done ? 'white' : 'var(--muted)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.62rem',
-                    fontWeight: 700,
-                    flexShrink: 0,
-                  }}
-                >
-                  {s.done ? '✓' : i + 1}
-                </div>
                 <span style={{
-                  fontSize: '0.68rem',
+                  fontSize: '0.74rem',
                   fontWeight: 700,
                   color: s.done ? '#15803D' : s.active ? 'var(--maroon)' : 'var(--charcoal)',
                   fontFamily: 'Inter, sans-serif',
-                  whiteSpace: 'nowrap',
                 }}>
                   {s.step}
                 </span>
-              </div>
-              <div style={{
-                fontSize: '0.65rem',
-                color: s.done ? '#15803D' : 'var(--muted)',
-                fontFamily: 'Inter, sans-serif',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                maxWidth: '100%',
-              }}>
-                {s.desc}
+                <span style={{
+                  fontSize: '0.72rem',
+                  color: s.done ? '#15803D' : 'var(--muted)',
+                  fontFamily: 'Inter, sans-serif',
+                  fontWeight: 500,
+                }}>
+                  • {s.desc}
+                </span>
               </div>
             </div>
           ))}
