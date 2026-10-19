@@ -292,47 +292,45 @@ export default function AvailabilitySection() {
         <div
           className="reveal-avail"
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-end',
+            textAlign: 'left',
             marginBottom: '2rem',
-            flexWrap: 'wrap',
-            gap: '1rem',
+            maxWidth: '560px',
             opacity: 0,
             transform: 'translateY(24px)',
             transition: 'all 0.7s ease',
           }}
         >
-          <div>
-            <div style={{
-              fontSize: '0.7rem',
-              letterSpacing: '0.18em',
-              textTransform: 'uppercase',
-              color: 'var(--maroon)',
-              fontFamily: 'Inter, sans-serif',
-              fontWeight: 600,
-              marginBottom: '0.4rem',
-            }}>
-              CEK KETERSEDIAAN
-            </div>
-            <h2 className="font-display" style={{
-              fontSize: 'clamp(1.8rem, 4vw, 2.75rem)',
-              fontWeight: 600,
-              color: 'var(--charcoal)',
-              lineHeight: 1.15,
-            }}>
-              Jadwal Sesi Foto
-            </h2>
+          <div style={{
+            display: 'inline-block',
+            background: 'rgba(123,28,42,0.08)',
+            color: 'var(--maroon)',
+            padding: '0.3rem 0.85rem',
+            fontSize: '0.7rem',
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            fontFamily: 'Inter, sans-serif',
+            fontWeight: 600,
+            marginBottom: '0.6rem',
+            borderRadius: '2px',
+          }}>
+            Cek Ketersediaan
           </div>
-
+          <h2 className="font-display" style={{
+            fontSize: 'clamp(1.85rem, 4vw, 2.75rem)',
+            fontWeight: 600,
+            color: 'var(--charcoal)',
+            lineHeight: 1.15,
+            marginBottom: '0.5rem',
+          }}>
+            Jadwal Sesi Foto
+          </h2>
           <p style={{
-            fontSize: '0.85rem',
+            fontSize: '0.9rem',
             color: 'var(--muted)',
-            maxWidth: '360px',
-            lineHeight: 1.55,
+            lineHeight: 1.6,
             fontFamily: 'Inter, sans-serif',
           }}>
-            Klik tanggal untuk melihat slot jam. Jadwal terbatas — segera amankan tanggalmu sebelum terisi.
+            Pilih tanggal di kalender untuk melihat ketersediaan slot jam. Amankan tanggal pilihanmu lebih awal sebelum terisi.
           </p>
         </div>
 
