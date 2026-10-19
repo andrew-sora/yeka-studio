@@ -445,7 +445,7 @@ textarea:focus-visible {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.75rem;
-    align-items: stretch;
+    align-items: start;
   }
 }
 

@@ -449,7 +449,7 @@ export default function AvailabilitySection() {
               boxSizing: 'border-box',
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'space-between',
+              gap: '0.85rem',
             }}
           >
             {/* Header: Month Title with Navigation Arrows & Legend */}
@@ -697,6 +697,22 @@ export default function AvailabilitySection() {
                 );
               })}
             </div>
+
+            {/* Calendar Studio Policy Footer */}
+            <div style={{
+              marginTop: '0.85rem',
+              paddingTop: '0.75rem',
+              borderTop: '1px solid rgba(123,28,42,0.08)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              fontSize: '0.72rem',
+              color: 'var(--muted)',
+              fontFamily: 'Inter, sans-serif',
+            }}>
+              <span>Operasional: 08.00 - 17.00 WIB</span>
+              <span style={{ color: 'var(--maroon)', fontWeight: 600 }}>Studio &amp; Outdoor</span>
+            </div>
           </div>
 
           {/* ── RIGHT COLUMN: Slot Details & Booking Panel ── */}
@@ -712,7 +728,7 @@ export default function AvailabilitySection() {
               boxSizing: 'border-box',
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'space-between',
+              justifyContent: 'flex-start',
             }}
           >
             <div>
@@ -792,7 +808,7 @@ export default function AvailabilitySection() {
                 )}
               </div>
 
-              {/* Time Slot List Rows */}
+              {/* Time Slot List Rows (Clean 2-Column Grid) */}
               {selectedDate && selectedDayData && (
                 <div>
                   <div style={{
@@ -802,7 +818,7 @@ export default function AvailabilitySection() {
                     color: submittedAttempt && !selectedSlot ? '#DC2626' : 'var(--muted)',
                     fontFamily: 'Inter, sans-serif',
                     fontWeight: 600,
-                    marginBottom: '0.75rem',
+                    marginBottom: '0.6rem',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
@@ -816,10 +832,10 @@ export default function AvailabilitySection() {
                   </div>
 
                   <div style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '0.5rem',
-                    marginBottom: '1.25rem',
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(2, 1fr)',
+                    gap: '0.45rem',
+                    marginBottom: '1rem',
                     padding: submittedAttempt && !selectedSlot ? '0.35rem' : '0',
                     borderRadius: '10px',
                     border: submittedAttempt && !selectedSlot ? '1.5px dashed #FCA5A5' : 'none',
@@ -840,7 +856,7 @@ export default function AvailabilitySection() {
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'space-between',
-                            padding: '0.65rem 0.95rem',
+                            padding: '0.55rem 0.65rem',
                             borderRadius: '8px',
                             cursor: isAvailable ? 'pointer' : 'not-allowed',
                             transition: 'all 0.2s ease',
@@ -857,7 +873,7 @@ export default function AvailabilitySection() {
                           }}
                         >
                           <span style={{
-                            fontSize: '0.85rem',
+                            fontSize: '0.78rem',
                             fontFamily: 'Inter, sans-serif',
                             fontWeight: 600,
                             color: isPicked ? 'white' : isAvailable ? 'var(--charcoal)' : 'rgba(44,40,40,0.35)',
@@ -867,13 +883,13 @@ export default function AvailabilitySection() {
                           </span>
 
                           <span style={{
-                            fontSize: '0.68rem',
+                            fontSize: '0.62rem',
                             fontFamily: 'Inter, sans-serif',
                             fontWeight: 700,
-                            letterSpacing: '0.05em',
+                            letterSpacing: '0.04em',
                             color: isPicked ? 'white' : isAvailable ? '#15803D' : '#B91C1C',
                           }}>
-                            {isAvailable ? 'TERSEDIA' : 'TERISI'}
+                            {isAvailable ? 'ADA' : 'PENUH'}
                           </span>
                         </div>
                       );
