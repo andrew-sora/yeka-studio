@@ -34,13 +34,13 @@ export default function AboutSection() {
         padding: 'clamp(2.5rem, 5vw, 4rem) 1.25rem',
       }}
     >
-      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: 'clamp(2rem, 5vw, 3.5rem)',
-          alignItems: 'center',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+          gap: 'clamp(2.5rem, 5vw, 4.5rem)',
+          alignItems: 'start',
         }}>
 
           {/* Left Column: Visual Photo Composition */}
@@ -53,45 +53,45 @@ export default function AboutSection() {
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(2, 1fr)',
-              gap: '12px',
+              gap: '14px',
               position: 'relative',
             }}>
-              {/* Main Photo 1 */}
+              {/* Main Photo 1: Wisuda Candid */}
               <div style={{
                 position: 'relative',
-                aspectRatio: '4/5',
-                borderRadius: '8px',
+                aspectRatio: '3/4',
+                borderRadius: '10px',
                 overflow: 'hidden',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+                boxShadow: '0 10px 28px rgba(0,0,0,0.1)',
               }}>
                 <Image
                   src="/images/wisuda-5.jpg"
-                  alt="Yeka Studio photography session candid"
+                  alt="Yeka Studio photography session candid wisuda"
                   fill
                   style={{ objectFit: 'cover' }}
-                  sizes="(max-width: 768px) 50vw, 25vw"
+                  sizes="(max-width: 768px) 50vw, 30vw"
                 />
               </div>
 
-              {/* Main Photo 2 */}
+              {/* Main Photo 2: Wedding Elegance */}
               <div style={{
                 position: 'relative',
-                aspectRatio: '4/5',
-                borderRadius: '8px',
+                aspectRatio: '3/4',
+                borderRadius: '10px',
                 overflow: 'hidden',
                 marginTop: '2.5rem',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+                boxShadow: '0 10px 28px rgba(0,0,0,0.1)',
               }}>
                 <Image
                   src="/images/wedding-4.jpg"
-                  alt="Female photographer team Yeka Studio"
+                  alt="Female photographer team Yeka Studio wedding bride"
                   fill
                   style={{ objectFit: 'cover' }}
-                  sizes="(max-width: 768px) 50vw, 25vw"
+                  sizes="(max-width: 768px) 50vw, 30vw"
                 />
               </div>
 
-              {/* Floating Badge */}
+              {/* Floating Pill Badge */}
               <div style={{
                 position: 'absolute',
                 bottom: '-1rem',
@@ -100,8 +100,8 @@ export default function AboutSection() {
                 background: 'white',
                 padding: '0.6rem 1.25rem',
                 borderRadius: '100px',
-                boxShadow: '0 8px 24px rgba(123,28,42,0.15)',
-                border: '1px solid rgba(123,28,42,0.15)',
+                boxShadow: '0 8px 24px rgba(123,28,42,0.12)',
+                border: '1px solid rgba(123,28,42,0.12)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.5rem',
@@ -119,9 +119,41 @@ export default function AboutSection() {
                   fontSize: '0.78rem',
                   fontWeight: 600,
                   color: 'var(--maroon)',
+                  letterSpacing: '0.02em',
                 }}>
-                  Female Photographers
+                  Female Photographers • Jogja &amp; Solo
                 </span>
+              </div>
+            </div>
+
+            {/* Editorial Studio Quote underneath photos */}
+            <div style={{
+              marginTop: '2.5rem',
+              padding: '1.25rem 1.5rem',
+              background: 'rgba(255,255,255,0.7)',
+              borderRadius: '10px',
+              border: '1px solid rgba(123,28,42,0.08)',
+              textAlign: 'center',
+            }}>
+              <p className="font-display" style={{
+                fontSize: '1.05rem',
+                fontStyle: 'italic',
+                color: 'var(--charcoal)',
+                lineHeight: 1.5,
+                margin: 0,
+              }}>
+                &ldquo;Setiap momen berharga layak diabadikan dengan kelembutan, rasa nyaman, dan estetika yang abadi.&rdquo;
+              </p>
+              <div style={{
+                fontSize: '0.72rem',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: 'var(--maroon)',
+                fontFamily: 'Inter, sans-serif',
+                fontWeight: 600,
+                marginTop: '0.5rem',
+              }}>
+                Yeka Creative Studio
               </div>
             </div>
           </div>
@@ -195,50 +227,85 @@ export default function AboutSection() {
               Dengan pendekatan yang sabar, hangat, dan komunikatif, sesi photoshoot berlangsung mengalir tanpa rasa canggung, baik saat perayaan kelulusan kampus bersama sahabat maupun momen sakral pernikahan adat.
             </p>
 
-            {/* Core Working Values & Customer Benefits (Symmetrical 2x2 Grid) */}
+            {/* Core Working Values: Clean Editorial Numbered List */}
             <div
               className="reveal-about"
               style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-                gap: '0.85rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1.15rem',
+                paddingTop: '1.5rem',
+                borderTop: '1px solid rgba(123,28,42,0.12)',
                 opacity: 0,
                 transform: 'translateY(24px)',
                 transition: 'all 0.7s ease',
               }}
             >
               {[
-                { title: 'Bebas Canggung', desc: 'Arahan pose natural & nyaman untuk mahasiswi & calon pengantin' },
-                { title: 'Estetika Editorial', desc: 'Tone warna hangat & framing elegan khas film vintage' },
-                { title: 'File Cepat H+1', desc: 'Seluruh file mentah langsung terkirim via Google Drive dalam 24 jam' },
-                { title: 'Konsultasi Konsep', desc: 'Diskusi moodboard, referensi outfit & rundown sebelum hari H' },
-              ].map((val, i) => (
-                <div key={i} style={{
-                  padding: '1.15rem 1rem',
-                  background: 'white',
-                  borderRadius: '10px',
-                  boxShadow: '0 4px 18px rgba(0,0,0,0.04)',
-                  border: '1px solid rgba(123,28,42,0.1)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'flex-start',
-                }}>
-                  <div style={{
-                    fontSize: '0.88rem',
-                    fontWeight: 700,
-                    color: 'var(--maroon)',
-                    fontFamily: 'Inter, sans-serif',
-                    marginBottom: '0.35rem',
-                  }}>
-                    {val.title}
-                  </div>
-                  <div style={{
-                    fontSize: '0.78rem',
-                    color: 'var(--muted)',
-                    fontFamily: 'Inter, sans-serif',
-                    lineHeight: 1.5,
-                  }}>
-                    {val.desc}
+                {
+                  num: '01',
+                  title: 'Bebas Canggung',
+                  desc: 'Arahan pose natural & hangat untuk mahasiswi & calon pengantin agar tenang dan percaya diri.',
+                },
+                {
+                  num: '02',
+                  title: 'Estetika Editorial',
+                  desc: 'Tone warna hangat dengan komposisi framing khas majalah fotografi dan film vintage yang abadi.',
+                },
+                {
+                  num: '03',
+                  title: 'File Cepat H+1',
+                  desc: 'Seluruh file mentah langsung terkirim via Google Drive pribadi dalam 24 jam setelah sesi selesai.',
+                },
+                {
+                  num: '04',
+                  title: 'Konsultasi Konsep',
+                  desc: 'Diskusi moodboard, referensi outfit & jadwal sesi yang dipersiapkan matang sebelum hari H.',
+                },
+              ].map((item, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '1rem',
+                  }}
+                >
+                  <span
+                    className="font-display"
+                    style={{
+                      fontSize: '1.35rem',
+                      fontWeight: 700,
+                      color: 'var(--maroon)',
+                      lineHeight: 1,
+                      minWidth: '28px',
+                      fontStyle: 'italic',
+                    }}
+                  >
+                    {item.num}
+                  </span>
+                  <div>
+                    <div
+                      style={{
+                        fontSize: '0.9rem',
+                        fontWeight: 700,
+                        color: 'var(--charcoal)',
+                        fontFamily: 'Inter, sans-serif',
+                        marginBottom: '0.2rem',
+                      }}
+                    >
+                      {item.title}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: '0.8rem',
+                        color: 'var(--muted)',
+                        fontFamily: 'Inter, sans-serif',
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {item.desc}
+                    </div>
                   </div>
                 </div>
               ))}
