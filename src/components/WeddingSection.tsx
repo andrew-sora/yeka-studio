@@ -326,7 +326,7 @@ function formatRupiah(input: string): string {
               gap: '0.4rem',
             }}>
               <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#C9A94B' }} />
-              Geser Galeri Portofolio &rarr;
+              Portofolio Wedding &amp; Prewedding
             </div>
 
             {/* Navigation Buttons with 44px touch target */}
@@ -732,7 +732,7 @@ function formatRupiah(input: string): string {
                     }
                   }}
                 >
-                  Pilih Paket ini &rarr;
+                  Pilih Paket Ini
                 </a>
               </div>
             ))}

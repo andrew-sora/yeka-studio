@@ -192,7 +192,7 @@ export default function AboutSection() {
                 transition: 'all 0.7s ease',
               }}
             >
-              Dengan pendekatan yang sabar, hangat, dan komunikatif, sesi photoshoot berlangsung mengalir tanpa rasa canggung &mdash; baik saat perayaan kelulusan kampus bersama sahabat maupun momen sakral pernikahan adat.
+              Dengan pendekatan yang sabar, hangat, dan komunikatif, sesi photoshoot berlangsung mengalir tanpa rasa canggung, baik saat perayaan kelulusan kampus bersama sahabat maupun momen sakral pernikahan adat.
             </p>
 
             {/* Core Working Values & Customer Benefits */}

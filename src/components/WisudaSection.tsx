@@ -323,7 +323,7 @@ function formatRupiah(input: string): string {
               gap: '0.4rem',
             }}>
               <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--maroon)' }} />
-              Geser Galeri Portofolio &rarr;
+              Portofolio Foto Wisuda
             </div>
 
           {/* Navigation Buttons */}
@@ -726,7 +726,7 @@ function formatRupiah(input: string): string {
                     }
                   }}
                 >
-                  Pilih Paket ini &rarr;
+                  Pilih Paket Ini
                 </a>
               </div>
             ))}
@@ -802,7 +802,7 @@ function formatRupiah(input: string): string {
             color: 'var(--muted)',
             fontFamily: 'Inter, sans-serif',
           }}>
-            Pilih tanggal &amp; jam — langsung terhubung ke WhatsApp kami
+            Pilih tanggal &amp; jam, langsung terhubung ke WhatsApp kami
           </p>
         </div>
       </div>

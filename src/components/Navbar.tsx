@@ -273,7 +273,7 @@ export default function Navbar() {
               justifyContent: 'center',
             }}
           >
-            Cek Slot Jadwal &amp; Booking &rarr;
+            Cek Slot Jadwal &amp; Booking
           </a>
         </div>
       )}

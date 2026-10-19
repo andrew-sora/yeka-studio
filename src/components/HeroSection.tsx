@@ -271,7 +271,7 @@ export default function HeroSection() {
                 (e.currentTarget as HTMLElement).style.borderColor = 'rgba(212,175,55,0.5)';
               }}
             >
-              Lihat Paket Wisuda &rarr;
+              Lihat Paket Wisuda
             </a>
 
             <a
