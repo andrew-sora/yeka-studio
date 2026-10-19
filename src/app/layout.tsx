@@ -15,12 +15,31 @@ export const metadata: Metadata = {
     "female photographer Yogyakarta",
     "Yeka Creative Studio",
   ],
+  metadataBase: new URL("https://yeka-studio.pages.dev"),
   openGraph: {
     title: "Yeka Creative Studio — Female Photographer Jogja & Solo",
     description:
-      "Spesialis foto wisuda, wedding & prewedding di Yogyakarta & Solo. 2.500+ momen terabadikan. Female photographer profesional.",
+      "Spesialis foto wisuda, wedding & prewedding di Yogyakarta & Solo. Cek live schedule slot kosong & katalog pricelist transparan.",
+    url: "https://yeka-studio.pages.dev",
+    siteName: "Yeka Creative Studio",
+    images: [
+      {
+        url: "/images/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Yeka Creative Studio - Female Photographer Jogja & Solo",
+        type: "image/jpeg",
+      },
+    ],
     type: "website",
     locale: "id_ID",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Yeka Creative Studio — Female Photographer Jogja & Solo",
+    description:
+      "Spesialis foto wisuda, wedding & prewedding di Yogyakarta & Solo. Cek live schedule slot kosong & katalog pricelist transparan.",
+    images: ["/images/og-image.jpg"],
   },
 };
 
