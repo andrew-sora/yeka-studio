@@ -229,7 +229,7 @@ export default function HeroSection() {
               color: 'rgba(255,255,255,0.92)',
               lineHeight: 1.3,
             }}>
-              <strong>2.500+ Momen Terabadikan</strong> <span style={{ color: 'rgba(255,255,255,0.6)' }}>• Jogja &amp; Solo</span>
+              <strong>4.9/5 Rating Kepuasan</strong> <span style={{ color: 'rgba(255,255,255,0.6)' }}>• Jogja &amp; Solo</span>
             </div>
           </div>
 

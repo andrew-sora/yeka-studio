@@ -98,7 +98,7 @@ export default function TrustBar() {
             }}
           >
             {[
-              { value: '2.500+', label: 'Foto Delivered' },
+              { value: 'H+1', label: 'Drive Delivery' },
               { value: '8+', label: 'Kampus Jogja-Solo' },
               { value: '100%', label: 'Female Team' },
             ].map((stat, i) => (
