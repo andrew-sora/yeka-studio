@@ -411,12 +411,15 @@ export default function AvailabilitySection() {
                 }}>
                   {s.step}
                 </span>
-                <span style={{
-                  fontSize: '0.72rem',
-                  color: s.done ? '#15803D' : 'var(--muted)',
-                  fontFamily: 'Inter, sans-serif',
-                  fontWeight: 500,
-                }}>
+                <span
+                  className="avail-stepper-desc"
+                  style={{
+                    fontSize: '0.72rem',
+                    color: s.done ? '#15803D' : 'var(--muted)',
+                    fontFamily: 'Inter, sans-serif',
+                    fontWeight: 500,
+                  }}
+                >
                   • {s.desc}
                 </span>
               </div>
