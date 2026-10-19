@@ -69,29 +69,41 @@ export default function HeroSection() {
     <section
       id="hero"
       style={{
-        minHeight: 'clamp(520px, 85vh, 780px)',
+        minHeight: 'clamp(580px, 90vh, 820px)',
         background: 'linear-gradient(135deg, #120305 0%, #29080F 35%, #4C101B 70%, #7B1C2A 100%)',
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
-        padding: 'clamp(2.5rem, 4vw, 4.5rem) 1rem clamp(2rem, 3.5vw, 3.5rem)',
+        padding: 'clamp(5.5rem, 9vw, 7.5rem) 1.25rem clamp(2.5rem, 4.5vw, 4rem)',
         overflow: 'hidden',
       }}
     >
-      {/* Background Ambient Vignette */}
+      {/* Background Ambient Vignette with Crossfade */}
       <div style={{
         position: 'absolute',
         inset: 0,
         opacity: 0.18,
-        transition: 'all 1s ease',
+        transition: 'all 0.8s ease',
       }}>
-        <Image
-          src={activeItem.mainPhoto}
-          alt="Hero ambient background"
-          fill
-          priority
-          style={{ objectFit: 'cover', filter: 'blur(16px) scale(1.1)' }}
-        />
+        {HERO_SHOWCASE.map((item, idx) => (
+          <div
+            key={item.id}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              opacity: activeTab === idx ? 1 : 0,
+              transition: 'opacity 0.8s ease-in-out',
+            }}
+          >
+            <Image
+              src={item.mainPhoto}
+              alt="Hero ambient background"
+              fill
+              priority={idx === 0}
+              style={{ objectFit: 'cover', filter: 'blur(16px) scale(1.1)' }}
+            />
+          </div>
+        ))}
       </div>
 
       {/* Vignette Overlays */}
@@ -117,64 +129,62 @@ export default function HeroSection() {
 
       <div
         ref={headlineRef}
+        className="hero-layout-grid"
         style={{
           position: 'relative',
           zIndex: 10,
-          maxWidth: '1080px',
+          maxWidth: '1120px',
           width: '100%',
           margin: '0 auto',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
-          gap: 'clamp(1.25rem, 3.5vw, 3rem)',
-          alignItems: 'center',
           overflowWrap: 'break-word',
           wordBreak: 'break-word',
         }}
       >
-        {/* ── LEFT COLUMN: Magazine Split Typography & Script Accent ── */}
+        {/* ── LEFT COLUMN: Editorial Value Proposition ── */}
         <div style={{ textAlign: 'left', maxWidth: '100%' }}>
 
-          {/* Brand Header */}
-          <div className="animate-on-enter opacity-0-init" style={{ marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+          {/* Brand Eyebrow Tag */}
+          <div className="animate-on-enter opacity-0-init" style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
             <span style={{
-              fontSize: '0.68rem',
-              letterSpacing: '0.18em',
-              color: '#C9A94B',
+              fontSize: '0.72rem',
+              letterSpacing: '0.2em',
+              color: '#D4AF37',
               textTransform: 'uppercase',
               fontFamily: 'Inter, sans-serif',
-              fontWeight: 600,
+              fontWeight: 700,
             }}>
               YEKA CREATIVE STUDIO
             </span>
-            <span style={{ height: '1px', width: '20px', background: 'rgba(201,169,75,0.4)' }} />
+            <span style={{ height: '1px', width: '24px', background: 'rgba(212,175,55,0.45)' }} />
             <span style={{
-              fontSize: '0.64rem',
-              color: 'rgba(201, 169, 75, 0.9)',
-              background: 'rgba(201, 169, 75, 0.1)',
-              border: '1px solid rgba(201, 169, 75, 0.3)',
-              padding: '0.18rem 0.5rem',
-              borderRadius: '2px',
+              fontSize: '0.68rem',
+              color: '#F5EBE0',
+              background: 'rgba(212, 175, 55, 0.12)',
+              border: '1px solid rgba(212, 175, 55, 0.35)',
+              padding: '0.22rem 0.65rem',
+              borderRadius: '3px',
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
               fontFamily: 'Inter, sans-serif',
+              fontWeight: 600,
             }}>
               Female Photographer Team
             </span>
           </div>
 
-          {/* Main Headline with High-Impact Value Proposition */}
+          {/* Main Headline with High-Impact Typography */}
           <h1 className="animate-on-enter opacity-0-init font-display" style={{
-            fontSize: 'clamp(1.6rem, 4.2vw, 3.4rem)',
+            fontSize: 'clamp(2.1rem, 5vw, 3.6rem)',
             fontWeight: 600,
-            color: 'white',
-            lineHeight: 1.18,
-            marginBottom: '0.75rem',
+            color: '#FFFDF9',
+            lineHeight: 1.15,
+            marginBottom: '1rem',
             letterSpacing: '-0.01em',
             wordBreak: 'break-word',
           }}>
             Abadikan Momen<br />
             <span style={{
-              color: '#C9A94B',
+              color: '#D4AF37',
               fontFamily: 'Cormorant Garamond, serif',
               fontStyle: 'italic',
               fontSize: '1.08em',
@@ -185,103 +195,118 @@ export default function HeroSection() {
             </span>
           </h1>
 
-          {/* Explicit 3-Second Value Proposition Subtitle */}
+          {/* Clear Value Proposition Subtitle */}
           <p className="animate-on-enter opacity-0-init" style={{
             fontFamily: 'Inter, sans-serif',
-            fontSize: 'clamp(0.85rem, 1.4vw, 1.05rem)',
-            color: 'rgba(255, 255, 255, 0.88)',
-            lineHeight: 1.55,
-            marginBottom: '1rem',
-            maxWidth: '480px',
+            fontSize: 'clamp(0.92rem, 1.5vw, 1.08rem)',
+            color: '#F5EBE0',
+            lineHeight: 1.65,
+            marginBottom: '1.5rem',
+            maxWidth: '520px',
           }}>
-            Jasa foto <strong>Wedding, Prewedding &amp; Wisuda</strong> di Jogja &amp; Solo dengan sentuhan warm, natural &amp; personal dari perspektif tim fotografer wanita.
+            Jasa foto <strong>Wedding, Prewedding &amp; Wisuda</strong> di Yogyakarta &amp; Solo. Sentuhan natural, hangat, dan personal dari perspektif tim fotografer wanita untuk kenyamanan penuh Anda.
           </p>
 
           {/* Trust Metric Badge */}
           <div className="animate-on-enter opacity-0-init" style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '0.65rem',
-            marginBottom: '1.25rem',
-            padding: '0.4rem 0.85rem',
-            background: 'rgba(255, 255, 255, 0.04)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: '6px',
+            gap: '0.75rem',
+            marginBottom: '1.75rem',
+            padding: '0.5rem 1rem',
+            background: 'rgba(255, 255, 255, 0.05)',
+            border: '1px solid rgba(212, 175, 55, 0.25)',
+            borderRadius: '8px',
             maxWidth: 'fit-content',
-            backdropFilter: 'blur(8px)',
+            backdropFilter: 'blur(10px)',
           }}>
-            <div style={{ display: 'flex', color: '#F59E0B', fontSize: '0.75rem', gap: '2px' }}>
+            <div style={{ display: 'flex', color: '#F59E0B', fontSize: '0.82rem', gap: '2px' }}>
               ★★★★★
             </div>
             <div style={{
               fontFamily: 'Inter, sans-serif',
-              fontSize: '0.72rem',
-              color: 'rgba(255,255,255,0.85)',
+              fontSize: '0.78rem',
+              color: 'rgba(255,255,255,0.92)',
               lineHeight: 1.3,
             }}>
-              <strong>2.500+ Momen Terabadikan</strong> <span style={{ color: 'rgba(255,255,255,0.5)' }}>• Jogja &amp; Solo</span>
+              <strong>2.500+ Momen Terabadikan</strong> <span style={{ color: 'rgba(255,255,255,0.6)' }}>• Jogja &amp; Solo</span>
             </div>
           </div>
 
-          {/* Clean Dual CTAs */}
-          <div className="animate-on-enter opacity-0-init" style={{
-            display: 'flex',
-            gap: '0.65rem',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-          }}>
+          {/* Dual Action CTAs with Accessible Touch Targets (Mobile-first responsive group) */}
+          <div className="animate-on-enter opacity-0-init hero-cta-group">
             <a
               href="#wisuda"
               id="cta-wisuda-hero"
+              className="hero-cta-btn"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('wisuda')?.scrollIntoView({ behavior: 'smooth' });
+              }}
               style={{
-                background: 'linear-gradient(135deg, #7B1C2A 0%, #4C101B 100%)',
+                background: 'linear-gradient(135deg, #7B1C2A 0%, #5A1320 100%)',
                 color: 'white',
-                border: '1px solid rgba(201,169,75,0.4)',
-                padding: '0.7rem 1.35rem',
+                border: '1px solid rgba(212,175,55,0.5)',
+                padding: '0.85rem 1.6rem',
+                minHeight: '48px',
                 borderRadius: '8px',
                 fontFamily: 'Inter, sans-serif',
-                fontSize: '0.82rem',
+                fontSize: '0.86rem',
                 fontWeight: 600,
                 letterSpacing: '0.04em',
                 textDecoration: 'none',
-                boxShadow: '0 6px 20px rgba(123, 28, 42, 0.4), inset 0 1px 0 rgba(255,255,255,0.15)',
-                transition: 'all 0.3s ease',
+                boxShadow: '0 8px 24px rgba(123, 28, 42, 0.45)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.4rem',
+                transition: 'all 0.25s ease',
               }}
               onMouseEnter={e => {
                 (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
-                (e.currentTarget as HTMLElement).style.borderColor = '#C9A94B';
+                (e.currentTarget as HTMLElement).style.borderColor = '#D4AF37';
               }}
               onMouseLeave={e => {
                 (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-                (e.currentTarget as HTMLElement).style.borderColor = 'rgba(201,169,75,0.4)';
+                (e.currentTarget as HTMLElement).style.borderColor = 'rgba(212,175,55,0.5)';
               }}
             >
-              Lihat Paket Wisuda
+              Lihat Paket Wisuda &rarr;
             </a>
+
             <a
               href="#wedding"
               id="cta-wedding-hero"
+              className="hero-cta-btn"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('wedding')?.scrollIntoView({ behavior: 'smooth' });
+              }}
               style={{
-                background: 'rgba(255,255,255,0.06)',
-                color: 'rgba(255,255,255,0.9)',
-                border: '1px solid rgba(255,255,255,0.2)',
-                padding: '0.7rem 1.35rem',
+                background: 'rgba(255,255,255,0.08)',
+                color: '#FFFDF9',
+                border: '1px solid rgba(255,255,255,0.25)',
+                padding: '0.85rem 1.6rem',
+                minHeight: '48px',
                 borderRadius: '8px',
                 fontFamily: 'Inter, sans-serif',
-                fontSize: '0.82rem',
+                fontSize: '0.86rem',
                 fontWeight: 500,
                 letterSpacing: '0.02em',
                 textDecoration: 'none',
                 backdropFilter: 'blur(8px)',
-                transition: 'all 0.3s ease',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.25s ease',
               }}
               onMouseEnter={e => {
-                (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.12)';
-                (e.currentTarget as HTMLElement).style.borderColor = 'rgba(201,169,75,0.4)';
+                (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.15)';
+                (e.currentTarget as HTMLElement).style.borderColor = '#D4AF37';
               }}
               onMouseLeave={e => {
-                (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)';
-                (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.2)';
+                (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.08)';
+                (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.25)';
               }}
             >
               Wedding &amp; Prewedding
@@ -290,12 +315,12 @@ export default function HeroSection() {
 
         </div>
 
-        {/* ── RIGHT COLUMN: Editorial Photo Frame Collage ── */}
+        {/* ── RIGHT COLUMN: Editorial Photo Frame Collage (No Blank Frames) ── */}
         <div className="animate-on-enter opacity-0-init" style={{ position: 'relative' }}>
 
           <div style={{
             position: 'relative',
-            maxWidth: '100%',
+            maxWidth: '460px',
             width: '100%',
             margin: '0 auto',
             paddingBottom: '0.5rem',
@@ -304,30 +329,45 @@ export default function HeroSection() {
             {/* Main Editorial Frame Photo */}
             <div style={{
               position: 'relative',
-              width: '80%',
+              width: '82%',
               aspectRatio: '3/4',
-              borderRadius: '14px',
+              borderRadius: '16px',
               overflow: 'hidden',
-              boxShadow: '0 20px 50px rgba(0,0,0,0.6)',
-              border: '1px solid rgba(201, 169, 75, 0.3)',
-              background: '#120305',
+              boxShadow: '0 24px 60px rgba(0,0,0,0.65)',
+              border: '1.5px solid rgba(212, 175, 55, 0.4)',
+              background: '#1A0508',
             }}>
-              <Image
-                key={activeItem.mainPhoto}
-                src={activeItem.mainPhoto}
-                alt={activeItem.title}
-                fill
-                priority
-                style={{
-                  objectFit: 'cover',
-                  animation: 'fadeIn 0.6s ease',
-                }}
-                sizes="(max-width: 768px) 80vw, 40vw"
-              />
+              {HERO_SHOWCASE.map((item, idx) => (
+                <div
+                  key={`main-${item.id}`}
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    opacity: activeTab === idx ? 1 : 0,
+                    transition: 'opacity 0.6s ease-in-out',
+                    zIndex: activeTab === idx ? 2 : 1,
+                  }}
+                >
+                  <Image
+                    src={item.mainPhoto}
+                    alt={item.title}
+                    fill
+                    priority={idx === 0}
+                    style={{
+                      objectFit: 'cover',
+                      objectPosition: 'center 20%',
+                    }}
+                    sizes="(max-width: 768px) 80vw, 40vw"
+                  />
+                </div>
+              ))}
+
               <div style={{
                 position: 'absolute',
                 inset: 0,
-                background: 'linear-gradient(to top, rgba(18,3,5,0.7) 0%, transparent 60%)',
+                background: 'linear-gradient(to top, rgba(18,3,5,0.75) 0%, transparent 60%)',
+                zIndex: 3,
+                pointerEvents: 'none',
               }} />
 
               {/* Glassmorphism Title Tag */}
@@ -336,29 +376,30 @@ export default function HeroSection() {
                 bottom: '1rem',
                 left: '1rem',
                 right: '1rem',
-                background: 'rgba(26, 5, 8, 0.85)',
-                backdropFilter: 'blur(12px)',
-                border: '1px solid rgba(201, 169, 75, 0.3)',
-                borderRadius: '8px',
+                background: 'rgba(26, 5, 8, 0.88)',
+                backdropFilter: 'blur(14px)',
+                border: '1px solid rgba(212, 175, 55, 0.35)',
+                borderRadius: '10px',
                 padding: '0.75rem 1rem',
+                zIndex: 4,
               }}>
                 <div style={{
-                  fontSize: '0.62rem',
-                  color: '#C9A94B',
-                  letterSpacing: '0.12em',
+                  fontSize: '0.64rem',
+                  color: '#D4AF37',
+                  letterSpacing: '0.14em',
                   textTransform: 'uppercase',
                   fontFamily: 'Inter, sans-serif',
-                  fontWeight: 600,
+                  fontWeight: 700,
                 }}>
                   {activeItem.badge}
                 </div>
                 <div style={{
                   fontFamily: 'Cormorant Garamond, serif',
-                  fontSize: '1.15rem',
+                  fontSize: '1.2rem',
                   fontWeight: 600,
-                  color: 'white',
+                  color: '#FFFDF9',
                   lineHeight: 1.2,
-                  marginTop: '1px',
+                  marginTop: '2px',
                 }}>
                   {activeItem.title}
                 </div>
@@ -369,53 +410,69 @@ export default function HeroSection() {
             <div style={{
               position: 'absolute',
               right: '0',
-              bottom: '2rem',
-              width: '48%',
+              bottom: '1.5rem',
+              width: '46%',
               aspectRatio: '1/1',
-              borderRadius: '12px',
+              borderRadius: '14px',
               overflow: 'hidden',
-              boxShadow: '0 16px 40px rgba(0,0,0,0.7)',
-              border: '2px solid rgba(201, 169, 75, 0.35)',
+              boxShadow: '0 18px 45px rgba(0,0,0,0.75)',
+              border: '2px solid rgba(212, 175, 55, 0.45)',
               background: '#1a0508',
+              zIndex: 5,
             }}>
-              <Image
-                key={activeItem.subPhoto}
-                src={activeItem.subPhoto}
-                alt="Editorial session detail"
-                fill
-                style={{
-                  objectFit: 'cover',
-                  animation: 'fadeIn 0.6s ease',
-                }}
-                sizes="(max-width: 768px) 50vw, 25vw"
-              />
+              {HERO_SHOWCASE.map((item, idx) => (
+                <div
+                  key={`sub-${item.id}`}
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    opacity: activeTab === idx ? 1 : 0,
+                    transition: 'opacity 0.6s ease-in-out',
+                  }}
+                >
+                  <Image
+                    src={item.subPhoto}
+                    alt="Editorial session detail"
+                    fill
+                    priority={idx === 0}
+                    style={{
+                      objectFit: 'cover',
+                      objectPosition: 'center 20%',
+                    }}
+                    sizes="(max-width: 768px) 45vw, 22vw"
+                  />
+                </div>
+              ))}
               <div style={{
                 position: 'absolute',
                 inset: 0,
                 background: 'linear-gradient(to top, rgba(18,3,5,0.5) 0%, transparent 60%)',
+                pointerEvents: 'none',
               }} />
             </div>
 
-            {/* Slide Navigation Dots */}
+            {/* Slide Navigation Dots with Accessible Targets */}
             <div style={{
               display: 'flex',
               justifyContent: 'center',
-              gap: '0.4rem',
-              marginTop: '1.25rem',
+              alignItems: 'center',
+              gap: '0.5rem',
+              marginTop: '1.5rem',
             }}>
-              {HERO_SHOWCASE.map((_, idx) => (
+              {HERO_SHOWCASE.map((item, idx) => (
                 <button
                   key={idx}
                   onClick={() => setActiveTab(idx)}
-                  aria-label={`Show slide ${idx + 1}`}
+                  aria-label={`Tampilkan showcase ${item.category}`}
                   style={{
-                    width: activeTab === idx ? '24px' : '8px',
-                    height: '8px',
+                    width: activeTab === idx ? '28px' : '10px',
+                    height: '10px',
                     borderRadius: '100px',
-                    background: activeTab === idx ? '#C9A94B' : 'rgba(255,255,255,0.25)',
+                    background: activeTab === idx ? '#D4AF37' : 'rgba(255,255,255,0.3)',
                     border: 'none',
                     cursor: 'pointer',
                     transition: 'all 0.3s ease',
+                    padding: 0,
                   }}
                 />
               ))}

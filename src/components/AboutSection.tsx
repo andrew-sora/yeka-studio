@@ -167,25 +167,41 @@ export default function AboutSection() {
             <p
               className="reveal-about"
               style={{
-                fontSize: 'clamp(0.875rem, 1.2vw, 0.95rem)',
-                color: 'var(--muted)',
-                lineHeight: 1.65,
+                fontSize: 'clamp(0.92rem, 1.3vw, 1.02rem)',
+                color: 'var(--charcoal)',
+                lineHeight: 1.7,
                 fontFamily: 'Inter, sans-serif',
-                marginBottom: '1.5rem',
+                marginBottom: '1rem',
                 opacity: 0,
                 transform: 'translateY(24px)',
                 transition: 'all 0.7s ease',
               }}
             >
-              Yeka Creative Studio dikelola oleh dua fotografer perempuan berbasis di Yogyakarta &amp; Solo. Kami percaya foto terbaik lahir dari rasa nyaman — siap mengabadikan setiap ekspresi candid wisuda hingga kehangatan momen pernikahan Anda secara personal dan autentik.
+              Yeka Creative Studio didirikan dan dikelola oleh <strong>dua fotografer perempuan</strong> berbasis di Yogyakarta &amp; Solo. Kami percaya bahwa hasil foto yang magis lahir dari rasa nyaman klien di depan kamera.
             </p>
 
-            {/* Values */}
+            <p
+              className="reveal-about"
+              style={{
+                fontSize: 'clamp(0.88rem, 1.2vw, 0.96rem)',
+                color: 'var(--muted)',
+                lineHeight: 1.65,
+                fontFamily: 'Inter, sans-serif',
+                marginBottom: '1.75rem',
+                opacity: 0,
+                transform: 'translateY(24px)',
+                transition: 'all 0.7s ease',
+              }}
+            >
+              Dengan pendekatan yang sabar, hangat, dan komunikatif, sesi photoshoot berlangsung mengalir tanpa rasa canggung &mdash; baik saat perayaan kelulusan kampus bersama sahabat maupun momen sakral pernikahan adat.
+            </p>
+
+            {/* Core Working Values & Customer Benefits */}
             <div
               className="reveal-about"
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
                 gap: '1rem',
                 opacity: 0,
                 transform: 'translateY(24px)',
@@ -193,28 +209,28 @@ export default function AboutSection() {
               }}
             >
               {[
-                { title: 'Natural & Authentic', desc: 'Foto yang terasa hangat & nyata' },
-                { title: 'Detail-Oriented', desc: 'Framing & penataan pose cermat' },
-                { title: 'Fast & Friendly', desc: 'Konsultasi gratis via WA' },
+                { title: 'Bebas Canggung', desc: 'Arahan pose natural & nyaman untuk mahasiswi & calon pengantin' },
+                { title: 'Estetika Editorial', desc: 'Tone warna hangat & framing elegan khas film vintage' },
+                { title: 'File Cepat H+1', desc: 'Seluruh file mentah langsung terkirim via Google Drive dalam 24 jam' },
               ].map((val, i) => (
                 <div key={i} style={{
                   padding: '1.25rem 1rem',
                   background: 'white',
-                  borderRadius: '6px',
-                  boxShadow: '0 2px 16px rgba(0,0,0,0.05)',
-                  border: '1px solid rgba(123,28,42,0.06)',
+                  borderRadius: '10px',
+                  boxShadow: '0 4px 18px rgba(0,0,0,0.04)',
+                  border: '1px solid rgba(123,28,42,0.1)',
                 }}>
                   <div style={{
-                    fontSize: '0.82rem',
-                    fontWeight: 600,
-                    color: 'var(--charcoal)',
+                    fontSize: '0.88rem',
+                    fontWeight: 700,
+                    color: 'var(--maroon)',
                     fontFamily: 'Inter, sans-serif',
-                    marginBottom: '0.25rem',
+                    marginBottom: '0.35rem',
                   }}>
                     {val.title}
                   </div>
                   <div style={{
-                    fontSize: '0.75rem',
+                    fontSize: '0.78rem',
                     color: 'var(--muted)',
                     fontFamily: 'Inter, sans-serif',
                     lineHeight: 1.5,

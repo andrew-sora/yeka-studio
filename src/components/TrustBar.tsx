@@ -47,20 +47,20 @@ export default function TrustBar() {
         }}>
 
           {/* Client Photo Avatar Stack */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               {CLIENT_AVATARS.map((src, i) => (
                 <div
                   key={i}
                   style={{
-                    width: '42px',
-                    height: '42px',
+                    width: '40px',
+                    height: '40px',
                     borderRadius: '50%',
                     overflow: 'hidden',
                     position: 'relative',
-                    border: '2px solid #C9A94B',
-                    marginLeft: i === 0 ? 0 : '-12px',
-                    boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+                    border: '2px solid #D4AF37',
+                    marginLeft: i === 0 ? 0 : '-10px',
+                    boxShadow: '0 4px 10px rgba(0,0,0,0.35)',
                   }}
                 >
                   <Image src={src} alt="Klien Yeka Studio" fill style={{ objectFit: 'cover' }} sizes="80px" />
@@ -68,54 +68,60 @@ export default function TrustBar() {
               ))}
             </div>
             <div>
-              <div style={{ display: 'flex', color: '#F59E0B', fontSize: '0.85rem', gap: '2px' }}>
+              <div style={{ display: 'flex', color: '#F59E0B', fontSize: '0.82rem', gap: '2px' }}>
                 ★★★★★
               </div>
               <div style={{
                 fontFamily: 'Inter, sans-serif',
-                fontSize: '0.8rem',
-                color: 'white',
+                fontSize: '0.84rem',
+                color: '#FFFDF9',
                 fontWeight: 600,
-                marginTop: '2px',
+                marginTop: '1px',
               }}>
-                500+ Momen Terabadikan
+                2.500+ Momen Terabadikan
               </div>
-              <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.6)', fontFamily: 'Inter, sans-serif' }}>
-                Dipercaya Mahasiswa & Pasangan Jogja-Solo
+              <div style={{ fontSize: '0.72rem', color: '#F5EBE0', fontFamily: 'Inter, sans-serif' }}>
+                Dipercaya Mahasiswa &amp; Pasangan Jogja-Solo
               </div>
             </div>
           </div>
 
-          {/* Key Stats Row */}
-          <div style={{
-            display: 'flex',
-            gap: 'clamp(1.5rem, 4vw, 3.5rem)',
-            alignItems: 'center',
-          }}>
+          {/* Key Stats Row with Grid on Mobile */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: 'clamp(0.75rem, 3vw, 2.5rem)',
+              alignItems: 'center',
+              width: '100%',
+              maxWidth: '520px',
+            }}
+          >
             {[
               { value: '2.500+', label: 'Foto Delivered' },
-              { value: '8+', label: 'Area Kampus Terjangkau' },
-              { value: '100%', label: 'Tim Female Photographer' },
+              { value: '8+', label: 'Kampus Jogja-Solo' },
+              { value: '100%', label: 'Female Team' },
             ].map((stat, i) => (
               <div key={i} style={{ textAlign: 'center' }}>
                 <div
                   className="font-display"
                   style={{
-                    fontSize: 'clamp(1.4rem, 3vw, 2.1rem)',
+                    fontSize: 'clamp(1.3rem, 2.8vw, 1.9rem)',
                     fontWeight: 700,
-                    color: '#C9A94B',
-                    lineHeight: 1.1,
-                    marginBottom: '0.2rem',
+                    color: '#D4AF37',
+                    lineHeight: 1.15,
+                    marginBottom: '0.15rem',
                   }}
                 >
                   {stat.value}
                 </div>
                 <div style={{
                   fontSize: '0.68rem',
-                  color: 'rgba(255,255,255,0.75)',
-                  letterSpacing: '0.06em',
+                  color: 'rgba(255,255,255,0.85)',
+                  letterSpacing: '0.04em',
                   textTransform: 'uppercase',
                   fontFamily: 'Inter, sans-serif',
+                  lineHeight: 1.25,
                 }}>
                   {stat.label}
                 </div>

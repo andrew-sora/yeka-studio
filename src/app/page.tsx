@@ -1,3 +1,4 @@
+import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import TrustBar from '@/components/TrustBar';
 import WisudaSection from '@/components/WisudaSection';
@@ -13,6 +14,7 @@ import StickyMobileCTA from '@/components/StickyMobileCTA';
 export default function Home() {
   return (
     <main>
+      <Navbar />
       <HeroSection />
       <TrustBar />
       <WisudaSection />

@@ -4,23 +4,31 @@ import { useState, useRef, useEffect } from 'react';
 const FAQS = [
   {
     q: 'Berapa lama proses pengiriman file foto?',
-    a: 'Seluruh file foto mentah (all unedited photos) akan kami kirimkan via Google Drive dalam waktu 24 jam (H+1). Untuk foto pilihan yang di-retouch & color grading estetik, proses pengerjaan berkisar 3-5 hari kerja.',
+    a: 'Seluruh file foto mentah (all unedited photos) akan kami kirimkan via Google Drive dalam waktu 24 jam (H+1). Untuk foto pilihan yang di-retouch & color grading estetik, proses pengerjaan berkisar 3–5 hari kerja.',
   },
   {
-    q: 'Apakah harga paket sudah nett & include semua file?',
-    a: 'Ya, benar! Semua harga paket yang tertera di website sudah transparan, nett, dan sudah mencakup seluruh file hasil sesi foto Anda tanpa ada biaya tersembunyi.',
+    q: 'Bagaimana sistem pembayaran dan DP untuk mengunci jadwal?',
+    a: 'Untuk mengunci tanggal dan slot jam di kalender, cukup melakukan DP (Down Payment) sebesar 30% via transfer bank. Pelunasan sisa pembayaran dilakukan secara fleksibel pada hari photoshoot setelah sesi selesai.',
+  },
+  {
+    q: 'Apakah bisa melakukan rescheduling jika ada perubahan jadwal mendadak?',
+    a: 'Bisa! Rescheduling dapat diajukan maksimal H-3 sebelum sesi foto tanpa biaya penalti tambahan, disesuaikan dengan ketersediaan slot tanggal & jam di kalender Yeka Studio yang masih kosong.',
+  },
+  {
+    q: 'Bagaimana jika saat hari-H cuaca hujan lebat untuk sesi outdoor wisuda?',
+    a: 'Tim fotografer kami sangat adaptif. Jika terjadi hujan deras, kita bisa memindahkan sesi ke spot indoor/semi-outdoor estetik di lingkungan kampus (hall, koridor pilar, atau cafe terdekat), atau menyesuaikan jam photoshoot setelah hujan reda.',
   },
   {
     q: 'Mengapa memilih tim Female Photographer Yeka Studio?',
-    a: 'Tim fotografer perempuan kami mengerti betul sudut pose terbaik wanita & pasangan. Suasana photoshoot dijamin super rileks, santai, ramah, dan ramah untuk calon wisudawati/pengantin yang hijab maupun yang pemalu di depan kamera.',
+    a: 'Tim fotografer perempuan kami mengerti betul sudut pose terbaik wanita & pasangan. Suasana photoshoot dijamin super rileks, santai, ramah, dan sangat nyaman bagi mahasiswi berhijab maupun yang sering canggung di depan kamera.',
   },
   {
-    q: 'Bagaimana cara booking dan mengunci tanggal sesi foto?',
-    a: 'Sangat mudah! Cukup pilih tanggal pada form jadwal di website ini atau tekan tombol WhatsApp. Tim kami akan langsung mengonfirmasi ketersediaan slot dan memberikan langkah penguncian jadwal (DP).',
+    q: 'Apakah harga paket sudah nett & mencakup semua file?',
+    a: 'Ya, semua harga paket yang tertera di website sudah transparan, nett, dan sudah mencakup seluruh file hasil sesi foto tanpa ada biaya tersembunyi.',
   },
   {
     q: 'Apakah melayani lokasi foto di luar area Jogja & Solo?',
-    a: 'Fokus utama layanan kami adalah di area Yogyakarta dan Surakarta (Solo). Untuk permintaan lokasi di luar dua area tersebut, silakan konsultasikan via WhatsApp untuk detail akomodasi & jadwal.',
+    a: 'Fokus utama layanan kami adalah di area Yogyakarta dan Surakarta (Solo). Untuk permintaan lokasi di luar dua area tersebut, silakan konsultasikan via WhatsApp untuk detail jadwal dan penyesuaian akomodasi.',
   },
 ];
 

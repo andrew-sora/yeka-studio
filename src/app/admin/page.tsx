@@ -287,16 +287,24 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    if (sessionStorage.getItem('yeka_admin_auth') === 'true') {
-      setIsAuthenticated(true);
-    }
+    fetch('/api/admin/verify')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.authenticated) {
+          setIsAuthenticated(true);
+        } else if (sessionStorage.getItem('yeka_admin_auth') === 'true') {
+          setIsAuthenticated(true);
+        }
+      })
+      .catch(() => {
+        if (sessionStorage.getItem('yeka_admin_auth') === 'true') {
+          setIsAuthenticated(true);
+        }
+      });
   }, []);
 
   useEffect(() => {
     try {
-      const storedPin = localStorage.getItem('yeka_admin_pin');
-      if (storedPin) setAdminPin(storedPin);
-
       const storedSlots = localStorage.getItem('yeka_slot_overrides');
       if (storedSlots) setOverrides(JSON.parse(storedSlots));
 
@@ -354,18 +362,33 @@ export default function AdminPage() {
     setTimeout(() => setToastMessage(null), 2500);
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (pinInput === adminPin) {
-      sessionStorage.setItem('yeka_admin_auth', 'true');
-      setIsAuthenticated(true);
-      setPinError(false);
-    } else {
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin: pinInput }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        sessionStorage.setItem('yeka_admin_auth', 'true');
+        setIsAuthenticated(true);
+        setPinError(false);
+      } else {
+        setPinError(true);
+      }
+    } catch {
       setPinError(true);
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/admin/logout', { method: 'POST' });
+    } catch {
+      // ignore
+    }
     sessionStorage.removeItem('yeka_admin_auth');
     setIsAuthenticated(false);
     setPinInput('');

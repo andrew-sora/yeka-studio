@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { trackEvent } from '@/lib/analytics';
 
 // ─── Types & Data ─────────────────────────────────────────────────────────────
 type SlotStatus = 'available' | 'booked';
@@ -263,6 +264,15 @@ export default function AvailabilitySection() {
     const dateStr = `${selectedDate} ${MONTH_ID[viewMonth]} ${viewYear}`;
     const nameStr = guestName.trim();
     const msg = `Halo, saya ${nameStr}, mau booking paket ${selectedPackage} untuk tanggal ${dateStr} jam ${selectedSlot} WIB.`;
+
+    trackEvent('whatsapp_click', {
+      source: 'availability_calendar',
+      package_title: selectedPackage,
+      slot_date: dateStr,
+      slot_time: selectedSlot || undefined,
+      guest_name: nameStr,
+    });
+
     const waUrl = `https://wa.me/6285952879644?text=${encodeURIComponent(msg)}`;
     window.open(waUrl, '_blank', 'noopener,noreferrer');
   };
@@ -273,7 +283,7 @@ export default function AvailabilitySection() {
       ref={sectionRef}
       style={{
         background: 'var(--cream)',
-        padding: 'clamp(2.5rem, 5vw, 4.5rem) 1.25rem',
+        padding: 'clamp(2.5rem, 5vw, 4.5rem) clamp(0.75rem, 2.5vw, 1.25rem)',
       }}
     >
       <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
@@ -326,14 +336,103 @@ export default function AvailabilitySection() {
           </p>
         </div>
 
-        {/* ── 2-Column Desktop Grid Layout ── */}
+        {/* ── 3-Step Guided Booking Progress Indicator (Mobile-first compact 3-column bar) ── */}
         <div
-          className="reveal-avail"
+          className="reveal-avail avail-stepper-container"
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))',
-            gap: '1.5rem',
-            alignItems: 'start',
+            opacity: 0,
+            transform: 'translateY(24px)',
+            transition: 'all 0.7s ease',
+          }}
+        >
+          {[
+            {
+              step: '1. Tanggal',
+              desc: selectedDate ? `${selectedDate} ${MONTH_ID[viewMonth].slice(0, 3)}` : 'Pilih Hari',
+              active: true,
+              done: !!selectedDate,
+            },
+            {
+              step: '2. Jam',
+              desc: selectedSlot ? `${selectedSlot.split(' - ')[0]}` : selectedDate ? 'Pilih Jam' : 'Menunggu',
+              active: !!selectedDate,
+              done: !!selectedSlot,
+            },
+            {
+              step: '3. Booking',
+              desc: selectedSlot ? 'Siap Kirim' : 'Kirim WA',
+              active: !!selectedSlot,
+              done: false,
+            },
+          ].map((s, i) => (
+            <div
+              key={i}
+              className="avail-stepper-item"
+              style={{
+                background: 'white',
+                border: s.done ? '1.5px solid #16A34A' : s.active ? '1.5px solid var(--maroon)' : '1px solid rgba(123,28,42,0.1)',
+                padding: '0.45rem 0.3rem',
+                borderRadius: '8px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                textAlign: 'center',
+                gap: '0.2rem',
+                boxShadow: s.active ? '0 2px 8px rgba(123,28,42,0.06)' : 'none',
+              }}
+            >
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.25rem',
+                justifyContent: 'center',
+              }}>
+                <div
+                  style={{
+                    width: '18px',
+                    height: '18px',
+                    borderRadius: '50%',
+                    background: s.done ? '#16A34A' : s.active ? 'var(--maroon)' : 'rgba(123,28,42,0.1)',
+                    color: s.active || s.done ? 'white' : 'var(--muted)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.62rem',
+                    fontWeight: 700,
+                    flexShrink: 0,
+                  }}
+                >
+                  {s.done ? '✓' : i + 1}
+                </div>
+                <span style={{
+                  fontSize: '0.68rem',
+                  fontWeight: 700,
+                  color: s.done ? '#15803D' : s.active ? 'var(--maroon)' : 'var(--charcoal)',
+                  fontFamily: 'Inter, sans-serif',
+                  whiteSpace: 'nowrap',
+                }}>
+                  {s.step}
+                </span>
+              </div>
+              <div style={{
+                fontSize: '0.65rem',
+                color: s.done ? '#15803D' : 'var(--muted)',
+                fontFamily: 'Inter, sans-serif',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                maxWidth: '100%',
+              }}>
+                {s.desc}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Calendar & Booking Layout (Mobile-first stacked -> Desktop 2-col) ── */}
+        <div
+          className="reveal-avail avail-main-grid"
+          style={{
             opacity: 0,
             transform: 'translateY(24px)',
             transition: 'all 0.7s ease',
@@ -345,50 +444,54 @@ export default function AvailabilitySection() {
             style={{
               background: 'white',
               borderRadius: '16px',
-              padding: 'clamp(1.25rem, 3vw, 1.75rem)',
+              padding: 'clamp(0.75rem, 2.5vw, 1.5rem)',
               boxShadow: '0 8px 30px rgba(0,0,0,0.04)',
               border: '1px solid rgba(123,28,42,0.08)',
+              width: '100%',
+              boxSizing: 'border-box',
             }}
           >
             {/* Header: Month Title with Navigation Arrows & Legend */}
             <div style={{
               display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '1.5rem',
-              flexWrap: 'wrap',
+              flexDirection: 'column',
               gap: '0.75rem',
+              marginBottom: '1.25rem',
+              width: '100%',
             }}>
               {/* Month Navigation Controls */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
                 <button
                   onClick={() => changeMonth(-1)}
                   disabled={monthOffset === 0}
                   aria-label="Bulan sebelumnya"
                   style={{
-                    width: '32px',
-                    height: '32px',
+                    width: '38px',
+                    height: '38px',
                     borderRadius: '50%',
-                    border: '1px solid rgba(123,28,42,0.2)',
+                    border: '1.5px solid rgba(123,28,42,0.2)',
                     background: monthOffset === 0 ? 'rgba(0,0,0,0.04)' : 'white',
                     color: monthOffset === 0 ? '#CBD5E1' : 'var(--maroon)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     cursor: monthOffset === 0 ? 'not-allowed' : 'pointer',
-                    fontSize: '1rem',
+                    fontSize: '1.1rem',
                     transition: 'all 0.2s ease',
+                    boxShadow: monthOffset === 0 ? 'none' : '0 2px 6px rgba(0,0,0,0.05)',
+                    flexShrink: 0,
                   }}
                 >
                   &#8249;
                 </button>
 
                 <div className="font-display" style={{
-                  fontSize: '1.35rem',
+                  fontSize: 'clamp(1.15rem, 3.5vw, 1.35rem)',
                   fontWeight: 700,
                   color: 'var(--charcoal)',
-                  minWidth: '150px',
                   textAlign: 'center',
+                  flex: 1,
+                  padding: '0 0.5rem',
                 }}>
                   {MONTH_ID[viewMonth]} {viewYear}
                 </div>
@@ -398,18 +501,20 @@ export default function AvailabilitySection() {
                   disabled={monthOffset >= 6}
                   aria-label="Bulan berikutnya"
                   style={{
-                    width: '32px',
-                    height: '32px',
+                    width: '38px',
+                    height: '38px',
                     borderRadius: '50%',
-                    border: '1px solid var(--maroon)',
+                    border: '1.5px solid var(--maroon)',
                     background: monthOffset >= 6 ? 'rgba(0,0,0,0.04)' : 'var(--maroon)',
                     color: monthOffset >= 6 ? '#CBD5E1' : 'white',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     cursor: monthOffset >= 6 ? 'not-allowed' : 'pointer',
-                    fontSize: '1rem',
+                    fontSize: '1.1rem',
                     transition: 'all 0.2s ease',
+                    boxShadow: monthOffset >= 6 ? 'none' : '0 2px 10px rgba(123,28,42,0.3)',
+                    flexShrink: 0,
                   }}
                 >
                   &#8250;
@@ -420,41 +525,45 @@ export default function AvailabilitySection() {
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.75rem',
-                fontSize: '0.7rem',
+                justifyContent: 'center',
+                gap: '0.85rem',
+                fontSize: '0.72rem',
                 fontFamily: 'Inter, sans-serif',
                 color: 'var(--muted)',
+                fontWeight: 500,
+                width: '100%',
               }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#16A34A' }} />
+                <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#16A34A' }} />
                   Tersedia
                 </span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#CA8A04' }} />
-                  Sebagian
+                <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#CA8A04' }} />
+                  Terbatas
                 </span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#DC2626' }} />
+                <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#DC2626' }} />
                   Penuh
                 </span>
               </div>
             </div>
 
-            {/* Day labels */}
+            {/* Day labels (Strict 7 equal columns with minmax(0, 1fr)) */}
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(7, 1fr)',
-              gap: '4px',
-              marginBottom: '0.75rem',
+              gridTemplateColumns: 'repeat(7, minmax(0, 1fr))',
+              gap: '3px',
+              marginBottom: '0.5rem',
+              width: '100%',
             }}>
               {DAY_SHORT.map(d => (
                 <div key={d} style={{
                   textAlign: 'center',
-                  fontSize: '0.72rem',
-                  fontWeight: 600,
-                  letterSpacing: '0.05em',
-                  color: d === 'Min' || d === 'Sab' ? 'var(--muted)' : 'var(--charcoal)',
-                  padding: '0.3rem 0',
+                  fontSize: '0.74rem',
+                  fontWeight: 700,
+                  letterSpacing: '0.02em',
+                  color: d === 'Min' || d === 'Sab' ? 'var(--maroon)' : 'var(--charcoal)',
+                  padding: '0.25rem 0',
                   fontFamily: 'Inter, sans-serif',
                 }}>
                   {d}
@@ -462,15 +571,16 @@ export default function AvailabilitySection() {
               ))}
             </div>
 
-            {/* Calendar Days Grid */}
+            {/* Calendar Days Grid (Strict 7 equal columns, no horizontal overflow) */}
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(7, 1fr)',
-              gap: '6px',
+              gridTemplateColumns: 'repeat(7, minmax(0, 1fr))',
+              gap: '3px',
+              width: '100%',
             }}>
               {/* Empty cells before first day */}
               {Array.from({ length: firstWeekday }).map((_, i) => (
-                <div key={`empty-${i}`} style={{ aspectRatio: '1' }} />
+                <div key={`empty-${i}`} style={{ width: '100%', aspectRatio: '1' }} />
               ))}
 
               {/* Day cells */}
@@ -479,25 +589,28 @@ export default function AvailabilitySection() {
                 const isClickable = day.dateStatus === 'fully_available' || day.dateStatus === 'partially_booked';
 
                 const cellStyle: React.CSSProperties = {
+                  width: '100%',
                   aspectRatio: '1',
-                  borderRadius: '10px',
+                  borderRadius: '8px',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '0.88rem',
+                  fontSize: 'clamp(0.78rem, 2.6vw, 0.95rem)',
                   transition: 'all 0.2s ease',
                   position: 'relative',
                   fontWeight: isSelected ? 700 : 500,
                   fontFamily: 'Inter, sans-serif',
                   cursor: isClickable ? 'pointer' : 'not-allowed',
+                  boxSizing: 'border-box',
+                  padding: 0,
                 };
 
                 if (isSelected) {
                   Object.assign(cellStyle, {
                     background: 'var(--maroon)',
                     color: 'white',
-                    boxShadow: '0 4px 14px rgba(123,28,42,0.3)',
+                    boxShadow: '0 4px 16px rgba(123,28,42,0.35)',
                     border: '1.5px solid var(--maroon)',
                   });
                 } else if (day.dateStatus === 'past') {
@@ -508,33 +621,42 @@ export default function AvailabilitySection() {
                   });
                 } else if (day.dateStatus === 'fully_booked') {
                   Object.assign(cellStyle, {
-                    background: 'rgba(0,0,0,0.03)',
-                    color: 'rgba(44,40,40,0.35)',
-                    border: '1px solid rgba(0,0,0,0.05)',
+                    background: '#F8FAFC',
+                    color: '#94A3B8',
+                    border: '1px solid #E2E8F0',
+                    textDecoration: 'line-through',
                   });
                 } else if (day.dateStatus === 'partially_booked') {
                   Object.assign(cellStyle, {
                     background: 'white',
                     color: 'var(--charcoal)',
-                    border: '1.5px solid #C9A94B',
+                    border: '1.5px solid #CA8A04',
                   });
                 } else {
                   // fully_available
                   Object.assign(cellStyle, {
                     background: 'white',
                     color: 'var(--charcoal)',
-                    border: '1px solid rgba(0,0,0,0.08)',
+                    border: '1px solid rgba(0,0,0,0.1)',
                   });
                 }
 
                 return (
                   <div
                     key={day.date}
-                    onClick={isClickable ? () => setSelectedDate(prev => prev === day.date ? null : day.date) : undefined}
+                    onClick={isClickable ? () => {
+                      const newDate = selectedDate === day.date ? null : day.date;
+                      setSelectedDate(newDate);
+                      if (newDate && window.innerWidth < 768 && slotPanelRef.current) {
+                        setTimeout(() => {
+                          slotPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }, 100);
+                      }
+                    } : undefined}
                     title={
                       day.dateStatus === 'fully_available' ? 'Tersedia Penuh (Klik untuk pilih jam)' :
                       day.dateStatus === 'partially_booked' ? 'Slot Terbatas (Klik untuk pilih jam)' :
-                      day.dateStatus === 'fully_booked' ? 'Sudah Fully Booked' : ''
+                      day.dateStatus === 'fully_booked' ? 'Sudah Terisi Penuh (Tidak dapat dipilih)' : ''
                     }
                     style={cellStyle}
                   >
@@ -543,8 +665,8 @@ export default function AvailabilitySection() {
                     {/* Dot indicator underneath number */}
                     {day.dateStatus === 'fully_available' && (
                       <span style={{
-                        width: '4px',
-                        height: '4px',
+                        width: '5px',
+                        height: '5px',
                         borderRadius: '50%',
                         background: isSelected ? 'white' : '#16A34A',
                         marginTop: '2px',
@@ -553,8 +675,8 @@ export default function AvailabilitySection() {
 
                     {day.dateStatus === 'partially_booked' && (
                       <span style={{
-                        width: '4px',
-                        height: '4px',
+                        width: '5px',
+                        height: '5px',
                         borderRadius: '50%',
                         background: isSelected ? 'white' : '#CA8A04',
                         marginTop: '2px',
@@ -563,8 +685,8 @@ export default function AvailabilitySection() {
 
                     {day.dateStatus === 'fully_booked' && (
                       <span style={{
-                        width: '4px',
-                        height: '4px',
+                        width: '5px',
+                        height: '5px',
                         borderRadius: '50%',
                         background: '#DC2626',
                         marginTop: '2px',
@@ -849,36 +971,64 @@ export default function AvailabilitySection() {
                   </div>
                 )}
 
+                {/* Transparent Booking Flow Explanation */}
+                <div style={{
+                  background: 'rgba(123, 28, 42, 0.04)',
+                  border: '1px solid rgba(123, 28, 42, 0.12)',
+                  borderRadius: '8px',
+                  padding: '0.65rem 0.85rem',
+                  marginBottom: '1rem',
+                  fontSize: '0.74rem',
+                  color: 'var(--muted)',
+                  lineHeight: 1.5,
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '0.5rem',
+                  fontFamily: 'Inter, sans-serif',
+                }}>
+                  <span style={{ color: 'var(--maroon)', fontSize: '0.9rem', flexShrink: 0, marginTop: '-1px' }}>ℹ</span>
+                  <span>
+                    <strong>Langkah selanjutnya:</strong> Detail pilihan Anda akan langsung disusun ke format pesan WhatsApp. Admin Yeka Studio akan memverifikasi ketersediaan dan panduan DP. Slot resmi terkunci setelah konfirmasi Admin.
+                  </span>
+                </div>
+
                 <button
                   type="button"
                   onClick={handleBookingSubmit}
                   id="cta-booking-slot-wa"
                   style={{
-                    display: 'block',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
                     textAlign: 'center',
-                    background: 'var(--maroon)',
+                    background: '#25D366',
                     color: 'white',
-                    padding: '0.85rem 1.25rem',
+                    padding: '0.95rem 1.25rem',
+                    minHeight: '48px',
                     borderRadius: '8px',
                     fontFamily: 'Inter, sans-serif',
-                    fontSize: '0.85rem',
-                    fontWeight: 600,
+                    fontSize: '0.88rem',
+                    fontWeight: 700,
                     border: 'none',
                     cursor: 'pointer',
-                    boxShadow: '0 4px 16px rgba(123,28,42,0.25)',
+                    boxShadow: '0 4px 18px rgba(37, 211, 102, 0.35)',
                     transition: 'all 0.25s ease',
                     width: '100%',
                   }}
                   onMouseEnter={e => {
-                    (e.currentTarget as HTMLElement).style.background = 'var(--maroon-dark)';
+                    (e.currentTarget as HTMLElement).style.background = '#1EBE5D';
                     (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
                   }}
                   onMouseLeave={e => {
-                    (e.currentTarget as HTMLElement).style.background = 'var(--maroon)';
+                    (e.currentTarget as HTMLElement).style.background = '#25D366';
                     (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
                   }}
                 >
-                  Booking Tanggal Ini &rarr;
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                  </svg>
+                  <span>Request Booking via WhatsApp &rarr;</span>
                 </button>
               </div>
             )}

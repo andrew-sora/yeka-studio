@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { trackEvent } from '@/lib/analytics';
 
 export default function StickyMobileCTA() {
   const [isVisible, setIsVisible] = useState(false);
@@ -7,9 +8,18 @@ export default function StickyMobileCTA() {
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      const isBottom = window.innerHeight + scrollY >= document.documentElement.scrollHeight - 140;
+      const isBottom = window.innerHeight + scrollY >= document.documentElement.scrollHeight - 180;
 
-      if (scrollY > 300 && !isBottom) {
+      // Check if user is currently inside the calendar / booking section
+      const jadwalEl = document.getElementById('jadwal');
+      let isOverJadwal = false;
+      if (jadwalEl) {
+        const rect = jadwalEl.getBoundingClientRect();
+        // If calendar occupies significant portion of screen
+        isOverJadwal = rect.top < window.innerHeight - 80 && rect.bottom > 100;
+      }
+
+      if (scrollY > 320 && !isBottom && !isOverJadwal) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
@@ -30,17 +40,18 @@ export default function StickyMobileCTA() {
         left: '0',
         right: '0',
         zIndex: 99,
-        background: 'rgba(26, 5, 8, 0.92)',
-        backdropFilter: 'blur(12px)',
-        borderTop: '1px solid rgba(201, 169, 75, 0.3)',
-        padding: '0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom, 0px))',
-        boxShadow: '0 -8px 24px rgba(0,0,0,0.4)',
+        background: 'rgba(26, 5, 8, 0.94)',
+        backdropFilter: 'blur(14px)',
+        WebkitBackdropFilter: 'blur(14px)',
+        borderTop: '1px solid rgba(212, 175, 55, 0.35)',
+        padding: '0.65rem 1rem calc(0.65rem + env(safe-area-inset-bottom, 0px))',
+        boxShadow: '0 -8px 24px rgba(0,0,0,0.5)',
         display: 'flex',
         alignItems: 'center',
         gap: '0.65rem',
         animation: 'fadeInUp 0.3s ease forwards',
       }}
-      className="md:hidden"
+      className="sticky-mobile-cta md:hidden"
     >
       <a
         href="#jadwal"
@@ -55,12 +66,13 @@ export default function StickyMobileCTA() {
           color: 'white',
           textAlign: 'center',
           padding: '0.75rem 0.5rem',
-          borderRadius: '6px',
+          minHeight: '44px',
+          borderRadius: '8px',
           fontFamily: 'Inter, sans-serif',
-          fontSize: '0.8rem',
+          fontSize: '0.82rem',
           fontWeight: 600,
           textDecoration: 'none',
-          border: '1px solid rgba(201,169,75,0.4)',
+          border: '1px solid rgba(212,175,55,0.4)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -80,22 +92,26 @@ export default function StickyMobileCTA() {
         href="https://wa.me/6285952879644?text=Halo%20Yeka%20Studio!%20Saya%20ingin%20tanya%20jadwal%20dan%20pricelist%20foto%20%F0%9F%93%B8"
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => {
+          trackEvent('whatsapp_click', { source: 'sticky_mobile_cta' });
+        }}
         style={{
           flex: 1,
           background: '#25D366',
           color: 'white',
           textAlign: 'center',
           padding: '0.75rem 0.5rem',
-          borderRadius: '6px',
+          minHeight: '44px',
+          borderRadius: '8px',
           fontFamily: 'Inter, sans-serif',
-          fontSize: '0.8rem',
+          fontSize: '0.82rem',
           fontWeight: 600,
           textDecoration: 'none',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           gap: '0.4rem',
-          boxShadow: '0 4px 12px rgba(37,211,102,0.3)',
+          boxShadow: '0 4px 14px rgba(37,211,102,0.35)',
         }}
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">

@@ -235,7 +235,7 @@ function formatRupiah(input: string): string {
       ref={sectionRef}
       style={{
         background: '#1a0508',
-        padding: 'clamp(4rem, 8vw, 7rem) 1.5rem',
+        padding: 'clamp(3rem, 6vw, 6rem) clamp(0.75rem, 2.5vw, 1.5rem)',
         position: 'relative',
         overflow: 'hidden',
       }}
@@ -335,24 +335,24 @@ function formatRupiah(input: string): string {
               Geser Galeri Portofolio &rarr;
             </div>
 
-            {/* Navigation Buttons */}
-            <div style={{ display: canScrollPhotos ? 'flex' : 'none', gap: '0.5rem' }}>
+            {/* Navigation Buttons with 44px touch target */}
+            <div style={{ display: canScrollPhotos ? 'flex' : 'none', gap: '0.65rem' }}>
               <button
                 onClick={() => scroll('left')}
-                aria-label="Previous slide"
+                aria-label="Foto sebelumnya"
                 style={{
-                  width: '36px',
-                  height: '36px',
+                  width: '44px',
+                  height: '44px',
                   borderRadius: '50%',
-                  border: '1px solid rgba(201,169,75,0.3)',
-                  background: 'rgba(255,255,255,0.05)',
-                  color: '#C9A94B',
+                  border: '1.5px solid rgba(212,175,55,0.4)',
+                  background: 'rgba(255,255,255,0.08)',
+                  color: '#D4AF37',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
-                  fontSize: '1rem',
-                  backdropFilter: 'blur(6px)',
+                  fontSize: '1.25rem',
+                  backdropFilter: 'blur(8px)',
                   transition: 'all 0.2s ease',
                 }}
               >
@@ -360,20 +360,20 @@ function formatRupiah(input: string): string {
               </button>
               <button
                 onClick={() => scroll('right')}
-                aria-label="Next slide"
+                aria-label="Foto berikutnya"
                 style={{
-                  width: '36px',
-                  height: '36px',
+                  width: '44px',
+                  height: '44px',
                   borderRadius: '50%',
-                  border: '1px solid rgba(201,169,75,0.5)',
-                  background: '#C9A94B',
+                  border: '1.5px solid #D4AF37',
+                  background: '#D4AF37',
                   color: '#1a0508',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
-                  fontSize: '1rem',
-                  boxShadow: '0 2px 10px rgba(201,169,75,0.3)',
+                  fontSize: '1.25rem',
+                  boxShadow: '0 2px 10px rgba(212,175,55,0.35)',
                   transition: 'all 0.2s ease',
                 }}
               >
@@ -407,11 +407,11 @@ function formatRupiah(input: string): string {
                   flex: '0 0 clamp(230px, 32vw, 280px)',
                   scrollSnapAlign: 'start',
                   aspectRatio: '3/4',
-                  borderRadius: '12px',
+                  borderRadius: '14px',
                   overflow: 'hidden',
                   position: 'relative',
-                  boxShadow: '0 8px 30px rgba(0,0,0,0.5)',
-                  border: '1px solid rgba(201,169,75,0.2)',
+                  boxShadow: '0 8px 30px rgba(0,0,0,0.55)',
+                  border: '1px solid rgba(212,175,55,0.25)',
                   background: '#120305',
                 }}
               >
@@ -419,8 +419,8 @@ function formatRupiah(input: string): string {
                   src={photo.src}
                   alt={photo.alt || photo.title}
                   fill
-                  style={{ objectFit: 'cover' }}
-                  sizes="(max-width: 768px) 70vw, 30vw"
+                  style={{ objectFit: 'cover', objectPosition: 'center 20%' }}
+                  sizes="(max-width: 768px) 75vw, 30vw"
                 />
 
                 {/* Glassmorphism Bottom Info Card */}
@@ -429,19 +429,19 @@ function formatRupiah(input: string): string {
                   bottom: '0.75rem',
                   left: '0.75rem',
                   right: '0.75rem',
-                  background: 'rgba(26, 5, 8, 0.85)',
+                  background: 'rgba(26, 5, 8, 0.88)',
                   backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(201, 169, 75, 0.3)',
+                  border: '1px solid rgba(212, 175, 55, 0.35)',
                   borderRadius: '8px',
-                  padding: '0.6rem 0.85rem',
+                  padding: '0.65rem 0.85rem',
                 }}>
                   <div style={{
-                    fontSize: '0.62rem',
-                    color: '#C9A94B',
-                    letterSpacing: '0.1em',
+                    fontSize: '0.64rem',
+                    color: '#D4AF37',
+                    letterSpacing: '0.12em',
                     textTransform: 'uppercase',
                     fontFamily: 'Inter, sans-serif',
-                    fontWeight: 600,
+                    fontWeight: 700,
                   }}>
                     {photo.tag}
                   </div>
@@ -449,9 +449,9 @@ function formatRupiah(input: string): string {
                     fontFamily: 'Cormorant Garamond, serif',
                     fontSize: '1.05rem',
                     fontWeight: 600,
-                    color: 'white',
+                    color: '#FFFDF9',
                     lineHeight: 1.2,
-                    marginTop: '1px',
+                    marginTop: '2px',
                   }}>
                     {photo.title}
                   </div>
@@ -471,15 +471,16 @@ function formatRupiah(input: string): string {
               <button
                 key={i}
                 onClick={() => scrollToIndex(i)}
-                aria-label={`Go to slide ${i + 1}`}
+                aria-label={`Lihat foto wedding ${i + 1}`}
                 style={{
                   width: activeIndex === i ? '24px' : '8px',
                   height: '8px',
                   borderRadius: '100px',
-                  background: activeIndex === i ? '#C9A94B' : 'rgba(201,169,75,0.25)',
+                  background: activeIndex === i ? '#D4AF37' : 'rgba(212,175,55,0.3)',
                   border: 'none',
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
+                  padding: 0,
                 }}
               />
             ))}
@@ -502,35 +503,35 @@ function formatRupiah(input: string): string {
               fontSize: '0.75rem',
               letterSpacing: '0.15em',
               textTransform: 'uppercase',
-              color: '#C9A94B',
+              color: '#D4AF37',
               fontFamily: 'Inter, sans-serif',
-              fontWeight: 600,
+              fontWeight: 700,
               display: 'flex',
               alignItems: 'center',
               gap: '0.4rem',
             }}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#C9A94B' }} />
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#D4AF37' }} />
               Pilihan Paket Wedding &amp; Prewedding Transparan
             </div>
 
-            {/* Navigation Buttons */}
-            <div style={{ display: canScrollPkgs ? 'flex' : 'none', gap: '0.5rem' }}>
+            {/* Mobile-only Navigation Buttons */}
+            <div className="mobile-wedding-pkg-controls" style={{ display: 'none', gap: '0.5rem' }}>
               <button
                 onClick={() => scrollPkg('left')}
-                aria-label="Previous package"
+                aria-label="Paket sebelumnya"
                 style={{
-                  width: '36px',
-                  height: '36px',
+                  width: '40px',
+                  height: '40px',
                   borderRadius: '50%',
-                  border: '1px solid rgba(201,169,75,0.3)',
+                  border: '1.5px solid rgba(212,175,55,0.4)',
                   background: 'rgba(255,255,255,0.08)',
-                  color: '#C9A94B',
+                  color: '#D4AF37',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
-                  fontSize: '1rem',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                  fontSize: '1.1rem',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
                   transition: 'all 0.2s ease',
                 }}
               >
@@ -538,20 +539,20 @@ function formatRupiah(input: string): string {
               </button>
               <button
                 onClick={() => scrollPkg('right')}
-                aria-label="Next package"
+                aria-label="Paket berikutnya"
                 style={{
-                  width: '36px',
-                  height: '36px',
+                  width: '40px',
+                  height: '40px',
                   borderRadius: '50%',
-                  border: '1px solid #C9A94B',
-                  background: '#C9A94B',
+                  border: '1.5px solid #D4AF37',
+                  background: '#D4AF37',
                   color: '#1a0508',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
-                  fontSize: '1rem',
-                  boxShadow: '0 2px 8px rgba(201,169,75,0.25)',
+                  fontSize: '1.1rem',
+                  boxShadow: '0 2px 8px rgba(212,175,55,0.3)',
                   transition: 'all 0.2s ease',
                 }}
               >
@@ -560,45 +561,65 @@ function formatRupiah(input: string): string {
             </div>
           </div>
 
-          {/* Scroll Track Container */}
+          {/* Quick Mobile Package Selector Pills */}
+          <div
+            className="mobile-wedding-pkg-controls"
+            style={{
+              display: 'flex',
+              gap: '0.4rem',
+              overflowX: 'auto',
+              paddingBottom: '0.65rem',
+              marginBottom: '0.5rem',
+              scrollbarWidth: 'none',
+            }}
+          >
+            {weddingPackages.map((pkg, i) => (
+              <button
+                key={`pill-wed-${i}`}
+                onClick={() => scrollToPkgIndex(i)}
+                style={{
+                  padding: '0.4rem 0.85rem',
+                  borderRadius: '100px',
+                  fontSize: '0.74rem',
+                  fontFamily: 'Inter, sans-serif',
+                  fontWeight: 600,
+                  whiteSpace: 'nowrap',
+                  border: activePkgIndex === i ? '1.5px solid #D4AF37' : '1px solid rgba(212,175,55,0.25)',
+                  background: activePkgIndex === i ? '#D4AF37' : 'rgba(255,255,255,0.06)',
+                  color: activePkgIndex === i ? '#1a0508' : '#F5EBE0',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  flexShrink: 0,
+                }}
+              >
+                {pkg.title} • {pkg.price}
+              </button>
+            ))}
+          </div>
+
+          {/* Responsive Grid on Desktop / Swipeable on Mobile (via globals.css) */}
           <div
             ref={pkgCarouselRef}
             onScroll={handlePkgScroll}
-            className="no-scrollbar"
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              flexWrap: 'nowrap',
-              justifyContent: (canScrollPkgs || weddingPackages.length > 3) ? 'flex-start' : 'center',
-              gap: '1.25rem',
-              overflowX: 'auto',
-              WebkitOverflowScrolling: 'touch',
-              scrollSnapType: 'x mandatory',
-              scrollBehavior: 'smooth',
-              paddingTop: '1rem',
-              paddingBottom: '1rem',
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
-            }}
+            className="wedding-pkg-container no-scrollbar"
           >
             {weddingPackages.map((pkg, i) => (
               <div
                 key={i}
+                className="wedding-pkg-card"
                 style={{
-                  flex: '0 0 auto',
-                  width: 'clamp(270px, 82vw, 320px)',
-                  minWidth: '270px',
-                  scrollSnapAlign: 'start',
-                  background: pkg.featured ? 'linear-gradient(145deg, rgba(123,28,42,0.4) 0%, rgba(201,169,75,0.15) 100%)' : 'rgba(255,255,255,0.05)',
-                  backdropFilter: 'blur(8px)',
-                  padding: 'clamp(1.15rem, 3.5vw, 1.5rem) clamp(1rem, 3vw, 1.25rem)',
-                  borderRadius: '12px',
-                  border: pkg.featured ? '1.5px solid #C9A94B' : '1px solid rgba(201,169,75,0.2)',
+                  background: pkg.featured
+                    ? 'linear-gradient(145deg, rgba(123,28,42,0.55) 0%, rgba(30,8,12,0.9) 100%)'
+                    : 'rgba(255,255,255,0.05)',
+                  backdropFilter: 'blur(10px)',
+                  padding: '1.5rem 1.25rem',
+                  borderRadius: '14px',
+                  border: pkg.featured ? '2px solid #D4AF37' : '1px solid rgba(212,175,55,0.25)',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                   position: 'relative',
-                  boxShadow: pkg.featured ? '0 12px 36px rgba(201,169,75,0.2)' : 'none',
+                  boxShadow: pkg.featured ? '0 12px 36px rgba(212,175,55,0.22)' : '0 4px 20px rgba(0,0,0,0.3)',
                 }}
               >
                 {pkg.featured && (
@@ -607,16 +628,17 @@ function formatRupiah(input: string): string {
                     top: '-12px',
                     left: '50%',
                     transform: 'translateX(-50%)',
-                    background: '#C9A94B',
+                    background: '#D4AF37',
                     color: '#1a0508',
-                    fontSize: '0.65rem',
+                    fontSize: '0.66rem',
                     fontWeight: 700,
                     letterSpacing: '0.12em',
                     textTransform: 'uppercase',
-                    padding: '0.25rem 0.85rem',
+                    padding: '0.3rem 0.95rem',
                     borderRadius: '100px',
                     fontFamily: 'Inter, sans-serif',
                     whiteSpace: 'nowrap',
+                    boxShadow: '0 4px 12px rgba(212,175,55,0.35)',
                   }}>
                     {pkg.badge || 'Paling Populer'}
                   </div>
@@ -624,29 +646,29 @@ function formatRupiah(input: string): string {
                 <div>
                   <h3 style={{
                     fontFamily: 'Cormorant Garamond, serif',
-                    fontSize: '1.35rem',
-                    fontWeight: 600,
-                    color: 'white',
-                    marginBottom: '0.3rem',
+                    fontSize: '1.38rem',
+                    fontWeight: 700,
+                    color: '#FFFDF9',
+                    marginBottom: '0.35rem',
                     lineHeight: 1.25,
                   }}>
                     {pkg.title}
                   </h3>
                   <div style={{
                     fontFamily: 'Inter, sans-serif',
-                    fontSize: '1.25rem',
+                    fontSize: '1.35rem',
                     fontWeight: 700,
-                    color: '#C9A94B',
-                    marginBottom: '0.6rem',
+                    color: '#D4AF37',
+                    marginBottom: '0.65rem',
                   }}>
                     {pkg.price}
                   </div>
                   <p style={{
-                    fontSize: '0.82rem',
+                    fontSize: '0.84rem',
                     color: '#F1F5F9',
                     fontFamily: 'Inter, sans-serif',
-                    lineHeight: 1.6,
-                    marginBottom: '0.85rem',
+                    lineHeight: 1.55,
+                    marginBottom: '1rem',
                   }} dangerouslySetInnerHTML={{ __html: pkg.desc }} />
 
                   {pkg.features && (
@@ -656,27 +678,28 @@ function formatRupiah(input: string): string {
                       margin: '0 0 1.25rem 0',
                       display: 'flex',
                       flexDirection: 'column',
-                      gap: '0.45rem',
-                      borderTop: '1px dashed rgba(201,169,75,0.3)',
-                      paddingTop: '0.75rem',
+                      gap: '0.5rem',
+                      borderTop: '1px dashed rgba(212,175,55,0.3)',
+                      paddingTop: '0.85rem',
                     }}>
                       {pkg.features.map((feat, fIdx) => (
                         <li key={fIdx} style={{
-                          fontSize: '0.76rem',
+                          fontSize: '0.78rem',
                           color: '#E2E8F0',
                           fontFamily: 'Inter, sans-serif',
                           display: 'flex',
                           alignItems: 'flex-start',
-                          gap: '0.4rem',
-                          lineHeight: 1.35,
+                          gap: '0.45rem',
+                          lineHeight: 1.4,
                         }}>
-                          <span style={{ color: '#C9A94B', fontWeight: 700, fontSize: '0.82rem', flexShrink: 0 }}>✓</span>
+                          <span style={{ color: '#D4AF37', fontWeight: 700, fontSize: '0.85rem', flexShrink: 0 }}>✓</span>
                           <span dangerouslySetInnerHTML={{ __html: feat }} />
                         </li>
                       ))}
                     </ul>
                   )}
                 </div>
+
                 <a
                   href={`#jadwal?paket=${encodeURIComponent(pkg.title)}`}
                   onClick={(e) => {
@@ -686,19 +709,33 @@ function formatRupiah(input: string): string {
                     window.dispatchEvent(new CustomEvent('selectPackage', { detail: pkg.title }));
                   }}
                   style={{
-                    display: 'block',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     textAlign: 'center',
-                    background: pkg.featured ? '#C9A94B' : 'rgba(201,169,75,0.15)',
-                    color: pkg.featured ? '#1a0508' : '#C9A94B',
-                    border: '1px solid #C9A94B',
+                    background: pkg.featured ? '#D4AF37' : 'rgba(212,175,55,0.15)',
+                    color: pkg.featured ? '#1a0508' : '#D4AF37',
+                    border: '1.5px solid #D4AF37',
                     padding: '0.75rem 1rem',
-                    borderRadius: '6px',
+                    minHeight: '44px',
+                    borderRadius: '8px',
                     fontFamily: 'Inter, sans-serif',
-                    fontSize: '0.8rem',
-                    fontWeight: 600,
-                    letterSpacing: '0.05em',
+                    fontSize: '0.82rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.04em',
                     textDecoration: 'none',
-                    transition: 'all 0.2s ease',
+                    marginTop: 'auto',
+                    transition: 'all 0.25s ease',
+                  }}
+                  onMouseEnter={e => {
+                    (e.currentTarget as HTMLElement).style.background = '#D4AF37';
+                    (e.currentTarget as HTMLElement).style.color = '#1a0508';
+                  }}
+                  onMouseLeave={e => {
+                    if (!pkg.featured) {
+                      (e.currentTarget as HTMLElement).style.background = 'rgba(212,175,55,0.15)';
+                      (e.currentTarget as HTMLElement).style.color = '#D4AF37';
+                    }
                   }}
                 >
                   Pilih Paket ini &rarr;
@@ -707,26 +744,27 @@ function formatRupiah(input: string): string {
             ))}
           </div>
 
-          {/* Dots Navigation Tracker */}
-          <div style={{
-            display: canScrollPkgs ? 'flex' : 'none',
+          {/* Mobile Dots Navigation Tracker */}
+          <div className="mobile-wedding-pkg-dots" style={{
+            display: 'none',
             justifyContent: 'center',
             gap: '0.4rem',
-            marginTop: '0.75rem',
+            marginTop: '1rem',
           }}>
             {weddingPackages.map((_, i) => (
               <button
                 key={i}
                 onClick={() => scrollToPkgIndex(i)}
-                aria-label={`Go to package ${i + 1}`}
+                aria-label={`Ke paket wedding ${i + 1}`}
                 style={{
                   width: activePkgIndex === i ? '24px' : '8px',
                   height: '8px',
                   borderRadius: '100px',
-                  background: activePkgIndex === i ? '#C9A94B' : 'rgba(201,169,75,0.25)',
+                  background: activePkgIndex === i ? '#D4AF37' : 'rgba(212,175,55,0.3)',
                   border: 'none',
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
+                  padding: 0,
                 }}
               />
             ))}
