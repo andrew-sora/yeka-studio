@@ -327,6 +327,8 @@ export default function AvailabilitySection() {
       style={{
         background: 'var(--cream)',
         padding: 'clamp(2.5rem, 5vw, 4.5rem) clamp(0.75rem, 2.5vw, 1.25rem)',
+        position: 'relative',
+        zIndex: 20,
       }}
     >
       <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
@@ -772,6 +774,8 @@ export default function AvailabilitySection() {
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'flex-start',
+              position: 'relative',
+              zIndex: 25,
             }}
           >
             <div>
@@ -1013,7 +1017,7 @@ export default function AvailabilitySection() {
                   </div>
 
                   {/* Paket Foto Terpilih (Custom Luxury Dropdown) */}
-                  <div style={{ position: 'relative', zIndex: isDropdownOpen ? 40 : 2 }} ref={dropdownRef}>
+                  <div style={{ position: 'relative', zIndex: isDropdownOpen ? 99 : 2 }} ref={dropdownRef}>
                     <label style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -1141,14 +1145,15 @@ export default function AvailabilitySection() {
                           top: 'calc(100% + 5px)',
                           left: 0,
                           right: 0,
-                          zIndex: 9999,
+                          zIndex: 99999,
                           background: 'white',
                           borderRadius: '10px',
-                          border: '1px solid rgba(123, 28, 42, 0.16)',
-                          boxShadow: '0 16px 36px -6px rgba(44, 40, 40, 0.16), 0 4px 14px rgba(0, 0, 0, 0.06)',
-                          maxHeight: '280px',
+                          border: '1px solid rgba(123, 28, 42, 0.18)',
+                          boxShadow: '0 20px 45px -4px rgba(44, 40, 40, 0.22), 0 8px 20px rgba(0, 0, 0, 0.08)',
+                          maxHeight: '240px',
                           overflowY: 'auto',
-                          padding: '0.4rem 0',
+                          overscrollBehavior: 'contain',
+                          padding: '0.4rem 0 1.25rem 0',
                           boxSizing: 'border-box',
                         }}
                       >
@@ -1193,7 +1198,7 @@ export default function AvailabilitySection() {
                                     background: isSelected ? 'rgba(123, 28, 42, 0.07)' : 'transparent',
                                     borderLeft: isSelected ? '3px solid var(--maroon)' : '3px solid transparent',
                                     transition: 'all 0.15s ease',
-                                    gap: '0.5rem',
+                                    gap: '0.65rem',
                                   }}
                                 >
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', minWidth: 0, flex: 1 }}>
@@ -1209,9 +1214,7 @@ export default function AvailabilitySection() {
                                       fontFamily: 'Inter, sans-serif',
                                       fontWeight: isSelected ? 600 : 500,
                                       color: isSelected ? 'var(--maroon)' : 'var(--charcoal)',
-                                      overflow: 'hidden',
-                                      textOverflow: 'ellipsis',
-                                      whiteSpace: 'nowrap',
+                                      lineHeight: 1.35,
                                     }}>
                                       {pkg.title}
                                     </span>

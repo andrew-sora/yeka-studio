@@ -203,6 +203,7 @@ export default function TestimonialSection() {
         padding: 'clamp(2.5rem, 5vw, 4.5rem) 1.25rem',
         position: 'relative',
         overflow: 'hidden',
+        zIndex: 1,
       }}
     >
       <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
