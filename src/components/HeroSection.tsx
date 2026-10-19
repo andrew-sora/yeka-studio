@@ -155,7 +155,7 @@ export default function HeroSection() {
             }}>
               YEKA CREATIVE STUDIO
             </span>
-            <span style={{ height: '1px', width: '24px', background: 'rgba(212,175,55,0.45)' }} />
+            <span style={{ color: 'rgba(212,175,55,0.45)', fontSize: '0.75rem' }}>•</span>
             <span style={{
               fontSize: '0.68rem',
               color: '#F5EBE0',

@@ -239,14 +239,6 @@ textarea:focus-visible {
   }
 }
 
-/* Section divider */
-.section-divider {
-  width: 50px;
-  height: 2px;
-  background: linear-gradient(90deg, var(--maroon), var(--gold-rich));
-  margin: 0 auto 1.25rem;
-}
-
 /* Image Zoom */
 .img-zoom {
   overflow: hidden;

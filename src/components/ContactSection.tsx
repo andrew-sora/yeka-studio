@@ -150,7 +150,6 @@ export default function ContactSection() {
                   fontWeight: 600,
                   marginBottom: '0.6rem',
                 }}>
-                  <span style={{ width: '16px', height: '1px', background: '#C9A94B' }} />
                   Konsultasi &amp; Booking
                 </div>
 
@@ -192,8 +191,7 @@ export default function ContactSection() {
                   fontSize: '0.75rem',
                   color: 'rgba(255,255,255,0.6)',
                   fontFamily: 'Inter, sans-serif',
-                  borderTop: '1px solid rgba(255,255,255,0.08)',
-                  paddingTop: '0.85rem',
+                  marginTop: '0.75rem',
                 }}
               >
                 <span style={{ color: 'rgba(255,255,255,0.85)', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>

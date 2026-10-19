@@ -285,17 +285,11 @@ function formatRupiah(input: string): string {
             fontWeight: 600,
             color: 'white',
             lineHeight: 1.2,
-            marginBottom: '0.5rem',
+            marginBottom: '0.85rem',
           }}>
             Keindahan Momen<br />
             <span style={{ color: '#C9A94B', fontStyle: 'italic' }}>Yang Tak Terlupakan</span>
           </h2>
-          <div style={{
-            width: '60px',
-            height: '2px',
-            background: 'linear-gradient(90deg, var(--maroon), #C9A94B)',
-            margin: '0 auto 1rem',
-          }} />
           <p style={{
             fontSize: '0.92rem',
             color: 'rgba(255,255,255,0.65)',

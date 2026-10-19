@@ -283,11 +283,10 @@ function formatRupiah(input: string): string {
             fontWeight: 600,
             color: 'var(--charcoal)',
             lineHeight: 1.2,
-            marginBottom: '0.5rem',
+            marginBottom: '0.85rem',
           }}>
             Abadikan Momen Kelulusanmu
           </h2>
-          <div className="section-divider" />
           <p style={{
             fontSize: '0.92rem',
             color: 'var(--muted)',

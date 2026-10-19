@@ -237,11 +237,10 @@ export default function TestimonialSection() {
             fontWeight: 600,
             color: 'var(--charcoal)',
             lineHeight: 1.2,
-            marginBottom: '0.5rem',
+            marginBottom: '0.85rem',
           }}>
             KATA MEREKA TENTANG YEKA
           </h2>
-          <div className="section-divider" />
           <p style={{
             fontSize: '0.92rem',
             color: 'var(--muted)',

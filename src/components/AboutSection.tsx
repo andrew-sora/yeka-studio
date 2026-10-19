@@ -156,12 +156,11 @@ export default function AboutSection() {
                 fontWeight: 600,
                 color: 'var(--charcoal)',
                 lineHeight: 1.2,
-                marginBottom: '0.75rem',
+                marginBottom: '1.25rem',
               }}>
                 Dua Perempuan,<br />
                 <span style={{ color: 'var(--maroon)', fontStyle: 'italic' }}>Satu Visi Estetika</span>
               </h2>
-              <div className="section-divider" style={{ margin: '0 0 1.5rem 0' }} />
             </div>
 
             <p

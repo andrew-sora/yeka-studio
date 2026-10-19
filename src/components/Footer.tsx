@@ -63,7 +63,7 @@ export default function Footer() {
           fontFamily: 'Inter, sans-serif',
           letterSpacing: '0.05em',
         }}>
-          &copy; {year} Yeka Creative Studio &mdash; Yogyakarta &amp; Solo &mdash; Female Photographer Team
+          &copy; {year} Yeka Creative Studio • Yogyakarta &amp; Solo • Female Photographer Team
         </p>
         <p style={{
           fontSize: '0.7rem',
